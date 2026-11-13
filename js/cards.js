@@ -1,5 +1,6 @@
 // The 30 cat cards. Art lives in cards/<id>.png (or .webp / .jpg); until it exists a drawn placeholder is shown.
-export const COST = 30; // points per pack
+export const COST = 30; // stars per pack
+export const MAX_COPIES = 3; // most copies of one card a player can hold
 export const RARITY = {
   1: { name: "נפוץ",     color: "#8e9bb0", weight: 45 },
   2: { name: "לא נפוץ",  color: "#2f9e5b", weight: 27 },

@@ -1,8 +1,8 @@
-// Points and cat cards. Points are earned at the end of a round, a pack costs COST points
+// Stars and cat cards. Stars are earned at the end of a round, a pack costs COST points
 // and gives one random card. State lives in this browser; once a member signs in it moves to
 // Firestore (rewards/{uid}) so it follows them between devices.
-import { CARDS, RARITY, COST } from "./cards.js";
-export { COST };
+import { CARDS, RARITY, COST, MAX_COPIES } from "./cards.js";
+export { COST, MAX_COPIES };
 
 const LKEY = "honey-rewards-v1", AKEY = "honey-awarded-v1";
 let st = { points: 0, cards: {}, opened: 0 }, mode = "local", be = null, uid = null;
@@ -21,11 +21,15 @@ function push(delta) { // delta = {points, cards, opened}
     try { st = norm(await be.getRewards(uid)); notify(); } catch {}
   });
 }
+// Pick a rarity by weight, then a card of that rarity that is not already at MAX_COPIES.
 function draw() {
-  const total = Object.values(RARITY).reduce((a, r) => a + r.weight, 0);
-  let x = Math.random() * total, rarity = 1;
-  for (const [k, r] of Object.entries(RARITY)) { if ((x -= r.weight) < 0) { rarity = +k; break; } }
-  const pool = CARDS.filter((c) => c.r === rarity);
+  const open = CARDS.filter((c) => (st.cards[c.id] || 0) < MAX_COPIES);
+  if (!open.length) return null;
+  const rarities = [...new Set(open.map((c) => c.r))];
+  const total = rarities.reduce((a, r) => a + RARITY[r].weight, 0);
+  let x = Math.random() * total, rarity = rarities[0];
+  for (const r of rarities) { if ((x -= RARITY[r].weight) < 0) { rarity = r; break; } }
+  const pool = open.filter((c) => c.r === rarity);
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -43,6 +47,10 @@ export const Rewards = {
       be = backend; uid = user.uid; mode = "cloud";
     } catch (e) { console.warn("rewards attach", e); mode = "local"; st = norm(rd(LKEY)); }
     notify();
+  },
+  async refresh() { // re-read the cloud wallet (after a trade, for example)
+    if (mode !== "cloud") return;
+    try { st = norm(await be.getRewards(uid)); notify(); } catch {}
   },
   detach() { be = null; uid = null; mode = "local"; st = norm(rd(LKEY)); notify(); },
 
@@ -62,6 +70,7 @@ export const Rewards = {
   open() {
     if (st.points < COST) return null;
     const card = draw();
+    if (!card) return null; // every card is already at MAX_COPIES
     st.points -= COST; st.cards[card.id] = (st.cards[card.id] || 0) + 1; st.opened++;
     push({ points: -COST, cards: { [card.id]: 1 }, opened: 1 }); notify();
     return { card, isNew: st.cards[card.id] === 1, count: st.cards[card.id] };

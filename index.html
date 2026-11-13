@@ -69,6 +69,9 @@ body[data-s="home"]{background:var(--h-bg);background-image:repeating-linear-gra
 .door.cats{grid-column:1/-1;min-height:110px;background:linear-gradient(135deg,#ffd1e3,#ffe9a8);color:#2b2140}
 .door.cats b{font-family:"Suez One";font-weight:400;font-size:1.9rem}
 .door.cats .label{background:rgba(255,255,255,.8)}
+.door.friends{grid-column:1/-1;min-height:100px;background:linear-gradient(135deg,#c9e8ff,#d9ccff);color:#23304a}
+.door.friends b{font-family:"Fredoka";font-weight:700;font-size:1.8rem}
+.door.friends .label{background:rgba(255,255,255,.8)}
 .door.hall{grid-column:1/-1;min-height:120px;background:linear-gradient(135deg,#14213d,#2b4378);color:#ffe38a}
 .door.hall b{font-family:"Suez One";font-weight:400;font-size:2rem}
 .door.hall .label{background:rgba(255,255,255,.12)}
@@ -105,6 +108,8 @@ body[data-s="math"]{background:var(--m-bg);background-image:radial-gradient(1200
 .m-item input{width:5em;font:inherit;font-size:1.15rem;text-align:center;padding:4px 6px;border:2px solid var(--m-line);border-radius:8px;background:#fff;color:var(--m-ink)}
 .m-item input:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent)}
 .mark{width:1.3em;text-align:center;font-weight:800}
+.m-item.fresh{animation:mfresh .6s ease-out}
+@keyframes mfresh{from{background:#fff7c2}}
 .m-item.ok,.q-ok{background:var(--good-bg);border-color:var(--good)}
 .m-item.ok .mark{color:var(--good)}
 .m-item.no,.q-no{background:var(--bad-bg);border-color:var(--bad)}
@@ -286,7 +291,8 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
       <a class="door hebrew" href="#hebrew"><div class="art" id="art-hebrew"></div><span class="label"><b>שפה</b><br><small>הבנת הנקרא בספרייה</small></span></a>
       <a class="door dictation" href="dictation.html"><span class="label"><b>ההכתבה</b><br><small>אנגלית · מקשיבים, כותבים ומקבלים כוכבים</small></span></a>
       <a class="door worksheet" href="worksheet.html"><span class="label"><b>תרגילי המבחן</b><br><small>חשבון · סט קבוע, חיבור עד סוגריים</small></span></a>
-      <a class="door cats" href="cats.html"><span class="label"><b>🐱 אלבום החתולים</b><br><small>צוברים נקודות, פותחים חבילות ואוספים קלפים</small></span></a>
+      <a class="door cats" href="cats.html"><span class="label"><b>🐱 אלבום החתולים</b><br><small>צוברים כוכבים, פותחים חבילות, מחליפים קלפים ואוספים</small></span></a>
+      <a class="door friends" href="friends.html"><span class="label"><b>👥 חברים</b><br><small>אתגרים והחלפת קלפים</small></span></a>
       <a class="door hall" href="hall.html"><span class="label"><b>🏆 היכל התהילה</b><br><small>השיאים של כולם · נכנסים עם Google (בהזמנה)</small></span></a>
     </nav>
     <p class="home-foot">טיפ: מילים חדשות באנגלית נשמרות במחסן המילים, אפשר להוסיף אותן בכל יום.</p>
@@ -303,10 +309,11 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
       <p>כותבים את התשובה ולוחצים "בדיקה". ✓ ירוק זה נכון, ✗ אדום זה לנסות שוב. כפתור "תרגילים חדשים" מביא סט חדש.</p>
     </div>
     <div class="m-score">
-      <strong id="m-total">0 / 32</strong>
+      <strong id="m-total">0 נפתרו</strong>
       <span class="msg" id="m-msg">עדיין לא בדקנו. בהצלחה!</span>
       <button class="mbtn" id="m-checkall">בדיקת הכול</button>
       <button class="mbtn ghost" id="m-new">תרגילים חדשים</button>
+      <button class="mbtn ghost" id="m-post" hidden>🏆</button>
     </div>
     <div class="m-secs" id="m-secs"></div>
   </div>
@@ -457,6 +464,7 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 </section>
 </div>
 
+<script src="js/mathgen.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 const rnd = (a,b) => a + Math.floor(Math.random()*(b-a+1));
@@ -572,106 +580,80 @@ const MSECS = [
   {key:"par", title:"סוגריים וסדר פעולות", tip:"קודם סוגריים, אחר כך כפל וחילוק, ובסוף חיבור וחיסור."},
   {key:"word", title:"בעיות מילוליות", tip:"קוראים פעמיים, מסמנים את המספרים ומחליטים איזו פעולה צריך."}
 ];
-const GEN = {
-  add(){ const a=rnd(1200,6999), b=rnd(1100,9800-a); return {ex:`${a} + ${b}`, ans:a+b}; },
-  sub(){
-    let a, b;
-    if(Math.random()<0.35){ a = rnd(3,9)*1000 + pick([0,0,rnd(1,9),rnd(10,99)]); }
-    else a = rnd(3000,9899);
-    b = rnd(1000, a-200);
-    return {ex:`${a} − ${b}`, ans:a-b};
-  },
-  mul(){
-    const t = rnd(0,3);
-    if(t===0){const a=rnd(12,99),b=rnd(3,9);return {ex:`${a} × ${b}`,ans:a*b};}
-    if(t===1){const a=rnd(102,399),b=rnd(2,6);return {ex:`${a} × ${b}`,ans:a*b};}
-    if(t===2){const a=rnd(2,9)*10,b=rnd(2,9)*10;return {ex:`${a} × ${b}`,ans:a*b};}
-    const a=rnd(12,99),b=pick([10,100]);return {ex:`${a} × ${b}`,ans:a*b};
-  },
-  div(){
-    const t = rnd(0,2);
-    if(t===0){const d=rnd(2,9),q=rnd(11,40);return {ex:`${q*d} ÷ ${d}`,ans:q};}
-    if(t===1){const d=rnd(3,9),q=rnd(21,99);return {ex:`${q*d} ÷ ${d}`,ans:q};}
-    const d=rnd(2,9)*10,q=rnd(2,9)*10;return {ex:`${q*d} ÷ ${d}`,ans:q};
-  },
-  par(){
-    const T = [
-      ()=>{const a=rnd(10,40),b=rnd(5,30),c=rnd(2,6);return [`(${a} + ${b}) × ${c}`,(a+b)*c];},
-      ()=>{const a=rnd(10,40),b=rnd(5,30),c=rnd(2,6);return [`${a} + ${b} × ${c}`,a+b*c];},
-      ()=>{const c=rnd(2,5),b=rnd(5,20),a=b*c+rnd(5,40);return [`${a} − ${b} × ${c}`,a-b*c];},
-      ()=>{const b=rnd(10,40),a=b+rnd(5,40),c=rnd(2,6);return [`(${a} − ${b}) × ${c}`,(a-b)*c];},
-      ()=>{const a=rnd(2,9),b=rnd(3,9),c=rnd(2,9),d=rnd(3,9);return [`${a} × ${b} + ${c} × ${d}`,a*b+c*d];},
-      ()=>{const a=rnd(3,9),b=rnd(2,9),d=rnd(2,8),c=d+rnd(2,6);return [`(${a} + ${b}) × (${c} − ${d})`,(a+b)*(c-d)];},
-      ()=>{const a=rnd(2,6),c=rnd(5,20),b=c+rnd(5,25),d=rnd(5,30);return [`${a} × (${b} − ${c}) + ${d}`,a*(b-c)+d];},
-      ()=>{const b=rnd(2,9),q=rnd(3,12),c=rnd(5,40);return [`${q*b} ÷ ${b} + ${c}`,q+c];},
-      ()=>{const b=rnd(2,6),c=rnd(2,6),q=rnd(3,10);return [`${q*b*c} ÷ (${b} × ${c})`,q];}
-    ];
-    const f = this._parPool && this._parPool.length ? this._parPool.pop() : (this._parPool = shuffle(T), this._parPool.pop());
-    const [ex,ans] = f(); return {ex, ans};
-  },
-  word(){
-    const T = [
-      ()=>{const a=rnd(4,9),b=rnd(12,35);return [`ביער הגשם יש ${a} עצים גבוהים, ועל כל עץ יושבים ${b} תוכים. כמה תוכים יש על כל העצים?`,a*b];},
-      ()=>{const a=rnd(30,60),b=rnd(5,a-10),c=rnd(5,20);return [`באוטובוס לטיול היו ${a} ילדים. בתחנה הראשונה ירדו ${b} ילדים ועלו ${c}. כמה ילדים יש עכשיו באוטובוס?`,a-b+c];},
-      ()=>{const n=rnd(2,5),p=rnd(4,9),s=n*p<50?50:100;return [`יערה קנתה ${n} מחברות, כל מחברת עולה ${p} ₪. היא שילמה בשטר של ${s} ₪. כמה עודף קיבלה?`,s-n*p];},
-      ()=>{const k=rnd(3,9),q=rnd(6,15);return [`${k*q} בננות חולקו שווה בשווה בין ${k} קופים. כמה בננות קיבל כל קוף?`,q];},
-      ()=>{const a=rnd(120,480),b=rnd(20,90);return [`ביום ראשון נסעה משפחה ${a} ק״מ, וביום שני נסעה ${b} ק״מ יותר מביום ראשון. כמה ק״מ נסעו בשני הימים יחד?`,a+a+b];},
-      ()=>{const r=rnd(6,12),c=rnd(10,25),x=rnd(5,30);return [`בחורשה יש ${r} שורות של עצים, ובכל שורה ${c} עצים. ${x} עצים נכרתו. כמה עצים נשארו?`,r*c-x];},
-      ()=>{const w=rnd(3,8);return [`צפרדע קופצת ${w*3} פעמים בכל דקה. כמה פעמים תקפוץ ב-${w} דקות?`,w*3*w];},
-      ()=>{const t=rnd(1500,4500),s=rnd(300,1200);return [`בספריית בית הספר היו ${t} ספרים. השנה קנו עוד ${s} ספרים. כמה ספרים יש עכשיו בספרייה?`,t+s];}
-    ];
-    const f = this._wPool && this._wPool.length ? this._wPool.pop() : (this._wPool = shuffle(T), this._wPool.pop());
-    const [ex,ans] = f(); return {ex, ans};
+const GEN = MathGen.make();
+/* Solved exercises are replaced by a fresh one, and never come back (we remember the last 400 shown). */
+const SEEN_KEY="honey-math-seen", TOTAL_KEY="honey-math-total";
+let SEEN=[]; try{SEEN=JSON.parse(localStorage.getItem(SEEN_KEY)||"[]");}catch(e){}
+let mTotal=0; try{mTotal=+(localStorage.getItem(TOTAL_KEY)||0)||0;}catch(e){}
+let mSession=0; const mBySec={};
+function remember(ex){ SEEN.push(ex); if(SEEN.length>400) SEEN=SEEN.slice(-400); try{localStorage.setItem(SEEN_KEY,JSON.stringify(SEEN));}catch(e){} }
+function freshItem(key){
+  const shown=new Set([...document.querySelectorAll(".m-item")].map(r=>r.dataset.ex)), seen=new Set(SEEN);
+  let it, guard=0; do{ it=GEN[key](); }while((seen.has(it.ex)||shown.has(it.ex)) && guard++<60);
+  remember(it.ex); return it;
+}
+function fillRow(row, key, i, it){
+  const id=`m-${key}-${i}`;
+  row.className="m-item"; row.dataset.ans=it.ans; row.dataset.ex=it.ex; row.dataset.key=key; row.dataset.i=i; delete row.dataset.done;
+  if(key==="word"){
+    row.innerHTML=`<span class="n">${i+1}</span><div class="m-word"><span class="q">${it.ex}</span><span class="a"><label for="${id}">תשובה:</label><input id="${id}" inputmode="numeric" autocomplete="off"><span class="mark" aria-live="polite"></span></span></div>`;
+  } else {
+    row.innerHTML=`<span class="n">${i+1}</span><span class="m-ex"><span>${it.ex} =</span><input id="${id}" inputmode="numeric" autocomplete="off" aria-label="תשובה לתרגיל ${it.ex}"><span class="mark" aria-live="polite"></span></span>`;
   }
-};
-const MTOTAL = 6*4 + 4 + 4; // add 4 + sub 4 + four sections of 6
-let MSETID="m"+Date.now();
+}
 function buildMath(){
-  MSETID="m"+Date.now()+Math.random().toString(36).slice(2,6);
-  GEN._parPool = null; GEN._wPool = null;
-  const root = $("#m-secs"); root.innerHTML = "";
+  const root=$("#m-secs"); root.innerHTML="";
   MSECS.forEach(sec=>{
-    const s = document.createElement("section");
-    s.className = "m-sec "+sec.key;
-    s.innerHTML = `<div class="head"><h2>${sec.title}</h2><span class="sc" id="msc-${sec.key}"></span></div><p class="tip">${sec.tip}</p><div class="m-grid"></div>`;
-    const grid = s.querySelector(".m-grid");
-    const seen = new Set();
-    for(let i=0;i<(sec.n||6);i++){
-      let it, guard=0; do { it = GEN[sec.key](); } while(seen.has(it.ex) && guard++<20); seen.add(it.ex);
-      const id = `m-${sec.key}-${i}`, row = document.createElement("div");
-      row.className = "m-item"; row.dataset.ans = it.ans;
-      if(sec.key==="word"){
-        row.innerHTML = `<span class="n">${i+1}</span><div class="m-word"><span class="q">${it.ex}</span><span class="a"><label for="${id}">תשובה:</label><input id="${id}" inputmode="numeric" autocomplete="off"><span class="mark" aria-live="polite"></span></span></div>`;
-      } else {
-        row.innerHTML = `<span class="n">${i+1}</span><span class="m-ex"><span>${it.ex} =</span><input id="${id}" inputmode="numeric" autocomplete="off" aria-label="תשובה לתרגיל ${it.ex}"><span class="mark" aria-live="polite"></span></span>`;
-      }
-      grid.appendChild(row);
-    }
-    const btn = document.createElement("button"); btn.className="secbtn"; btn.textContent="בדיקה";
-    btn.onclick = ()=>{checkMSec(sec.key); updMTotal();};
+    mBySec[sec.key]=mBySec[sec.key]||0;
+    const s=document.createElement("section");
+    s.className="m-sec "+sec.key;
+    s.innerHTML=`<div class="head"><h2>${sec.title}</h2><span class="sc" id="msc-${sec.key}"></span></div><p class="tip">${sec.tip}</p><div class="m-grid"></div>`;
+    const grid=s.querySelector(".m-grid");
+    for(let i=0;i<(sec.n||6);i++){ const row=document.createElement("div"); fillRow(row,sec.key,i,freshItem(sec.key)); grid.appendChild(row); }
+    const btn=document.createElement("button"); btn.className="secbtn"; btn.textContent="בדיקה";
+    btn.onclick=()=>solveRows(s.querySelectorAll(".m-item"));
     s.appendChild(btn); root.appendChild(s);
   });
-  updMTotal();
+  updMScore();
 }
-function checkMRow(row){
-  const v=row.querySelector("input").value.trim(), mark=row.querySelector(".mark");
-  row.classList.remove("ok","no");
-  if(v===""){mark.textContent="";return;}
-  const ok = Number(v)===Number(row.dataset.ans);
-  row.classList.add(ok?"ok":"no"); mark.textContent = ok?"✓":"✗";
+// Check the given rows: right ones get a ✓ and are replaced by a new exercise a moment later.
+function solveRows(rows){
+  let solved=0;
+  rows.forEach(row=>{
+    if(row.dataset.done) return;
+    const inp=row.querySelector("input"), v=inp.value.trim(), mark=row.querySelector(".mark");
+    row.classList.remove("ok","no");
+    if(v===""){ mark.textContent=""; return; }
+    if(Number(v)===Number(row.dataset.ans)){
+      row.classList.add("ok"); mark.textContent="✓"; row.dataset.done="1"; inp.disabled=true; solved++;
+      mBySec[row.dataset.key]++; mSession++; mTotal++;
+      setTimeout(()=>{ const k=row.dataset.key; fillRow(row,k,+row.dataset.i,freshItem(k)); row.classList.add("fresh"); },1300);
+    } else { row.classList.add("no"); mark.textContent="✗"; }
+  });
+  if(solved){
+    try{localStorage.setItem(TOTAL_KEY,String(mTotal));}catch(e){}
+    if(window.Honey) Honey.award("ms"+Date.now()+Math.random().toString(36).slice(2,6), solved);
+  }
+  updMScore();
 }
-function checkMSec(k){
-  const rows=document.querySelectorAll(`.m-sec.${k} .m-item`); rows.forEach(checkMRow);
-  $("#msc-"+k).textContent = `${document.querySelectorAll(`.m-sec.${k} .m-item.ok`).length} מתוך ${(MSECS.find(x=>x.key===k).n||6)} נכונים`;
+function updMScore(){
+  $("#m-total").textContent=`${mSession} נפתרו`;
+  MSECS.forEach(s=>{ const e=$("#msc-"+s.key); if(e) e.textContent=mBySec[s.key]?`${mBySec[s.key]} נפתרו`:""; });
+  $("#m-msg").textContent=mSession>=25?"מדהים! את על גל! 🌟":mSession>=12?"מצוין, ממשיכים!":mSession>=1?"יפה מאוד! כל תרגיל שנפתר מוחלף בחדש.":`כותבים תשובה ולוחצים "בדיקה". תרגיל שנפתר מוחלף בחדש. (נפתרו עד היום: ${mTotal})`;
+  syncPost();
 }
-function updMTotal(){
-  const c=document.querySelectorAll(".m-item.ok").length;
-  $("#m-total").textContent = `${c} / ${MTOTAL}`;
-  if(window.Honey) Honey.award(MSETID, c+(c===MTOTAL?5:0));
-  $("#m-msg").textContent = c===MTOTAL?"מושלם! כל הכבוד יערה! 🌟":c>=MTOTAL*0.78?"מצוין! נשארו רק כמה לתקן.":c>=MTOTAL*0.5?"יפה מאוד, ממשיכים!":c>0?"התחלה טובה, אפשר לתקן ולבדוק שוב.":"עדיין לא בדקנו. בהצלחה!";
+const waitHoney=()=>window.Honey?Promise.resolve():new Promise(r=>setTimeout(()=>r(waitHoney()),150));
+async function syncPost(){
+  await waitHoney(); await Honey.ready;
+  const b=$("#m-post"); if(!b) return;
+  b.hidden=!(Honey.enabled&&Honey.isMember);
+  const best=(Honey.best||{}).math||0;
+  b.textContent=mTotal>best?`🏆 פרסום השיא בהיכל התהילה (${mTotal})`:"🏆 השיא פורסם ✓";
+  b.disabled=!(mTotal>best);
 }
-$("#m-checkall").onclick = ()=>{MSECS.forEach(s=>checkMSec(s.key)); updMTotal(); if(window.Honey) Honey.offer("math",document.querySelectorAll(".m-item.ok").length,MTOTAL);};
-$("#m-new").onclick = ()=>{buildMath(); window.scrollTo({top:0,behavior:"smooth"});};
+$("#m-post").onclick=async()=>{ try{ await Honey.submit("math",mTotal,0); }catch(e){} syncPost(); };
+$("#m-checkall").onclick=()=>solveRows(document.querySelectorAll(".m-item"));
+$("#m-new").onclick=()=>{buildMath(); window.scrollTo({top:0,behavior:"smooth"});};
 document.addEventListener("input",e=>{
   if(e.target.matches(".m-item input")){
     e.target.value=e.target.value.replace(/[^\d]/g,"");
@@ -680,10 +662,12 @@ document.addEventListener("input",e=>{
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Enter" && e.target.matches(".m-item input")){
-    const all=[...document.querySelectorAll(".m-item input")], i=all.indexOf(e.target);
-    if(all[i+1]) all[i+1].focus();
+    const row=e.target.closest(".m-item"), all=[...document.querySelectorAll(".m-item input:not(:disabled)")], i=all.indexOf(e.target);
+    solveRows([row]);
+    const next=all.slice(i+1).find(x=>!x.disabled)||null; if(next) next.focus();
   }
 });
+document.addEventListener("honey-hall",syncPost);
 
 /* =========================================================
    ENGLISH

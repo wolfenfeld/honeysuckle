@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>אלבום החתולים</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Suez+One&display=swap">
+<link rel="stylesheet" href="css/cards.css">
 <style>
 :root{--ink:#2b2140;--muted:#6d6288;--bg:#fff3f7;--card:#fff;--line:#f0dbe6;--accent:#d63b70;--gold:#f2b705;color-scheme:light}
 *{box-sizing:border-box}
@@ -26,29 +27,13 @@ h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2rem,6vw,3rem);m
 .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #a02450}
 .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--line),0 0 0 2px var(--line) inset}
 .where{font-size:.85rem;color:var(--muted);margin:0}
+.done{background:#fff4c2;border:2px solid var(--gold);border-radius:18px;padding:14px 18px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-weight:700;font-size:1.15rem}
+.done .btn{text-decoration:none;display:inline-block}
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:.95rem;font-weight:500;color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .count{color:var(--muted);font-weight:500}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
-/* the card */
-.cat{--c:#8e9bb0;position:relative;aspect-ratio:87/97;border-radius:16px;overflow:hidden;background:#222;border:4px solid var(--c);box-shadow:0 6px 16px rgba(60,30,80,.22);display:block;isolation:isolate}
-.cat .art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.cat .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(3rem,10vw,4.6rem);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 45%,#fff),color-mix(in srgb,var(--c) 85%,#000))}
-.cat .plate{position:absolute;inset:auto 0 0 0;padding:18px 8px 8px;text-align:center;color:#fff;background:linear-gradient(transparent,rgba(20,10,35,.82) 55%)}
-.cat .nm{font-weight:700;font-size:1rem;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-.cat .ico{font-size:.95rem;letter-spacing:1px;line-height:1.3}
-.cat .ico s{text-decoration:none;opacity:.25;filter:grayscale(1)}
-.cat .rn{font-size:.72rem;font-weight:500;opacity:.9}
-.cat .dup{position:absolute;top:6px;left:6px;background:var(--ink);color:#fff;border-radius:999px;font-size:.8rem;font-weight:700;padding:1px 8px;z-index:2}
-.cat.locked .art,.cat.locked .ph{filter:brightness(0) contrast(.2);opacity:.35}
-.cat.locked .plate .nm{filter:blur(5px);opacity:.7}
-.cat.locked .lock{position:absolute;inset:0;display:grid;place-items:center;font-size:2.4rem;color:#fff;z-index:1;opacity:.85}
-.cat.r4{box-shadow:0 0 0 2px #fff inset,0 0 18px color-mix(in srgb,var(--c) 70%,transparent)}
-.cat.r5{border-color:transparent;background:linear-gradient(#222,#222) padding-box,conic-gradient(from 0deg,#ffd84d,#ff7ab6,#7ab8ff,#8dffb0,#ffd84d) border-box;box-shadow:0 0 22px rgba(255,200,60,.65)}
-.cat.r5::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);background-size:250% 100%;animation:shine 3.2s linear infinite;z-index:1;pointer-events:none}
-@keyframes shine{from{background-position:150% 0}to{background-position:-150% 0}}
-.cat.locked.r5::after{display:none}
 /* pack opening */
 dialog{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;overflow:visible}
 dialog::backdrop{background:rgba(25,12,45,.82)}
@@ -75,14 +60,15 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
   <a class="back" href="index.html#home">→ חזרה לדף הבית</a>
   <header>
     <h1>🐱 אלבום החתולים</h1>
-    <p class="sub">צוברים נקודות בסוף כל סיבוב, ופותחים חבילה כדי לקבל חתול אקראי. ככל שיש יותר חתולים על הקלף, הוא נדיר יותר.</p>
+    <p class="sub">צוברים כוכבים בסוף כל סיבוב, ופותחים חבילה כדי לקבל חתול אקראי. ככל שיש יותר חתולים על הקלף, הוא נדיר יותר.</p>
   </header>
-  <section class="wallet" aria-label="הנקודות שלי">
-    <div class="pts" id="pts">0 <small>נקודות</small></div>
+  <section class="wallet" aria-label="הכוכבים שלי">
+    <div class="pts" id="pts">0 <small>כוכבים</small></div>
     <div class="meter"><div class="bar"><i id="bar" style="width:0"></i></div><span class="hint" id="hint"></span></div>
     <button class="btn" id="open" type="button">🎁 פתיחת חבילה</button>
     <p class="where" id="where"></p>
   </section>
+  <div class="done" id="done" hidden>🎉 האלבום שלם! <a class="btn" href="poster.html">🖼️ לפוסטר שלי</a></div>
   <div class="filters" id="filters" role="group" aria-label="סינון לפי נדירות"></div>
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
@@ -104,43 +90,22 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 
 <script type="module">
 import { Honey } from "./js/honey.js";
-import { CARDS, RARITY, COST, catIcons } from "./js/cards.js";
+import { CARDS, RARITY, COST, MAX_COPIES, catIcons } from "./js/cards.js";
+import { cardHTML, esc } from "./js/cardview.js";
 const { Rewards } = Honey;
 const $ = (s) => document.querySelector(s);
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const FALLBACK = { 1: "🐱", 2: "😺", 3: "😸", 4: "😻", 5: "🦁" };
-const EXTS = ["png", "webp", "jpg"];
-
-// If a card image is missing, try the next extension, then show a drawn placeholder.
-document.addEventListener("error", (e) => {
-  const img = e.target; if (!img.classList?.contains("art")) return;
-  const i = +img.dataset.e + 1;
-  if (i < EXTS.length) { img.dataset.e = i; img.src = `cards/${img.dataset.id}.${EXTS[i]}`; }
-  else { const ph = document.createElement("div"); ph.className = "ph"; ph.textContent = FALLBACK[img.dataset.r]; img.replaceWith(ph); }
-}, true);
-
-function cardHTML(c, { owned = true, count = 1, showDup = true } = {}) {
-  const r = RARITY[c.r];
-  const ico = "🐱".repeat(c.r) + "<s>" + "🐱".repeat(5 - c.r) + "</s>";
-  return `<div class="cat r${c.r}${owned ? "" : " locked"}" style="--c:${r.color}" aria-label="${owned ? esc(c.he) : "קלף נעול"}, ${r.name}, ${c.r} מתוך 5">
-    <img class="art" data-id="${c.id}" data-r="${c.r}" data-e="0" src="cards/${c.id}.png" alt="" loading="lazy">
-    ${owned && showDup && count > 1 ? `<span class="dup">×${count}</span>` : ""}
-    ${owned ? "" : `<span class="lock">🔒</span>`}
-    <div class="plate"><div class="nm">${owned ? esc(c.he) : "???"}</div><div class="ico" aria-hidden="true">${ico}</div><div class="rn">${r.name}</div></div>
-  </div>`;
-}
-
 let filter = 0;
 function render() {
   const st = Rewards.state, pts = st.points;
-  $("#pts").innerHTML = `${pts} <small>נקודות</small>`;
+  $("#pts").innerHTML = `${pts} <small>כוכבים</small>`;
   $("#bar").style.width = Math.min(100, (pts / COST) * 100) + "%";
   const packs = Math.floor(pts / COST);
-  $("#hint").textContent = packs ? `אפשר לפתוח ${packs} ${packs === 1 ? "חבילה" : "חבילות"}!` : `עוד ${COST - pts} נקודות לחבילה הבאה (חבילה עולה ${COST}).`;
-  $("#open").disabled = pts < COST;
+  $("#hint").textContent = packs ? `אפשר לפתוח ${packs} ${packs === 1 ? "חבילה" : "חבילות"}!` : `עוד ${COST - pts} כוכבים לחבילה הבאה (חבילה עולה ${COST}).`;
+  $("#open").disabled = pts < COST || CARDS.every((c) => (st.cards[c.id] || 0) >= MAX_COPIES);
   $("#where").textContent = Rewards.mode === "cloud" ? "☁️ נשמר בחשבון שלך, ונשאר בכל מכשיר." : "נשמר בדפדפן הזה. כניסה עם Google (בהזמנה) שומרת את האלבום בכל מכשיר.";
   const ownedN = CARDS.filter((c) => st.cards[c.id]).length;
-  $("#count").textContent = `נאספו ${ownedN} מתוך ${CARDS.length} קלפים`;
+  $("#count").textContent = `נאספו ${ownedN} מתוך ${CARDS.length} קלפים · אפשר להחזיק עד ${MAX_COPIES} עותקים מכל קלף, והכפולים טובים להחלפה עם חברים`;
+  $("#done").hidden = ownedN < CARDS.length;
   $("#filters").innerHTML = [`<button class="chip" data-r="0" aria-pressed="${filter === 0}">הכול</button>`]
     .concat([1, 2, 3, 4, 5].map((r) => {
       const all = CARDS.filter((c) => c.r === r), have = all.filter((c) => st.cards[c.id]).length;
@@ -169,7 +134,7 @@ function openPack() {
     setTimeout(() => {
       const r = RARITY[res.card.r], c = res.card;
       const wow = c.r === 5 ? "אגדי! 🌟" : c.r === 4 ? "אפי! ✨" : c.r === 3 ? "נדיר! 🎉" : "";
-      $("#reveal").innerHTML = `<h2>${esc(c.he)}</h2><div>${catIcons(c.r)} · ${r.name}</div>${wow ? `<b>${wow}</b>` : ""}${res.isNew ? `<span class="new">חדש באלבום!</span>` : `<span>כבר יש לך (×${res.count})</span>`}`;
+      $("#reveal").innerHTML = `<h2>${esc(c.he)}</h2><div>${catIcons(c.r)} · ${r.name}</div>${wow ? `<b>${wow}</b>` : ""}${res.isNew ? `<span class="new">חדש באלבום!</span>` : `<span>כבר יש לך (×${res.count}${res.count >= MAX_COPIES ? ", המקסימום" : ""}). אפשר להחליף עם חבר</span>`}${CARDS.every((x) => Rewards.state.cards[x.id]) ? `<b>🎉 האלבום שלם!</b><a class="btn" href="poster.html">🖼️ לפוסטר</a>` : ""}`;
       $("#drow").hidden = false; $("#again").disabled = Rewards.state.points < COST; $("#again").focus();
       busy = false;
     }, fast ? 0 : 900);

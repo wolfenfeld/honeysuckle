@@ -7,7 +7,7 @@ const {
 } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
 const {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
-  doc, getDoc, getDocs, setDoc, deleteDoc, collection, writeBatch, serverTimestamp, increment,
+  doc, getDoc, getDocs, setDoc, deleteDoc, collection, writeBatch, serverTimestamp, increment, query, where, updateDoc,
 } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
 
 export function createBackend(config, adminEmails) {
@@ -27,6 +27,14 @@ export function createBackend(config, adminEmails) {
     uid: u.uid, email: lower(u.email), name: u.displayName || u.email, photo: u.photoURL || "",
     verified: u.emailVerified,
   });
+  // Wallet change as increments, so two devices (or a retry) never overwrite each other.
+  const patch = ({ points = 0, cards = {}, opened = 0 }) => {
+    const d = { points: increment(points), opened: increment(opened), cards: {}, updatedAt: serverTimestamp() };
+    Object.entries(cards).forEach(([id, n]) => { d.cards[id] = increment(n); });
+    return d;
+  };
+  const rewardsRef = (uid) => doc(db, "rewards", uid);
+  const withId = (d) => ({ id: d.id, ...d.data() });
   const millis = (t) => (t && t.toMillis ? t.toMillis() : 0);
 
   return {
@@ -92,15 +100,75 @@ export function createBackend(config, adminEmails) {
     },
 
     // ----- rewards (points + cat cards) -----
+    async getRewardsOf(uid) { const s = await getDoc(rewardsRef(uid)); return s.exists() ? s.data() : { points: 0, cards: {}, opened: 0 }; },
     async getRewards(uid) {
       const s = await getDoc(doc(db, "rewards", uid));
       return s.exists() ? s.data() : null;
     },
     // Uses increments so two devices (or a retry) never overwrite each other.
-    addRewards(uid, { points = 0, cards = {}, opened = 0 }) {
-      const data = { points: increment(points), opened: increment(opened), cards: {}, updatedAt: serverTimestamp() };
-      Object.entries(cards).forEach(([id, n]) => { data.cards[id] = increment(n); });
-      return setDoc(doc(db, "rewards", uid), data, { merge: true });
+    addRewards(uid, delta) { return setDoc(rewardsRef(uid), patch(delta), { merge: true }); },
+
+    // ----- friends: challenges -----
+    async listProfiles() {
+      const snap = await getDocs(collection(db, "profiles"));
+      return snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+    },
+    async createChallenge(c) {
+      const ref = doc(collection(db, "challenges"));
+      await setDoc(ref, { from: c.from, to: c.to, game: c.game, seed: c.seed, size: c.size, status: "pending", createdAt: serverTimestamp() });
+      return ref.id;
+    },
+    async getChallenge(id) {
+      const s = await getDoc(doc(db, "challenges", id));
+      return s.exists() ? withId(s) : null;
+    },
+    async listChallenges(uid) {
+      const [r, s] = await Promise.all([
+        getDocs(query(collection(db, "challenges"), where("to", "==", uid))),
+        getDocs(query(collection(db, "challenges"), where("from", "==", uid))),
+      ]);
+      const byTime = (a, b) => millis(b.createdAt) - millis(a.createdAt);
+      return { received: r.docs.map(withId).sort(byTime), sent: s.docs.map(withId).sort(byTime) };
+    },
+    completeChallenge(id, correct) {
+      return updateDoc(doc(db, "challenges", id), { status: "done", correct, doneAt: serverTimestamp() });
+    },
+
+    // ----- friends: card trades (the offered card is held in escrow in the trade) -----
+    async createTrade(uid, t) {
+      const b = writeBatch(db), ref = doc(collection(db, "trades"));
+      b.set(ref, { from: uid, to: t.to, give: t.give, want: t.want, status: "open", claimed: false, createdAt: serverTimestamp() });
+      b.set(rewardsRef(uid), patch({ cards: { [t.give]: -1 } }), { merge: true });
+      await b.commit();
+      return ref.id;
+    },
+    async listTrades(uid) {
+      const [i, o] = await Promise.all([
+        getDocs(query(collection(db, "trades"), where("to", "==", uid))),
+        getDocs(query(collection(db, "trades"), where("from", "==", uid))),
+      ]);
+      const byTime = (a, b) => millis(b.createdAt) - millis(a.createdAt);
+      return { incoming: i.docs.map(withId).sort(byTime), outgoing: o.docs.map(withId).sort(byTime) };
+    },
+    // Recipient answers: accepting swaps cards on their side; the sender collects theirs on next visit.
+    async respondTrade(uid, tr, accept) {
+      const b = writeBatch(db), ref = doc(db, "trades", tr.id);
+      if (accept) b.set(rewardsRef(uid), patch({ cards: { [tr.want]: -1, [tr.give]: 1 } }), { merge: true });
+      b.update(ref, { status: accept ? "accepted" : "declined", doneAt: serverTimestamp() });
+      await b.commit();
+    },
+    async cancelTrade(uid, tr) {
+      const b = writeBatch(db);
+      b.update(doc(db, "trades", tr.id), { status: "cancelled", claimed: true, doneAt: serverTimestamp() });
+      b.set(rewardsRef(uid), patch({ cards: { [tr.give]: 1 } }), { merge: true });
+      await b.commit();
+    },
+    // Sender collects the outcome: the wanted card (accepted) or the escrowed card back (declined).
+    async claimTrade(uid, tr, delta) {
+      const b = writeBatch(db);
+      b.set(rewardsRef(uid), patch(delta), { merge: true });
+      b.update(doc(db, "trades", tr.id), { claimed: true });
+      await b.commit();
     },
 
     // ----- admin -----

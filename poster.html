@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>הפוסטר של אלבום החתולים</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Suez+One&display=swap">
+<style>
+:root{--ink:#2b2140;--muted:#6d6288;--line:#f0dbe6;--accent:#d63b70;--gold:#f2b705;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--ink);background:#fff3f7;min-height:100vh}
+.page{max-width:760px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
+a.back{align-self:flex-start;color:var(--ink);background:#fff;border:2px solid var(--line);padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem}
+h1{font-family:"Suez One",serif;font-weight:400;margin:0;color:var(--accent);font-size:2.2rem}
+.muted{color:var(--muted);margin:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:12px;min-width:200px;flex:1}
+.btn{border:0;border-radius:14px;padding:12px 20px;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;box-shadow:0 4px 0 #a02450}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--line),0 0 0 2px var(--line) inset}
+canvas{width:100%;height:auto;border-radius:12px;box-shadow:0 10px 30px rgba(60,30,80,.3);background:#fff}
+.gate{background:#fff;border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+#printimg{display:none}
+@media print{
+  body{background:#fff}.page>*:not(#printwrap){display:none!important}
+  #printwrap{display:block!important}.page{padding:0;max-width:none}
+  #printimg{display:block;width:100%;height:auto}
+  canvas{display:none}
+  @page{margin:8mm}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back" href="cats.html">→ חזרה לאלבום</a>
+  <h1>🖼️ הפוסטר של האלבום</h1>
+  <div id="main"><p class="muted">טוען…</p></div>
+</div>
+<script type="module">
+import { Honey } from "./js/honey.js";
+import { CARDS, RARITY, catIcons } from "./js/cards.js";
+const $ = (s) => document.querySelector(s);
+const W = 2100, H = 2970;
+const imgs = {};
+const load = (c) => new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = `cards/${c.id}.png`; imgs[c.id] = im; });
+
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+
+async function draw(cv, name) {
+  await Promise.all([document.fonts.load('80px "Suez One"'), document.fonts.load('700 40px "Rubik"')]);
+  const ctx = cv.getContext("2d"); cv.width = W; cv.height = H; ctx.direction = "rtl"; ctx.textAlign = "center";
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#ffd9e8"); g.addColorStop(.5, "#fff3f7"); g.addColorStop(1, "#ffe9a8");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(214,59,112,.10)"; for (let y = 40; y < H; y += 110) for (let x = (y / 110) % 2 ? 40 : 95; x < W; x += 110) { ctx.beginPath(); ctx.arc(x, y, 10, 0, 7); ctx.fill(); }
+  // header
+  ctx.fillStyle = "#d63b70"; ctx.font = '170px "Suez One"'; ctx.fillText("אלבום החתולים", W / 2, 215);
+  ctx.fillStyle = "#2b2140"; ctx.font = '700 66px "Rubik"';
+  ctx.fillText(name ? `של ${name}` : "האוסף השלם", W / 2, 305);
+  // grid 5 x 6
+  const cols = 5, rows = 6, mx = 90, gap = 26, top = 360;
+  const cw = (W - mx * 2 - gap * (cols - 1)) / cols, ch = cw * 97 / 87;
+  CARDS.forEach((c, k) => {
+    const x = W - mx - cw - (k % cols) * (cw + gap), y = top + Math.floor(k / cols) * (ch + gap);
+    const r = RARITY[c.r];
+    ctx.save(); ctx.shadowColor = "rgba(60,30,80,.3)"; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6;
+    ctx.fillStyle = r.color; rr(ctx, x - 7, y - 7, cw + 14, ch + 14, 26); ctx.fill(); ctx.restore();
+    ctx.save(); rr(ctx, x, y, cw, ch, 20); ctx.clip();
+    const im = imgs[c.id];
+    if (im) { const s = Math.max(cw / im.width, ch / im.height), iw = im.width * s, ih = im.height * s; ctx.drawImage(im, x + (cw - iw) / 2, y + (ch - ih) / 2, iw, ih); }
+    else { ctx.fillStyle = r.color; ctx.fillRect(x, y, cw, ch); ctx.font = "110px sans-serif"; ctx.fillText("🐱", x + cw / 2, y + ch / 2 + 40); }
+    const pg = ctx.createLinearGradient(0, y + ch - 110, 0, y + ch); pg.addColorStop(0, "rgba(20,10,35,0)"); pg.addColorStop(1, "rgba(20,10,35,.85)");
+    ctx.fillStyle = pg; ctx.fillRect(x, y + ch - 110, cw, 110);
+    ctx.fillStyle = "#fff"; ctx.font = '700 34px "Rubik"'; ctx.fillText(c.he, x + cw / 2, y + ch - 44);
+    ctx.font = "26px sans-serif"; ctx.fillText("🐱".repeat(c.r), x + cw / 2, y + ch - 12);
+    ctx.restore();
+  });
+  // footer
+  ctx.fillStyle = "#2b2140"; ctx.font = '700 52px "Rubik"';
+  ctx.fillText(`${CARDS.length} מתוך ${CARDS.length} קלפים · האלבום שלם! 🏆`, W / 2, H - 92);
+  ctx.fillStyle = "#6d6288"; ctx.font = '500 36px "Rubik"';
+  ctx.fillText(new Date().toLocaleDateString("he-IL"), W / 2, H - 38);
+}
+
+async function start() {
+  await Honey.ready;
+  const have = CARDS.filter((c) => Honey.Rewards.state.cards[c.id]).length;
+  if (have < CARDS.length) return ($("#main").innerHTML = `<div class="gate"><p>הפוסטר נפתח כשהאלבום שלם. עד עכשיו נאספו ${have} מתוך ${CARDS.length} קלפים.</p><a class="btn" href="cats.html">לאלבום</a></div>`);
+  $("#main").innerHTML = `<div class="row"><input id="nm" placeholder="שם לפוסטר" maxlength="20" aria-label="שם לפוסטר"><button class="btn" id="dl">⬇️ הורדה כתמונה</button><button class="btn ghost" id="pr">🖨️ הדפסה</button></div>
+    <p class="muted">מורידים תמונה (PNG) בגודל A4, או מדפיסים ישר מהדפדפן.</p>
+    <div id="printwrap"><canvas id="cv" aria-label="הפוסטר של האלבום"></canvas><img id="printimg" alt=""></div>`;
+  let name = ""; try { name = localStorage.getItem("poster-name") || ""; } catch {}
+  name = name || Honey.profile?.name || ""; $("#nm").value = name;
+  await Promise.all(CARDS.map(load));
+  const cv = $("#cv"); let t;
+  const redraw = async () => { await draw(cv, $("#nm").value.trim()); };
+  await redraw();
+  $("#nm").oninput = () => { try { localStorage.setItem("poster-name", $("#nm").value.trim()); } catch {} clearTimeout(t); t = setTimeout(redraw, 250); };
+  $("#dl").onclick = () => cv.toBlob((b) => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "cat-album-poster.png"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, "image/png");
+  $("#pr").onclick = () => { $("#printimg").src = cv.toDataURL("image/png"); setTimeout(() => print(), 150); };
+}
+start();
+</script>
+</body>
+</html>

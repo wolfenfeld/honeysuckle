@@ -183,34 +183,9 @@ canvas#confetti{position:fixed; inset:0; pointer-events:none; z-index:50}
   <p class="note" id="voiceNote"></p>
 </div>
 
+<script src="js/words.js"></script>
 <script>
-const GROUPS = [
-  {id:"a", name:"צליל a קצר", words:[
-    ["cat","חתול","🐱"],["hat","כובע","🎩"],["mat","שטיחון","🧘‍♀️"],["fat","שמן","🐷"],["bad","רע","👎"],["mad","כועס","😠"],["sad","עצוב","😢"],["dad","אבא","👨"],
-    ["man","איש","🧔"],["can","יכול / פחית","🥫"],["van","טנדר","🚐"],["Ann","אן (שם של ילדה)","👧"],["hand","יד","✋"],["stand","לעמוד","🧍"],["black","שחור","⚫"],["lamp","מנורה","💡"],["bag","תיק","🎒"]]},
-  {id:"u", name:"צליל u קצר", words:[
-    ["up","למעלה","⬆️"],["cup","כוס","☕"],["fun","כיף","🎉"],["run","לרוץ","🏃‍♀️"],["bus","אוטובוס","🚌"],["us","אותנו","👫"],
-    ["hug","חיבוק","🤗"],["rug","שטיח","🧶"],["duck","ברווז","🦆"],["luck","מזל","🍀"],["under","מתחת","👇"],["umbrella","מטרייה","☂️"]]},
-  {id:"snd", name:"צירופי אותיות", words:[
-    ["grade","כיתה / ציון","📝"],["name","שם","🏷️"],["game","משחק","🎲"],["town","עיירה","🏘️"],["down","למטה","⬇️"],["brown","חום","🟤"],["how","איך","❓"],
-    ["mouse","עכבר","🐭"],["house","בית","🏠"],["louse","כינה","🪲"],["pool","בריכה","🏊‍♀️"],["cool","מגניב","😎"],["school","בית ספר","🏫"],
-    ["no","לא","🙅‍♀️"],["go","ללכת","🚦"],["yo-yo","יו־יו","🪀"],["sister","אחות","👧"],["brother","אח","👦"],["hamburger","המבורגר","🍔"],["three","שלוש","3️⃣"]]},
-  {id:"col", name:"צבעים", words:[
-    ["red","אדום","🔴"],["green","ירוק","🟢"],["blue","כחול","🔵"],["yellow","צהוב","🟡"],["brown","חום","🟤"],["black","שחור","⚫"],["gray","אפור","🩶"],["orange","כתום","🟠"],["white","לבן","⚪"]]},
-  {id:"days", name:"ימות השבוע", words:[
-    ["Sunday","יום ראשון","א׳"],["Monday","יום שני","ב׳"],["Tuesday","יום שלישי","ג׳"],["Wednesday","יום רביעי","ד׳"],["Thursday","יום חמישי","ה׳"],["Friday","יום שישי","ו׳"],["Saturday","שבת","ש׳"]]},
-  {id:"ppl", name:"אנשים וחיות", words:[
-    ["boy","ילד","👦"],["girl","ילדה","👧"],["grandma","סבתא","👵"],["grandpa","סבא","👴"],["teacher","מורה","👩‍🏫"],["friend","חבר / חברה","🧑‍🤝‍🧑"],
-    ["dog","כלב","🐶"],["cat","חתול","🐱"],["fish","דג","🐟"],["rabbit","ארנב","🐰"]]},
-  {id:"things", name:"אוכל וחפצים", words:[
-    ["carrot","גזר","🥕"],["egg","ביצה","🥚"],["milk","חלב","🥛"],["salad","סלט","🥗"],["banana","בננה","🍌"],
-    ["pen","עט","🖊️"],["pens","עטים","🖊️🖊️"],["desk","שולחן כתיבה","🗄️"],["test","מבחן","📝"],["box","קופסה","📦"]]},
-  {id:"verbs", name:"פעלים ותארים", words:[
-    ["jump","לקפוץ","🦘"],["sing","לשיר","🎤"],["swim","לשחות","🏊‍♀️"],["cut","לחתוך","✂️"],["sit","לשבת","🪑"],["rest","לנוח","😴"],["help","לעזור","🤝"],
-    ["fast","מהיר","⚡"],["hot","חם","🔥"],["long","ארוך","📏"],["tall","גבוה","🦒"],["soft","רך","🧸"]]},
-  {id:"num", name:"מספרים ומילים קטנות", words:[
-    ["ten","עשר","🔟"],["seven","שבע","7️⃣"],["three","שלוש","3️⃣"],["are","הם / אתם","🟰"],["years","שנים","🎂"],["old","זקן / בן (גיל)","🧓"],["new","חדש","✨"]]}
-];
+const GROUPS = window.DICT_GROUPS;
 const INFO = {};
 GROUPS.forEach(g => g.words.forEach(([en,he,emo]) => { if(!INFO[en]) INFO[en] = {en,he,emo}; }));
 
@@ -252,8 +227,13 @@ function currentWords(){
   });
   return [...set].filter(w => INFO[w]);
 }
-function addStars(n){ S.stars += n; save(); $("#starCount").textContent = S.stars; }
-$("#starCount").textContent = S.stars;
+// S.stars = lifetime stars earned in dictation (hall of fame). The counter in the header shows the shared wallet.
+function addStars(n){
+  S.stars += n; save();
+  if(window.Honey) Honey.award("dw"+Date.now()+Math.random().toString(36).slice(2,6), n);
+}
+const showWallet=()=>{ $("#starCount").textContent = window.Honey ? Honey.Rewards.state.points : S.stars; };
+showWallet();
 
 /* ---------- group stickers ---------- */
 function renderGroups(){
@@ -444,7 +424,7 @@ function finishDict(){
   if(miss.length) $("#again").onclick = () => { session = {q:shuffle(miss.map(r=>r.w)), i:0, results:[], tries:0, hint:0, fixing:false}; renderDictWord(true); };
   $("#newDict").onclick = () => { session = null; renderDictSetup(); };
   if(pct >= .8) burst(120);
-  if(window.Honey){ Honey.award("d"+Date.now(), good+(good===done.length&&done.length>=10?5:0)); Honey.offer("dictation", S.stars); }
+  if(window.Honey){ if(good===done.length&&done.length>=10) Honey.award("d"+Date.now(), 5); Honey.offer("dictation", S.stars); }
   session = null;
 }
 
@@ -499,7 +479,7 @@ function nextScr(){
     <button class="btn" id="scrAgain" type="button">עוד סיבוב 🔁</button></div>`;
   $("#scrAgain").onclick = renderScrSetup;
   if(scr.good === scr.q.length) burst(120);
-  if(window.Honey){ Honey.award("s"+Date.now(), scr.good+(scr.good===scr.q.length&&scr.q.length>=10?5:0)); Honey.offer("dictation", S.stars); }
+  if(window.Honey){ if(scr.good===scr.q.length&&scr.q.length>=10) Honey.award("s"+Date.now(), 5); Honey.offer("dictation", S.stars); }
 }
 
 /* ---------- confetti ---------- */
@@ -524,5 +504,9 @@ renderGroups();
 render();
 </script>
 
-<script type="module" src="js/honey.js"></script>
+<script type="module">
+import { Honey } from "./js/honey.js";
+const upd = () => { document.getElementById("starCount").textContent = Honey.Rewards.state.points; };
+Honey.Rewards.onChange(upd); upd();
+</script>
 </body></html>

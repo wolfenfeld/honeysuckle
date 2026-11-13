@@ -2,9 +2,10 @@
 // Loaded with <script type="module" src="js/honey.js">. Exposes window.Honey.
 import { firebaseConfig, adminEmails } from "./firebase-config.js";
 import { Rewards, COST } from "./rewards.js";
+import { claimTrades, pendingCount } from "./social.js";
 
 export const GAMES = {
-  math:      { title: "חשבון ביער הגשם", icon: "🌴", unit: (b, t) => `${b} מתוך ${t || 32}`, blurb: "הציון הכי גבוה מתוך 32 תרגילים" },
+  math:      { title: "חשבון ביער הגשם", icon: "🌴", unit: (b) => `${b} תרגילים`, blurb: "הכי הרבה תרגילים שנפתרו בסך הכול" },
   worksheet: { title: "תרגילי המבחן",   icon: "📐", unit: (b, t) => `${b} מתוך ${t || 30}`, blurb: "הציון הכי גבוה מתוך 30 תרגילים" },
   dictation: { title: "הכתבה",          icon: "✏️", unit: (b) => `${b} ⭐`,                   blurb: "הכי הרבה כוכבים שנאספו" },
   quiz:      { title: "בוחן מילים",     icon: "🔤", unit: (b, t) => `${b} מתוך ${t || b}`,    blurb: "הכי הרבה תשובות נכונות בסיבוב (10 מילים ומעלה)" },
@@ -28,7 +29,7 @@ try {
   else if (configured) be = (await import("./fb.js")).createBackend(firebaseConfig, adminEmails);
 } catch (e) { console.warn("Honey: backend unavailable", e); be = null; }
 
-const S = { user: null, role: null, profile: null, best: {}, error: "", loaded: false };
+const S = { user: null, role: null, profile: null, best: {}, error: "", loaded: false, pending: 0 };
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const homeUrl = (p = "") => new URL(p, new URL("./", import.meta.url).href.replace(/js\/$/, "")).href;
 let resolveReady; const ready = new Promise((r) => (resolveReady = r));
@@ -36,6 +37,7 @@ let resolveReady; const ready = new Promise((r) => (resolveReady = r));
 export const Honey = {
   enabled: !!be, demo, ready, GAMES, AVATARS,
   get user() { return S.user; }, get profile() { return S.profile; }, get role() { return S.role; },
+  get best() { return S.best; },
   get isMember() { return !!S.role; }, get isAdmin() { return S.role === "admin"; },
   backend: be, homeUrl, Rewards,
   signIn: () => be.signIn().catch((e) => toast("הכניסה לא הצליחה: " + (e.message || e))),
@@ -160,16 +162,16 @@ function pointsToast(d) {
   document.querySelector(".hc-pts")?.remove(); clearTimeout(pointsToast.t);
   const pts = Rewards.state.points, ready = pts >= COST;
   const t = el("div", { className: "hc-pts", role: "status" }, `
-    <b>+${d} 🐾 נקודות!</b>
+    <b>+${d} ⭐ כוכבים!</b>
     <div class="bar"><i style="width:${Math.min(100, (pts / COST) * 100)}%"></i></div>
-    <span>${ready ? "יש מספיק לחבילת חתולים! 🎁" : `${pts} מתוך ${COST}. עוד ${COST - pts} לחבילה.`}</span>`);
+    <span>${ready ? "יש מספיק כוכבים לחבילת חתולים! 🎁" : `${pts} מתוך ${COST} כוכבים. עוד ${COST - pts} לחבילה.`}</span>`);
   if (ready) { const a = el("a", { className: "hc-btn gold", href: homeUrl("cats.html#open"), style: "align-self:flex-start" }, "🎁 פתיחת חבילה"); t.append(a); }
   root.append(t); pointsToast.t = setTimeout(() => t.remove(), ready ? 9000 : 4500);
 }
 function chip() {
   const pts = Rewards.state.points, ready = pts >= COST;
   return el("a", { className: "hc-btn hc-chip" + (ready ? " ready" : ""), href: homeUrl("cats.html"), title: "אלבום החתולים" },
-    `🐱 <span class=n>${pts}${ready ? " 🎁" : ""}</span>`);
+    `⭐ <span class=n>${pts}${ready ? " 🎁" : ""}</span>`);
 }
 Rewards.onChange(() => renderBar());
 
@@ -180,6 +182,7 @@ function renderBar() {
   if (!S.loaded) return;
   if (demo) bar.append(el("span", { className: "hc-btn", title: "מצב הדגמה: הכול נשמר רק בדפדפן הזה" }, "🧪 הדגמה"));
   bar.append(el("a", { className: "hc-btn gold", href: homeUrl("hall.html") }, "🏆 <span class=n>היכל התהילה</span>"));
+  if (S.role) bar.append(el("a", { className: "hc-btn", href: homeUrl("friends.html"), title: "חברים: אתגרים והחלפות" }, `👥${S.pending ? ` <span class=n style="background:#d63b70;color:#fff;border-radius:999px;padding:0 7px">${S.pending}</span>` : ""}`));
   if (!S.user) {
     const b = el("button", { className: "hc-btn pri", type: "button" }, "🔑 כניסה"); b.onclick = Honey.signIn; bar.append(b); return;
   }
@@ -235,7 +238,7 @@ function profileDialog(first) {
 if (be) {
   be.onAuth(async (user) => {
     if (!user) Rewards.detach();
-    S.user = user; S.role = null; S.profile = null; S.best = {}; S.error = "";
+    S.user = user; S.role = null; S.profile = null; S.best = {}; S.error = ""; S.pending = 0;
     if (user) {
       try {
         const code = ss.get("honey-invite");
@@ -250,6 +253,11 @@ if (be) {
         if (S.role) {
           [S.profile, S.best] = await Promise.all([be.getProfile(user.uid), be.getScores(user.uid)]);
           await Rewards.attach(be, user);
+          try {
+            const people = await be.listProfiles(); const names = Object.fromEntries(people.map((p) => [p.uid, p.name]));
+            (await claimTrades(be, user.uid, (id) => names[id])).forEach((m, i) => setTimeout(() => toast(m), i * 3600));
+            S.pending = await pendingCount(be, user.uid);
+          } catch (e) { console.warn("social", e); }
           S.best = S.best || {};
         }
       } catch (e) { console.warn("Honey auth", e); S.error = "הייתה בעיה בטעינה. נסי לרענן."; }

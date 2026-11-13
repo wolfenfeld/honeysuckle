@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Honeysuckle: invite-only access, profiles and hall-of-fame scores.
+// Honeysuckle: invite-only access, profiles, hall-of-fame scores, rewards, challenges and trades.
 // Paste into Firebase console → Firestore Database → Rules, then Publish.
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -59,15 +59,60 @@ service cloud.firestore {
         && request.resource.data.avatar is string && request.resource.data.avatar.size() <= 8;
     }
 
-    // Reward wallet: points + cat cards owned. Each member reads and writes only their own.
+    // Reward wallet: stars + cat cards owned. Members can read each other's (to trade duplicates);
+    // each member writes only their own.
     match /rewards/{uid} {
-      allow read: if isMember() && request.auth.uid == uid;
+      allow read: if isMember();
       allow create, update: if isMember() && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['points', 'cards', 'opened', 'updatedAt'])
         && request.resource.data.points is int
         && request.resource.data.points >= 0 && request.resource.data.points <= 1000000
         && request.resource.data.cards is map
         && request.resource.data.opened is int && request.resource.data.opened >= 0;
+    }
+
+    // Challenges: a short exercise set sent to a friend. The same seed gives both the same exercises.
+    match /challenges/{id} {
+      allow read: if isMember() && (resource.data.from == request.auth.uid || resource.data.to == request.auth.uid);
+      allow create: if isMember()
+        && request.resource.data.keys().hasOnly(['from', 'to', 'game', 'seed', 'size', 'status', 'createdAt'])
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.to is string && request.resource.data.to != request.auth.uid
+        && request.resource.data.game in ['math', 'dictation']
+        && request.resource.data.seed is int
+        && request.resource.data.size is int && request.resource.data.size >= 1 && request.resource.data.size <= 10
+        && request.resource.data.status == 'pending';
+      // Only the person it was sent to can finish it.
+      allow update: if isMember() && resource.data.to == request.auth.uid && resource.data.status == 'pending'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'correct', 'doneAt'])
+        && request.resource.data.status == 'done'
+        && request.resource.data.correct is int
+        && request.resource.data.correct >= 0 && request.resource.data.correct <= resource.data.size;
+    }
+
+    // Card trades. The offered card is held back from the sender's wallet until the trade is answered.
+    match /trades/{id} {
+      allow read: if isMember() && (resource.data.from == request.auth.uid || resource.data.to == request.auth.uid);
+      allow create: if isMember()
+        && request.resource.data.keys().hasOnly(['from', 'to', 'give', 'want', 'status', 'claimed', 'createdAt'])
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.to is string && request.resource.data.to != request.auth.uid
+        && request.resource.data.give is string && request.resource.data.give.size() <= 4
+        && request.resource.data.want is string && request.resource.data.want.size() <= 4
+        && request.resource.data.status == 'open' && request.resource.data.claimed == false;
+      // The recipient accepts or declines an open offer.
+      allow update: if isMember() && resource.data.to == request.auth.uid && resource.data.status == 'open'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'doneAt'])
+        && request.resource.data.status in ['accepted', 'declined'];
+      // The sender can cancel an open offer (getting the card back) ...
+      allow update: if isMember() && resource.data.from == request.auth.uid && resource.data.status == 'open'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'claimed', 'doneAt'])
+        && request.resource.data.status == 'cancelled' && request.resource.data.claimed == true;
+      // ... or collect the result of an answered one.
+      allow update: if isMember() && resource.data.from == request.auth.uid
+        && resource.data.status in ['accepted', 'declined'] && resource.data.claimed == false
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['claimed'])
+        && request.resource.data.claimed == true;
     }
 
     // Hall of fame: one document per player per game (id = uid_game), personal best only.
@@ -78,7 +123,7 @@ service cloud.firestore {
           && id == request.auth.uid + '_' + d.game
           && d.game in ['math', 'worksheet', 'dictation', 'quiz']
           && d.best is int && d.best > 0 && d.total is int && d.total >= 0
-          && d.best <= (d.game == 'math' ? 36 : d.game == 'worksheet' ? 30 : d.game == 'quiz' ? 1000 : 100000);
+          && d.best <= (d.game == 'math' ? 100000 : d.game == 'worksheet' ? 30 : d.game == 'quiz' ? 1000 : 100000);
       }
       allow read: if isMember();
       allow create: if isMember() && validScore(request.resource.data);

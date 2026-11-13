@@ -43,6 +43,46 @@ export function createDemoBackend(adminEmails = []) {
       Object.entries(cards).forEach(([id, n]) => { r.cards[id] = (r.cards[id] || 0) + n; });
       set("rewards", r);
     },
+    // ----- friends (simulated) -----
+    async listProfiles() { return [{ uid: "demo", ...get("profile", { name: "אני", avatar: "⭐" }) }, ...Object.entries(others).map(([uid, p]) => ({ uid, ...p }))]; },
+    async getRewardsOf(uid) {
+      if (uid === "demo") return get("rewards", { points: 0, cards: {}, opened: 0 });
+      const cards = { u1: { "03": 2, "05": 3, "12": 1, "19": 2 }, u2: { "01": 2, "08": 2, "25": 1 }, u3: { "02": 3, "29": 2, "30": 1 } }[uid] || { "04": 2 };
+      return { points: 0, cards, opened: 0 };
+    },
+    async createChallenge(c) { const l = get("challenges", []); const id = "c" + Date.now(); l.push({ id, ...c, status: "pending", createdAt: Date.now() }); set("challenges", l); return id; },
+    async getChallenge(id) { return get("challenges", []).find((c) => c.id === id) || null; },
+    async listChallenges(uid) {
+      let l = get("challenges", []);
+      if (!l.some((c) => c.id === "seed1")) { l.push({ id: "seed1", from: "u2", to: "demo", game: "math", seed: 4242, size: 5, status: "pending", createdAt: Date.now() }); set("challenges", l); }
+      return { received: l.filter((c) => c.to === uid).reverse(), sent: l.filter((c) => c.from === uid).reverse() };
+    },
+    async completeChallenge(id, correct) { set("challenges", get("challenges", []).map((c) => (c.id === id ? { ...c, status: "done", correct } : c))); },
+    async createTrade(uid, t) {
+      const l = get("trades", []); const id = "t" + Date.now();
+      l.push({ id, from: uid, to: t.to, give: t.give, want: t.want, status: "accepted", claimed: false, createdAt: Date.now() }); // the demo friend says yes right away
+      set("trades", l);
+      const r = get("rewards", { points: 0, cards: {}, opened: 0 }); r.cards[t.give] = (r.cards[t.give] || 1) - 1; if (!r.cards[t.give]) delete r.cards[t.give]; set("rewards", r);
+      return id;
+    },
+    async listTrades(uid) {
+      let l = get("trades", []);
+      if (!l.some((t) => t.id === "seedT")) { l.push({ id: "seedT", from: "u1", to: "demo", give: "03", want: "01", status: "open", claimed: false, createdAt: Date.now() }); set("trades", l); }
+      return { incoming: l.filter((t) => t.to === uid).reverse(), outgoing: l.filter((t) => t.from === uid).reverse() };
+    },
+    async respondTrade(uid, tr, accept) {
+      set("trades", get("trades", []).map((t) => (t.id === tr.id ? { ...t, status: accept ? "accepted" : "declined", claimed: accept ? true : t.claimed } : t)));
+      if (accept) { const r = get("rewards", { points: 0, cards: {}, opened: 0 }); r.cards[tr.want] = (r.cards[tr.want] || 1) - 1; if (!r.cards[tr.want]) delete r.cards[tr.want]; r.cards[tr.give] = (r.cards[tr.give] || 0) + 1; set("rewards", r); }
+    },
+    async cancelTrade(uid, tr) {
+      set("trades", get("trades", []).map((t) => (t.id === tr.id ? { ...t, status: "cancelled", claimed: true } : t)));
+      const r = get("rewards", { points: 0, cards: {}, opened: 0 }); r.cards[tr.give] = (r.cards[tr.give] || 0) + 1; set("rewards", r);
+    },
+    async claimTrade(uid, tr, delta) {
+      set("trades", get("trades", []).map((t) => (t.id === tr.id ? { ...t, claimed: true } : t)));
+      const r = get("rewards", { points: 0, cards: {}, opened: 0 });
+      r.points += delta.points || 0; Object.entries(delta.cards || {}).forEach(([id, n]) => { r.cards[id] = (r.cards[id] || 0) + n; }); set("rewards", r);
+    },
     async listMembers() { return [{ email: "friend@example.com", role: "member" }]; },
     async addMember() {}, async removeMember() {},
     async listInvites() { return []; },
