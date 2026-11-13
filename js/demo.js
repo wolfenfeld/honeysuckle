@@ -24,6 +24,7 @@ export function createDemoBackend(adminEmails = []) {
     async signOut() { signedIn = false; set("in", false); fire(); },
     async membership() { return { role: "admin" }; },
     async redeemInvite() {},
+    async ensureInviteLink(uid) { return "f" + uid; },
     async getProfile() { return get("profile", null); },
     async saveProfile(uid, p) { set("profile", p); },
     async getScores() { return get("scores", {}); },

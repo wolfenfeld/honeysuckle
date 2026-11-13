@@ -25,20 +25,34 @@ service cloud.firestore {
     match /members/{email} {
       allow read: if isAdmin() || (signedIn() && email == myEmail());
       allow update, delete: if isAdmin();
+      // Admin adds anyone. Anyone else joins with an invite: either a one-time link that gets
+      // marked as used in the same batch, or a member's personal reusable link.
       allow create: if isAdmin() || (
         signedIn() && email == myEmail()
-        && request.resource.data.keys().hasOnly(['role', 'invite', 'joinedAt', 'name'])
+        && request.resource.data.keys().hasOnly(['role', 'invite', 'invitedBy', 'joinedAt', 'name'])
         && request.resource.data.role == 'member'
         && request.resource.data.invite is string
         && exists(invitePath(request.resource.data.invite))
-        && get(invitePath(request.resource.data.invite)).data.usedBy == null
-        && getAfter(invitePath(request.resource.data.invite)).data.usedBy == myEmail()
+        && (
+          get(invitePath(request.resource.data.invite)).data.get('reusable', false) == true
+          || (get(invitePath(request.resource.data.invite)).data.usedBy == null
+              && getAfter(invitePath(request.resource.data.invite)).data.usedBy == myEmail())
+        )
       );
     }
 
-    // One-time invite links. Codes are long random strings.
+    // Invite links. Admin makes one-time links; every member can make one personal reusable
+    // link (its id is "f" + their uid) and delete it again.
     match /invites/{code} {
-      allow list, create, delete: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin() || (
+        isMember() && code == 'f' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['createdBy', 'reusable', 'note', 'createdAt', 'usedBy'])
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.reusable == true
+        && request.resource.data.usedBy == null
+      );
+      allow delete: if isAdmin() || (isMember() && resource.data.get('createdBy', '') == request.auth.uid);
       allow get: if signedIn();
       allow update: if isAdmin() || (
         signedIn()

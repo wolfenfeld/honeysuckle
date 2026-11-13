@@ -15,6 +15,8 @@ a.back{align-self:flex-start;color:var(--ink);background:#fff;border:2px solid v
 h1{font-family:"Fredoka","Rubik",sans-serif;font-weight:700;font-size:clamp(2rem,6vw,2.8rem);margin:0;color:var(--accent);line-height:1.05}
 h2{margin:0;font-size:1.2rem}
 .sub{margin:4px 0 0;color:var(--muted)}
+.invite{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.invite[hidden]{display:none}
 .tabs{display:flex;gap:8px}
 .tab{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 18px;font:inherit;font-weight:600;cursor:pointer}
 .tab[aria-selected="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
@@ -61,6 +63,7 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
     <h1>👥 חברים</h1>
     <p class="sub">שולחים אתגרים קצרים שמזכים בכוכבים, ומחליפים קלפים כפולים.</p>
   </header>
+  <div class="panel invite" id="invite" hidden><div><h2>👋 הזמנת חברים</h2><p class="muted">לוחצים, שולחים בוואטסאפ, וזהו. מי שפותח את הקישור נכנס עם Google ומצטרף ישר.</p></div><button class="btn pink" id="invbtn" type="button">📤 שליחת הזמנה</button></div>
   <div id="main"><p class="sub">טוען…</p></div>
 </div>
 <script type="module">
@@ -87,6 +90,7 @@ async function load() {
   if (!Honey.user) return gate("נכנסים כדי לראות", "החלק הזה פתוח רק למי שהוזמנו.", "🔑 כניסה עם Google");
   if (!Honey.isMember) return gate("אין עדיין גישה", "האתר הזה בהזמנה בלבד. אפשר לבקש קישור הזמנה.");
   me = Honey.user.uid;
+  $("#invite").hidden = false; $("#invbtn").onclick = () => Honey.invite();
   const be = Honey.backend;
   try {
     [people, ch, tr, myCards] = await Promise.all([be.listProfiles(), be.listChallenges(me), be.listTrades(me), be.getRewardsOf(me).then((r) => r.cards || {})]);

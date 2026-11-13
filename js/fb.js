@@ -67,11 +67,25 @@ export function createBackend(config, adminEmails) {
       const ref = doc(db, "invites", code);
       const snap = await getDoc(ref);
       if (!snap.exists()) throw new Error("קישור ההזמנה הזה לא תקין.");
-      if (snap.data().usedBy) throw new Error("קישור ההזמנה הזה כבר נוצל.");
+      const inv = snap.data();
+      const member = doc(db, "members", user.email);
+      if (inv.reusable) { // a member's personal link: works for anyone, any number of times
+        await setDoc(member, { role: "member", invite: code, invitedBy: inv.createdBy || "", joinedAt: serverTimestamp(), name: user.name || "" });
+        return;
+      }
+      if (inv.usedBy) throw new Error("קישור ההזמנה הזה כבר נוצל.");
       const b = writeBatch(db);
-      b.set(doc(db, "members", user.email), { role: "member", invite: code, joinedAt: serverTimestamp(), name: user.name || "" });
+      b.set(member, { role: "member", invite: code, joinedAt: serverTimestamp(), name: user.name || "" });
       b.update(ref, { usedBy: user.email, usedAt: serverTimestamp() });
       await b.commit();
+    },
+
+    // Every member has one personal, reusable invite link (code = "f" + uid). Returns the code.
+    async ensureInviteLink(uid) {
+      const code = "f" + uid, ref = doc(db, "invites", code);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) await setDoc(ref, { createdBy: uid, reusable: true, note: "", createdAt: serverTimestamp(), usedBy: null });
+      return code;
     },
 
     // ----- profile & scores -----

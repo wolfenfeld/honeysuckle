@@ -43,6 +43,18 @@ export const Honey = {
   signIn: () => be.signIn().catch((e) => toast("הכניסה לא הצליחה: " + (e.message || e))),
   signOut: () => be.signOut(),
   editProfile: () => profileDialog(false),
+  // One tap: share your personal invite link (WhatsApp etc. via the share sheet, or copy it).
+  async invite() {
+    if (!S.user || !S.role) return toast("צריך להיכנס כדי להזמין חברים");
+    try {
+      const code = await be.ensureInviteLink(S.user.uid);
+      const url = homeUrl("index.html?invite=" + encodeURIComponent(code));
+      const text = `בואו לשחק איתי ב"הלמידה של יערה"! 🐱 אוספים קלפי חתולים ומאתגרים חברים.`;
+      if (navigator.share) { try { await navigator.share({ title: "הלמידה של יערה", text, url }); return; } catch (e) { if (e.name === "AbortError") return; } }
+      try { await navigator.clipboard.writeText(`${text}\n${url}`); toast("הקישור הועתק. אפשר להדביק בוואטסאפ 📋"); }
+      catch { prompt("העתיקי ושלחי לחברים:", url); }
+    } catch (e) { console.warn(e); toast("לא הצלחנו ליצור קישור. נסי שוב."); }
+  },
   onChange(cb) { listeners.push(cb); },
   async leaderboard() {
     const { scores, profiles } = await be.leaderboard();
@@ -191,6 +203,7 @@ function renderBar() {
     `${S.role && S.profile ? esc(S.profile.avatar) : "👤"} <span class=n>${esc(S.role ? (S.profile?.name || "שלום") : "אין גישה")}</span> ▾`);
   const menu = el("div", { className: "hc-menu", hidden: true });
   if (S.role) {
+    const inv = el("button", { type: "button" }, "👋 הזמנת חברים"); inv.onclick = () => { menu.hidden = true; Honey.invite(); }; menu.append(inv);
     const e = el("button", { type: "button" }, "✏️ עריכת פרופיל"); e.onclick = () => { menu.hidden = true; profileDialog(false); }; menu.append(e);
     if (S.role === "admin") menu.append(el("a", { href: homeUrl("admin.html") }, "🔧 ניהול הזמנות"));
   } else menu.append(el("small", {}, esc(S.error || "החשבון הזה עדיין לא הוזמן. אפשר לבקש קישור הזמנה ולפתוח אותו במכשיר הזה.")));
@@ -234,6 +247,16 @@ function profileDialog(first) {
   });
 }
 
+// Someone opened an invite link but isn't signed in yet: a friendly welcome with one button.
+function welcome() {
+  if (!ss.get("honey-invite") || document.querySelector(".hc-welcome")) return;
+  const d = el("dialog", { className: "hc-dlg hc-welcome" }, `<div class="body"><h2>הוזמנת! 🎉</h2><p>חבר/ה הזמינו אותך ללמידה של יערה: תרגילים, קלפי חתולים ואתגרים בין חברים. כדי להצטרף נכנסים עם חשבון Google.</p><div class="row"><button class="hc-btn pri" id="hc-wj" type="button">🔑 כניסה והצטרפות</button><button class="hc-btn" id="hc-wx" type="button">אחר כך</button></div></div>`);
+  root.append(d);
+  d.querySelector("#hc-wj").onclick = () => { d.close(); d.remove(); Honey.signIn(); };
+  d.querySelector("#hc-wx").onclick = () => { d.close(); d.remove(); };
+  d.showModal();
+}
+
 /* ---------- auth flow ---------- */
 if (be) {
   be.onAuth(async (user) => {
@@ -263,6 +286,7 @@ if (be) {
       } catch (e) { console.warn("Honey auth", e); S.error = "הייתה בעיה בטעינה. נסי לרענן."; }
     }
     S.loaded = true; renderBar(); resolveReady(); listeners.forEach((f) => f());
+    if (!user) welcome();
     if (S.role && !S.profile) { await profileDialog(true); }
   });
 } else { S.loaded = true; renderBar(); resolveReady(); }
