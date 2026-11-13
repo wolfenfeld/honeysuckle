@@ -4,7 +4,7 @@ import { firebaseConfig, adminEmails } from "./firebase-config.js";
 import { Rewards, COST } from "./rewards.js";
 
 export const GAMES = {
-  math:      { title: "חשבון ביער הגשם", icon: "🌴", unit: (b, t) => `${b} מתוך ${t || 36}`, blurb: "הציון הכי גבוה מתוך 36 תרגילים" },
+  math:      { title: "חשבון ביער הגשם", icon: "🌴", unit: (b, t) => `${b} מתוך ${t || 32}`, blurb: "הציון הכי גבוה מתוך 32 תרגילים" },
   worksheet: { title: "תרגילי המבחן",   icon: "📐", unit: (b, t) => `${b} מתוך ${t || 30}`, blurb: "הציון הכי גבוה מתוך 30 תרגילים" },
   dictation: { title: "הכתבה",          icon: "✏️", unit: (b) => `${b} ⭐`,                   blurb: "הכי הרבה כוכבים שנאספו" },
   quiz:      { title: "בוחן מילים",     icon: "🔤", unit: (b, t) => `${b} מתוך ${t || b}`,    blurb: "הכי הרבה תשובות נכונות בסיבוב (10 מילים ומעלה)" },

@@ -303,7 +303,7 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
       <p>כותבים את התשובה ולוחצים "בדיקה". ✓ ירוק זה נכון, ✗ אדום זה לנסות שוב. כפתור "תרגילים חדשים" מביא סט חדש.</p>
     </div>
     <div class="m-score">
-      <strong id="m-total">0 / 36</strong>
+      <strong id="m-total">0 / 32</strong>
       <span class="msg" id="m-msg">עדיין לא בדקנו. בהצלחה!</span>
       <button class="mbtn" id="m-checkall">בדיקת הכול</button>
       <button class="mbtn ghost" id="m-new">תרגילים חדשים</button>
@@ -565,8 +565,8 @@ function drawDoorArt(){
    MATH
    ========================================================= */
 const MSECS = [
-  {key:"add", title:"חיבור (אלפים)", tip:"מחברים מהאחדות, ולא שוכחים את ההעברה (הקפיצה) לעשרות."},
-  {key:"sub", title:"חיסור (אלפים)", tip:"כשאין מספיק, פורטים מהספרה שמשמאל. אפשר לבדוק בחיבור."},
+  {key:"add", n:4, title:"חיבור (אלפים)", tip:"מחברים מהאחדות, ולא שוכחים את ההעברה (הקפיצה) לעשרות."},
+  {key:"sub", n:4, title:"חיסור (אלפים)", tip:"כשאין מספיק, פורטים מהספרה שמשמאל. אפשר לבדוק בחיבור."},
   {key:"mul", title:"כפל", tip:"בכפל בעשרות: מכפילים את הספרות ומוסיפים את האפסים."},
   {key:"div", title:"חילוק", tip:"בודקים בכפל: התשובה כפול המחלק צריכה לתת את המספר שהתחלנו ממנו."},
   {key:"par", title:"סוגריים וסדר פעולות", tip:"קודם סוגריים, אחר כך כפל וחילוק, ובסוף חיבור וחיסור."},
@@ -624,6 +624,7 @@ const GEN = {
     const [ex,ans] = f(); return {ex, ans};
   }
 };
+const MTOTAL = 6*4 + 4 + 4; // add 4 + sub 4 + four sections of 6
 let MSETID="m"+Date.now();
 function buildMath(){
   MSETID="m"+Date.now()+Math.random().toString(36).slice(2,6);
@@ -635,7 +636,7 @@ function buildMath(){
     s.innerHTML = `<div class="head"><h2>${sec.title}</h2><span class="sc" id="msc-${sec.key}"></span></div><p class="tip">${sec.tip}</p><div class="m-grid"></div>`;
     const grid = s.querySelector(".m-grid");
     const seen = new Set();
-    for(let i=0;i<6;i++){
+    for(let i=0;i<(sec.n||6);i++){
       let it, guard=0; do { it = GEN[sec.key](); } while(seen.has(it.ex) && guard++<20); seen.add(it.ex);
       const id = `m-${sec.key}-${i}`, row = document.createElement("div");
       row.className = "m-item"; row.dataset.ans = it.ans;
@@ -661,15 +662,15 @@ function checkMRow(row){
 }
 function checkMSec(k){
   const rows=document.querySelectorAll(`.m-sec.${k} .m-item`); rows.forEach(checkMRow);
-  $("#msc-"+k).textContent = `${document.querySelectorAll(`.m-sec.${k} .m-item.ok`).length} מתוך 6 נכונים`;
+  $("#msc-"+k).textContent = `${document.querySelectorAll(`.m-sec.${k} .m-item.ok`).length} מתוך ${(MSECS.find(x=>x.key===k).n||6)} נכונים`;
 }
 function updMTotal(){
   const c=document.querySelectorAll(".m-item.ok").length;
-  $("#m-total").textContent = `${c} / 36`;
-  if(window.Honey) Honey.award(MSETID, c+(c===36?5:0));
-  $("#m-msg").textContent = c===36?"מושלם! כל הכבוד יערה! 🌟":c>=28?"מצוין! נשארו רק כמה לתקן.":c>=18?"יפה מאוד, ממשיכים!":c>0?"התחלה טובה, אפשר לתקן ולבדוק שוב.":"עדיין לא בדקנו. בהצלחה!";
+  $("#m-total").textContent = `${c} / ${MTOTAL}`;
+  if(window.Honey) Honey.award(MSETID, c+(c===MTOTAL?5:0));
+  $("#m-msg").textContent = c===MTOTAL?"מושלם! כל הכבוד יערה! 🌟":c>=MTOTAL*0.78?"מצוין! נשארו רק כמה לתקן.":c>=MTOTAL*0.5?"יפה מאוד, ממשיכים!":c>0?"התחלה טובה, אפשר לתקן ולבדוק שוב.":"עדיין לא בדקנו. בהצלחה!";
 }
-$("#m-checkall").onclick = ()=>{MSECS.forEach(s=>checkMSec(s.key)); updMTotal(); if(window.Honey) Honey.offer("math",document.querySelectorAll(".m-item.ok").length,36);};
+$("#m-checkall").onclick = ()=>{MSECS.forEach(s=>checkMSec(s.key)); updMTotal(); if(window.Honey) Honey.offer("math",document.querySelectorAll(".m-item.ok").length,MTOTAL);};
 $("#m-new").onclick = ()=>{buildMath(); window.scrollTo({top:0,behavior:"smooth"});};
 document.addEventListener("input",e=>{
   if(e.target.matches(".m-item input")){
