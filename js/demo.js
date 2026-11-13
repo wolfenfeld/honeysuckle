@@ -1,9 +1,9 @@
 // Local preview backend (add ?demo to any page). No Firebase: everything lives in this browser,
 // with a few made-up players so the hall of fame has something to show.
 export function createDemoBackend(adminEmails = []) {
-  const user = { uid: "demo", email: adminEmails[0] || "demo@example.com", name: "Demo player", photo: "", verified: true };
   const K = (s) => `honey-demo-${s}`;
   const get = (k, d) => { try { return JSON.parse(localStorage.getItem(K(k))) ?? d; } catch { return d; } };
+  const user = { uid: "demo", email: adminEmails[0] || "demo@example.com", name: "Demo player", photo: get("photo", ""), verified: true }; // set localStorage honey-demo-photo to preview a Google picture
   const set = (k, v) => { try { localStorage.setItem(K(k), JSON.stringify(v)); } catch {} };
   let listeners = [], signedIn = get("in", true);
   const fire = () => listeners.forEach((cb) => cb(signedIn ? user : null));
@@ -24,6 +24,7 @@ export function createDemoBackend(adminEmails = []) {
     async signOut() { signedIn = false; set("in", false); fire(); },
     async membership() { return { role: "admin" }; },
     async redeemInvite() {},
+    async inviteEmail() {},
     async ensureInviteLink(uid) { return "f" + uid; },
     async getProfile() { return get("profile", null); },
     async saveProfile(uid, p) { set("profile", p); },

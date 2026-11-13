@@ -23,6 +23,7 @@ h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2.2rem,7vw,3.4re
 .podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:10px;align-items:end;direction:ltr}
 .pod{direction:rtl;border-radius:16px 16px 0 0;text-align:center;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
 .pod .av{font-size:2.2rem;line-height:1}
+.pod .pimg.big{width:2.4em;height:2.4em}
 .pod .nm{font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pod .sc{font-size:.9rem;color:#33405f}
 .pod .medal{font-size:1.6rem}
@@ -58,6 +59,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 </div>
 <script type="module">
 import { Honey, GAMES } from "./js/honey.js";
+import { avatarHTML } from "./js/avatar.js";
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 let board = null, game = sessionStorage.getItem("hall-game") || "math";
@@ -84,13 +86,13 @@ function panel() {
   const top = rows.slice(0, 10);
   const pod = (i, cls, medal) => {
     const r = rows[i];
-    return r ? `<div class="pod ${cls}${r.uid === me ? " me" : ""}"><span class="medal">${medal}</span><span class="av">${esc(r.avatar)}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></div>`
+    return r ? `<div class="pod ${cls}${r.uid === me ? " me" : ""}"><span class="medal">${medal}</span><span class="av">${avatarHTML(r, "big")}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></div>`
              : `<div class="pod ${cls} empty"><span class="medal">${medal}</span><span class="nm">פנוי</span></div>`;
   };
   const myIdx = rows.findIndex((r) => r.uid === me);
   $("#panel").innerHTML = `<h2>${g.icon} ${g.title}</h2><p class="blurb">${g.blurb}</p>` + (rows.length ? `
     <div class="podium">${pod(1, "p2", "🥈")}${pod(0, "p1", "🥇")}${pod(2, "p3", "🥉")}</div>
-    ${top.length > 3 ? `<ol>${top.slice(3).map((r, i) => `<li class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${esc(r.avatar)}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></li>`).join("")}</ol>` : ""}
+    ${top.length > 3 ? `<ol>${top.slice(3).map((r, i) => `<li class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${avatarHTML(r)}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></li>`).join("")}</ol>` : ""}
     ${myIdx >= 10 ? `<div class="mine">המקום שלך: ${myIdx + 1} (${esc(g.unit(rows[myIdx].best, rows[myIdx].total))})</div>` : ""}
     ${myIdx < 0 ? `<p class="note">עוד לא פרסמת תוצאה במשחק הזה. משחקים, ובסוף הסיבוב מופיע כפתור פרסום.</p>` : ""}`
     : `<p class="empty-msg">עוד אף אחד לא פרסם תוצאה כאן. אפשר להיות הראשונה! 🌟</p>`);

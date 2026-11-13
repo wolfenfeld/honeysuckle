@@ -25,9 +25,15 @@ service cloud.firestore {
     match /members/{email} {
       allow read: if isAdmin() || (signedIn() && email == myEmail());
       allow update, delete: if isAdmin();
-      // Admin adds anyone. Anyone else joins with an invite: either a one-time link that gets
-      // marked as used in the same batch, or a member's personal reusable link.
-      allow create: if isAdmin() || (
+      // Admin adds anyone. A member can add a friend's email. Anyone else joins with an invite link:
+      // a one-time link that gets marked as used in the same batch, or a member's personal reusable link.
+      allow create: if isAdmin()
+        // a member pre-approves a friend's Google email (the friend still signs in with that account)
+        || (isMember() && request.resource.data.keys().hasOnly(['role', 'invitedBy', 'joinedAt'])
+            && request.resource.data.role == 'member'
+            && request.resource.data.invitedBy == request.auth.uid
+            && email == email.lower() && email.matches('[^@ ]+@[^@ ]+[.][^@ ]+'))
+        || (
         signedIn() && email == myEmail()
         && request.resource.data.keys().hasOnly(['role', 'invite', 'invitedBy', 'joinedAt', 'name'])
         && request.resource.data.role == 'member'
@@ -67,10 +73,14 @@ service cloud.firestore {
     match /profiles/{uid} {
       allow read: if isMember();
       allow create, update: if isMember() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['name', 'avatar', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['name', 'avatar', 'photo', 'updatedAt'])
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 20
-        && request.resource.data.avatar is string && request.resource.data.avatar.size() <= 8;
+        && request.resource.data.avatar is string && request.resource.data.avatar.size() <= 8
+        // the Google account photo; only Google's image host is accepted
+        && (!('photo' in request.resource.data) || request.resource.data.photo == ''
+            || (request.resource.data.photo is string && request.resource.data.photo.size() <= 500
+                && request.resource.data.photo.matches('https://[a-z0-9-]+[.]googleusercontent[.]com/.*')));
     }
 
     // Reward wallet: stars + cat cards owned. Members can read each other's (to trade duplicates);

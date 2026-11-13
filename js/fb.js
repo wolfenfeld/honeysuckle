@@ -80,6 +80,11 @@ export function createBackend(config, adminEmails) {
       await b.commit();
     },
 
+    // A member adds a friend's Google email to the guest list (the friend then just signs in).
+    inviteEmail(uid, email) {
+      return setDoc(doc(db, "members", lower(email)), { role: "member", invitedBy: uid, joinedAt: serverTimestamp() });
+    },
+
     // Every member has one personal, reusable invite link (code = "f" + uid). Returns the code.
     async ensureInviteLink(uid) {
       const code = "f" + uid, ref = doc(db, "invites", code);
@@ -94,7 +99,7 @@ export function createBackend(config, adminEmails) {
       return s.exists() ? s.data() : null;
     },
     saveProfile(uid, p) {
-      return setDoc(doc(db, "profiles", uid), { name: p.name, avatar: p.avatar, updatedAt: serverTimestamp() });
+      return setDoc(doc(db, "profiles", uid), { name: p.name, avatar: p.avatar || "⭐", photo: p.photo || "", updatedAt: serverTimestamp() });
     },
     async getScores(uid) {
       const games = ["math", "worksheet", "dictation", "quiz"];

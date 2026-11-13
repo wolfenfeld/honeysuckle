@@ -3,6 +3,7 @@
 import { firebaseConfig, adminEmails } from "./firebase-config.js";
 import { Rewards, COST } from "./rewards.js";
 import { claimTrades, pendingCount } from "./social.js";
+import { avatarHTML } from "./avatar.js";
 
 export const GAMES = {
   math:      { title: "חשבון ביער הגשם", icon: "🌴", unit: (b) => `${b} תרגילים`, blurb: "הכי הרבה תרגילים שנפתרו בסך הכול" },
@@ -44,6 +45,25 @@ export const Honey = {
   signOut: () => be.signOut(),
   editProfile: () => profileDialog(false),
   // One tap: share your personal invite link (WhatsApp etc. via the share sheet, or copy it).
+  // Invite by email: the friend's address is added to the guest list (so signing in with it is enough),
+  // and a ready-to-send email opens in the mail app with the site link as a backup.
+  async inviteByEmail(raw) {
+    const email = String(raw || "").trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast("כתובת המייל לא נראית תקינה");
+    if (!S.user || !S.role) return toast("צריך להיכנס כדי להזמין חברים");
+    try {
+      const code = await be.ensureInviteLink(S.user.uid);
+      let added = true;
+      try { await be.inviteEmail(S.user.uid, email); } catch (e) { added = false; console.warn("inviteEmail", e); } // e.g. already a member
+      const url = homeUrl("index.html?invite=" + encodeURIComponent(code));
+      const who = S.profile?.name || "חבר";
+      const subject = `${who} מזמין/ה אותך ללמידה של יערה`;
+      const body = `היי!\r\n\r\n${who} הזמין/ה אותך לשחק ב"הלמידה של יערה": תרגילי חשבון והכתבות, קלפי חתולים לאיסוף ואתגרים בין חברים.\r\n\r\nכניסה עם חשבון Google:\r\n${url}\r\n`;
+      toast(added ? "נוספה הרשאה לכתובת. נפתח מייל מוכן לשליחה ✉️" : "נפתח מייל מוכן לשליחה ✉️ (ייתכן שהכתובת כבר רשומה)");
+      location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return true;
+    } catch (e) { console.warn(e); toast("לא הצלחנו להכין את ההזמנה. נסי שוב."); }
+  },
   async invite() {
     if (!S.user || !S.role) return toast("צריך להיכנס כדי להזמין חברים");
     try {
@@ -61,7 +81,7 @@ export const Honey = {
     const out = Object.fromEntries(Object.keys(GAMES).map((g) => [g, []]));
     scores.filter((x) => out[x.game]).forEach((x) => {
       const p = profiles[x.uid] || {};
-      out[x.game].push({ uid: x.uid, name: p.name || "שחקנית", avatar: p.avatar || "⭐", best: x.best, total: x.total, at: x.at || 0 });
+      out[x.game].push({ uid: x.uid, name: p.name || "שחקנית", avatar: p.avatar || "⭐", photo: p.photo || "", best: x.best, total: x.total, at: x.at || 0 });
     });
     Object.values(out).forEach((a) => a.sort((m, n) => n.best - m.best || m.at - n.at));
     return out;
@@ -200,7 +220,7 @@ function renderBar() {
   }
   const wrap = el("div", { style: "position:relative" });
   const b = el("button", { className: "hc-btn", type: "button", "aria-haspopup": "true" },
-    `${S.role && S.profile ? esc(S.profile.avatar) : "👤"} <span class=n>${esc(S.role ? (S.profile?.name || "שלום") : "אין גישה")}</span> ▾`);
+    `${S.role && S.profile ? avatarHTML({ photo: S.user.photo, avatar: S.profile.avatar }) : "👤"} <span class=n>${esc(S.role ? (S.profile?.name || "שלום") : "אין גישה")}</span> ▾`);
   const menu = el("div", { className: "hc-menu", hidden: true });
   if (S.role) {
     const inv = el("button", { type: "button" }, "👋 הזמנת חברים"); inv.onclick = () => { menu.hidden = true; Honey.invite(); }; menu.append(inv);
@@ -221,23 +241,21 @@ function profileDialog(first) {
     const d = el("dialog", { className: "hc-dlg" }, `
       <form method="dialog">
         <h2>${first ? "ברוכה הבאה! מי משחקת?" : "הפרופיל שלי"}</h2>
-        <p>השם והדמות יופיעו בהיכל התהילה, ורק לחברים שהוזמנו.</p>
+        <p>התמונה היא התמונה של חשבון Google שלך. השם והתמונה יופיעו בהיכל התהילה ובחברים, ורק למי שהוזמנו.</p>
+        <div style="text-align:center;font-size:2.4rem">${avatarHTML({ photo: S.user?.photo, avatar: cur.avatar }, "big")}</div>
         <label for="hc-name">איך לקרוא לך?</label>
         <input type="text" id="hc-name" maxlength="20" required value="${esc(cur.name)}" autocomplete="off">
-        <div class="hc-av" role="radiogroup" aria-label="דמות">
-          ${AVATARS.map((a) => `<label><input type="radio" name="av" value="${a}" ${a === cur.avatar ? "checked" : ""}><span>${a}</span></label>`).join("")}
-        </div>
         <div class="row"><button class="hc-btn pri" type="submit">שמירה</button>${first ? "" : '<button class="hc-btn" type="button" id="hc-x">ביטול</button>'}</div>
       </form>`);
     root.append(d);
     d.querySelector("form").onsubmit = async (e) => {
       e.preventDefault();
       const name = d.querySelector("#hc-name").value.trim().slice(0, 20);
-      const avatar = d.querySelector("input[name=av]:checked")?.value || AVATARS[0];
+      const avatar = cur.avatar || AVATARS[0], photo = S.user?.photo || "";
       if (!name) return;
       try {
-        await be.saveProfile(S.user.uid, { name, avatar });
-        S.profile = { name, avatar }; renderBar(); listeners.forEach((f) => f());
+        await be.saveProfile(S.user.uid, { name, avatar, photo });
+        S.profile = { name, avatar, photo }; renderBar(); listeners.forEach((f) => f());
         d.close(); d.remove(); resolve();
       } catch { toast("לא הצלחנו לשמור. נסי שוב."); }
     };
@@ -275,6 +293,10 @@ if (be) {
         S.role = m ? m.role : null;
         if (S.role) {
           [S.profile, S.best] = await Promise.all([be.getProfile(user.uid), be.getScores(user.uid)]);
+          if (S.profile && (S.profile.photo || "") !== (user.photo || "")) { // keep the stored picture in sync with Google
+            const p = { name: S.profile.name, avatar: S.profile.avatar || AVATARS[0], photo: user.photo || "" };
+            try { await be.saveProfile(user.uid, p); S.profile = p; } catch (e) { console.warn("photo sync", e); }
+          }
           await Rewards.attach(be, user);
           try {
             const people = await be.listProfiles(); const names = Object.fromEntries(people.map((p) => [p.uid, p.name]));
