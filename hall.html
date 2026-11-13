@@ -4,70 +4,62 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>היכל התהילה</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Suez+One&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="css/theme.css">
 <style>
-:root{--bg:#14213d;--bg2:#1d2f57;--card:#fff;--ink:#1f2a44;--muted:#5b6782;--gold:#f2b705;--silver:#b8c2d6;--bronze:#d08a4f;--line:#e1e6f3;--me:#fff4c2}
-*{box-sizing:border-box}
-body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--ink);min-height:100vh;
-  background:radial-gradient(900px 400px at 50% -10%,#2b4378 0,transparent 70%),var(--bg);color-scheme:light}
-.page{max-width:760px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
-a.back{align-self:flex-start;color:#fff;background:rgba(255,255,255,.14);padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem}
-h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2.2rem,7vw,3.4rem);margin:0;color:var(--gold);line-height:1.05;text-wrap:balance}
-.sub{color:#cdd7ee;margin:0}
-.tabs{display:flex;gap:8px;flex-wrap:wrap}
-.tab{border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-weight:500;cursor:pointer}
-.tab[aria-selected="true"]{background:var(--gold);border-color:var(--gold);color:#3b2d00}
-.panel{background:var(--card);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px}
-.panel h2{margin:0;font-size:1.3rem}
-.panel .blurb{margin:0;color:var(--muted);font-size:.95rem}
-.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:10px;align-items:end;direction:ltr}
-.pod{direction:rtl;border-radius:16px 16px 0 0;text-align:center;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
-.pod .av{font-size:2.2rem;line-height:1}
-.pod .pimg.big{width:2.4em;height:2.4em}
-.pod .nm{font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pod .sc{font-size:.9rem;color:#33405f}
-.pod .medal{font-size:1.6rem}
-.p1{background:linear-gradient(#ffe38a,var(--gold));min-height:170px}
-.p2{background:linear-gradient(#e8edf6,var(--silver));min-height:140px}
-.p3{background:linear-gradient(#f2c9a3,var(--bronze));min-height:120px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs .t-chip{flex:none;white-space:nowrap}
+.tabs .t-chip[aria-selected="true"]{background:#8fd98b}
+.board{background-color:#fffaf0;background-image:linear-gradient(#efe6cf 1px,transparent 1px),linear-gradient(90deg,#efe6cf 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column;gap:12px}
+.board h2{margin:0;font-size:1.15rem;font-weight:800}
+.board .blurb{margin:0;color:var(--muted);font-size:.92rem}
+.podium{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:6px;align-items:end;padding-top:34px}
+.pod{display:flex;flex-direction:column;align-items:center;min-width:0}
+.pav{position:relative;width:72px;height:72px;border-radius:50%;border:3px solid var(--k);background:#fff3d8;display:grid;place-items:center;overflow:hidden;font-size:2.3rem;box-shadow:0 0 0 3px #fff;margin-bottom:-14px;z-index:1}
+.pav .pimg{width:100%;height:100%;border-radius:0}
+.pod.p1 .pav{width:84px;height:84px}
+.crown{font-size:2rem;line-height:1;margin-bottom:-6px;z-index:2;filter:drop-shadow(0 2px 0 rgba(51,35,26,.3))}
+.block{width:100%;border:3px solid var(--k);border-radius:10px 10px 0 0;padding:20px 4px 8px;text-align:center;display:flex;flex-direction:column;gap:2px;justify-content:flex-start}
+.block .nm{font-weight:800;font-size:1.05rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.block .sc{font-size:.88rem;font-weight:500;font-variant-numeric:tabular-nums}
+.p1 .block{background:linear-gradient(#ffe48a,#f6cf4a);min-height:150px}
+.p2 .block{background:linear-gradient(#e4e5e8,#cfd0d3);min-height:118px}
+.p3 .block{background:linear-gradient(#e2a674,#cf8f5a);min-height:96px}
 .pod.empty{opacity:.35}
-.pod.me{outline:3px solid var(--ink)}
-ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-li.row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;border:1px solid var(--line)}
-li.row.me{background:var(--me);border-color:var(--gold)}
-li.row .rk{width:1.8em;text-align:center;font-weight:700;color:var(--muted)}
-li.row .av{font-size:1.5rem}
-li.row .nm{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-li.row .muted-s{color:var(--muted);font-weight:400;font-size:.8rem;margin-inline-start:6px}
-li.row .sc{font-variant-numeric:tabular-nums;font-weight:700}
-.mine{background:var(--me);border-radius:12px;padding:10px 12px;font-weight:500}
-.empty-msg,.note{color:var(--muted);margin:0}
-.gate{background:var(--card);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
-.gate h2{margin:0}
-.gate p{margin:0;color:var(--muted)}
-.btn{border:0;border-radius:12px;padding:10px 18px;background:#d63b70;color:#fff;font:inherit;font-weight:500;cursor:pointer}
-button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pod.me .block{outline:4px solid #2f6fd6;outline-offset:2px}
+.list{display:flex;flex-direction:column;gap:2px;padding:10px}
+.row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;font-weight:700}
+.row .rk{width:1.6em;text-align:center;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.row .av{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--k);background:#fff3d8;display:grid;place-items:center;overflow:hidden;flex:none;font-size:1.4rem}
+.row .av .pimg{width:100%;height:100%;border-radius:0}
+.row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .nm small{display:block;color:var(--muted);font-weight:500;font-size:.78rem}
+.row .sc{font-variant-numeric:tabular-nums;font-size:1.05rem}
+.row.me{background:#f2c80f;border:3px solid var(--k);box-shadow:0 3px 0 var(--k-soft)}
+.row.me .nm small{color:#5a4300}
+.mine{background:#f2c80f;border:3px solid var(--k);border-radius:14px;padding:10px 14px;font-weight:800;text-align:center}
+.note{margin:0;color:var(--muted);text-align:center}
+.gate{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.gate h2{margin:0}.gate p{margin:0;color:var(--muted)}
 </style>
 </head>
-<body>
-<div class="page">
-  <a class="back" href="index.html#home">→ חזרה לדף הבית</a>
-  <header>
-    <h1>🏆 היכל התהילה</h1>
-    <p class="sub">השיאים של כל מי שהוזמנו. אפשר לפרסם תוצאה בסוף כל משחק.</p>
-  </header>
-  <div id="main"><p class="sub">טוען…</p></div>
+<body class="themed">
+<div class="t-page">
+  <div class="t-top"><a class="t-back" href="index.html#home" aria-label="חזרה לדף הבית">→</a><h1>היכל התהילה</h1><span class="t-back" style="width:48px;height:48px;border-radius:14px" aria-hidden="true">🏆</span></div>
+  <div id="main"><p class="t-muted">טוען…</p></div>
 </div>
 <script type="module">
 import { Honey, GAMES } from "./js/honey.js";
 import { avatarHTML } from "./js/avatar.js";
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const SHORT = { math: "חשבון", worksheet: "תרגילי המבחן", dictation: "הכתבה", quiz: "בוחן מילים" };
 let board = null, game = sessionStorage.getItem("hall-game") || "math";
 if (!GAMES[game]) game = "math";
 
 function gate(title, text, button) {
-  $("#main").innerHTML = `<div class="gate"><h2>${title}</h2><p>${text}</p>${button ? `<button class="btn" id="g">${button}</button>` : ""}</div>`;
+  $("#main").innerHTML = `<div class="t-card gate"><h2>${title}</h2><p>${text}</p>${button ? `<button class="t-btn pink" id="g">${button}</button>` : ""}</div>`;
   if (button) $("#g").onclick = Honey.signIn;
 }
 async function render() {
@@ -77,31 +69,30 @@ async function render() {
   if (!Honey.isMember) return gate("אין עדיין גישה", `נכנסת כ-${esc(Honey.user.email)}, אבל האתר הזה בהזמנה בלבד. אפשר לבקש קישור הזמנה ולפתוח אותו במכשיר הזה.`);
   try { board ||= await Honey.leaderboard(); }
   catch { return gate("משהו השתבש", "לא הצלחנו לטעון את הטבלה. נסי לרענן."); }
-  const tabs = Object.entries(GAMES).map(([k, g]) => `<button class="tab" role="tab" data-g="${k}" aria-selected="${k === game}">${g.icon} ${g.title}</button>`).join("");
-  $("#main").innerHTML = `<div class="tabs" role="tablist">${tabs}</div><div class="panel" id="panel" style="margin-top:14px"></div>`;
-  document.querySelectorAll(".tab").forEach((b) => (b.onclick = () => { game = b.dataset.g; sessionStorage.setItem("hall-game", game); render(); }));
+  const tabs = Object.keys(GAMES).map((k) => `<button class="t-chip" role="tab" data-g="${k}" aria-selected="${k === game}">${SHORT[k]}</button>`).join("");
+  $("#main").innerHTML = `<div class="tabs" role="tablist">${tabs}</div><div id="panel" style="margin-top:12px;display:flex;flex-direction:column;gap:14px"></div>`;
+  document.querySelectorAll(".tabs .t-chip").forEach((b) => (b.onclick = () => { game = b.dataset.g; sessionStorage.setItem("hall-game", game); render(); }));
   panel();
 }
-const sub = (r) => { const t = [r.school, r.grade && "כיתה " + r.grade].filter(Boolean).join(" · "); return t ? ` <small class="muted-s">${esc(t)}</small>` : ""; };
+const sub = (r) => { const t = [r.school, r.grade && "כיתה " + r.grade].filter(Boolean).join(" · "); return t ? `<small>${esc(t)}</small>` : ""; };
 function panel() {
   const g = GAMES[game], rows = board[game], me = Honey.user.uid;
-  const top = rows.slice(0, 10);
-  const pod = (i, cls, medal) => {
+  const top = rows.slice(0, 10), myIdx = rows.findIndex((r) => r.uid === me);
+  const pod = (i, cls) => {
     const r = rows[i];
-    return r ? `<div class="pod ${cls}${r.uid === me ? " me" : ""}"><span class="medal">${medal}</span><span class="av">${avatarHTML(r, "big")}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></div>`
-             : `<div class="pod ${cls} empty"><span class="medal">${medal}</span><span class="nm">פנוי</span></div>`;
+    return r ? `<div class="pod ${cls}${r.uid === me ? " me" : ""}">${i === 0 ? '<span class="crown" aria-hidden="true">👑</span>' : ""}<div class="pav">${avatarHTML(r)}</div><div class="block"><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></div></div>`
+             : `<div class="pod ${cls} empty"><div class="pav">❔</div><div class="block"><span class="nm">פנוי</span></div></div>`;
   };
-  const myIdx = rows.findIndex((r) => r.uid === me);
-  $("#panel").innerHTML = `<h2>${g.icon} ${g.title}</h2><p class="blurb">${g.blurb}</p>` + (rows.length ? `
-    <div class="podium">${pod(1, "p2", "🥈")}${pod(0, "p1", "🥇")}${pod(2, "p3", "🥉")}</div>
-    ${top.length > 3 ? `<ol>${top.slice(3).map((r, i) => `<li class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${avatarHTML(r)}</span><span class="nm">${esc(r.name)}${sub(r)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></li>`).join("")}</ol>` : ""}
+  $("#panel").innerHTML = rows.length ? `
+    <div class="t-card board"><h2>${g.icon} ${g.title}</h2><p class="blurb">${g.blurb}</p>
+      <div class="podium">${pod(1, "p2")}${pod(0, "p1")}${pod(2, "p3")}</div></div>
+    ${top.length > 3 ? `<div class="t-card list">${top.slice(3).map((r, i) => `<div class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${avatarHTML(r)}</span><span class="nm">${esc(r.name)}${sub(r)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></div>`).join("")}</div>` : ""}
     ${myIdx >= 10 ? `<div class="mine">המקום שלך: ${myIdx + 1} (${esc(g.unit(rows[myIdx].best, rows[myIdx].total))})</div>` : ""}
     ${myIdx < 0 ? `<p class="note">עוד לא פרסמת תוצאה במשחק הזה. משחקים, ובסוף הסיבוב מופיע כפתור פרסום.</p>` : ""}`
-    : `<p class="empty-msg">עוד אף אחד לא פרסם תוצאה כאן. אפשר להיות הראשונה! 🌟</p>`);
+    : `<div class="t-card"><p class="note">עוד אף אחד לא פרסם תוצאה כאן. אפשר להיות הראשונה! 🌟</p></div>`;
 }
 render();
 Honey.onChange(() => { board = null; render(); });
 </script>
-<script type="module" src="js/honey.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ export function cardHTML(c, { owned = true, count = 1, showDup = true, small = f
   const r = RARITY[c.r];
   const ico = "🐱".repeat(c.r) + "<s>" + "🐱".repeat(5 - c.r) + "</s>";
   const badge = owned && showDup && count > 1 ? `<span class="dup${count >= MAX_COPIES ? " max" : ""}">×${count}</span>` : "";
-  return `<div class="cat r${c.r}${owned ? "" : " locked"}${small ? " small" : ""}" style="--c:${r.color}" aria-label="${owned ? esc(c.he) : "קלף נעול"}, ${r.name}, ${c.r} מתוך 5">
+  return `<div class="cat r${c.r}${owned ? "" : " locked"}${small ? " small" : ""}" data-card="${c.id}" style="--c:${r.color}" aria-label="${owned ? esc(c.he) : "קלף נעול"}, ${r.name}, ${c.r} מתוך 5">
     <div class="frame"><img class="art" data-id="${c.id}" data-r="${c.r}" data-e="0" src="cards/${c.id}.png" alt="" loading="lazy">${badge}${owned ? "" : `<span class="lock">🔒</span>`}</div>
     <div class="plate"><div class="nm">${owned ? esc(c.he) : "???"}</div><div class="ico" aria-hidden="true">${ico}</div></div>
   </div>`;
