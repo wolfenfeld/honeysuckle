@@ -5,34 +5,31 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>הפוסטר של אלבום החתולים</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Suez+One&display=swap">
+<link rel="stylesheet" href="css/theme.css">
 <style>
-:root{--ink:#2b2140;--muted:#6d6288;--line:#f0dbe6;--accent:#d63b70;--gold:#f2b705;color-scheme:light}
-*{box-sizing:border-box}
-body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--ink);background:#fff3f7;min-height:100vh}
-.page{max-width:760px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
-a.back{align-self:flex-start;color:var(--ink);background:#fff;border:2px solid var(--line);padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem}
-h1{font-family:"Suez One",serif;font-weight:400;margin:0;color:var(--accent);font-size:2.2rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:3px solid var(--k);border-radius:999px;padding:10px 24px;min-height:46px;background:var(--yellow);color:var(--k);font:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;text-decoration:none;box-shadow:0 4px 0 var(--k-soft)}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--k-soft)}
+.btn.pink{background:#6fcf7f}
+.btn.ghost{background:#fff3d8}
+.btn:disabled{background:#e3dac8;color:#9b8c7a;border-color:#b8ab97;box-shadow:none;cursor:not-allowed}
 .muted{color:var(--muted);margin:0}
+canvas{width:100%;height:auto;border-radius:12px;border:3px solid var(--k);box-shadow:0 6px 0 var(--k-soft);background:#fff}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:12px;min-width:200px;flex:1}
-.btn{border:0;border-radius:14px;padding:12px 20px;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;box-shadow:0 4px 0 #a02450}
-.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--line),0 0 0 2px var(--line) inset}
-canvas{width:100%;height:auto;border-radius:12px;box-shadow:0 10px 30px rgba(60,30,80,.3);background:#fff}
-.gate{background:#fff;border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+input{font:inherit;padding:10px 12px;border:3px solid var(--k);border-radius:14px;min-width:200px;flex:1;background:#fff;color:var(--k)}
+.gate{background:#fff;border:3px solid var(--k);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;box-shadow:0 4px 0 var(--k-soft)}
 #printimg{display:none}
 @media print{
-  body{background:#fff}.page>*:not(#printwrap){display:none!important}
-  #printwrap{display:block!important}.page{padding:0;max-width:none}
+  body{background:#fff!important}.t-page>*:not(#printwrap){display:none!important}
+  #printwrap{display:block!important}.t-page{padding:0;max-width:none}
   #printimg{display:block;width:100%;height:auto}
   canvas{display:none}
   @page{margin:8mm}
 }
 </style>
 </head>
-<body>
-<div class="page">
-  <a class="back" href="cats.html">→ חזרה לאלבום</a>
-  <h1>🖼️ הפוסטר של האלבום</h1>
+<body class="themed">
+<div class="t-page" style="max-width:760px">
+  <div class="t-top"><a class="t-back" href="cats.html" aria-label="חזרה לאלבום">→</a><h1>🖼️ הפוסטר של האלבום</h1></div>
   <div id="main"><p class="muted">טוען…</p></div>
 </div>
 <script type="module">

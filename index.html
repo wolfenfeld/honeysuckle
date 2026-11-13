@@ -266,6 +266,31 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 .tips{font-family:"Rubik";font-size:.95rem;background:rgba(246,238,219,.1);border:1px solid rgba(246,238,219,.25);border-radius:14px;padding:14px 16px;color:#efe3c8;display:flex;flex-direction:column;gap:6px}
 .tips b{color:#ffd27a}
 .tips ul{margin:0;padding-inline-start:20px}
+
+/* ---------- Shared sticker look for the English, Sport and Hebrew rooms ---------- */
+body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-color:var(--cream);background-image:radial-gradient(#d8c9a6 1.4px,transparent 1.5px);background-size:22px 22px}
+.v-english .back,.v-sport .back,.v-hebrew .back{width:48px;height:48px;padding:0;border-radius:50%;border:3px solid var(--k);background:#fff;color:var(--k);display:grid;place-items:center;font-size:1.5rem;font-weight:800;box-shadow:0 3px 0 var(--k-soft);align-self:flex-start}
+.v-english,.v-sport,.v-hebrew{color:var(--k)}
+.meadow{border:3px solid var(--k);box-shadow:0 4px 0 var(--k-soft)}
+.e-card{border:3px solid var(--k);box-shadow:0 4px 0 var(--k-soft)}
+.tab{border:3px solid var(--k);box-shadow:0 3px 0 var(--k-soft)}
+.tab[aria-selected="true"]{border-color:var(--k)}
+.ebtn{border:3px solid var(--k);box-shadow:0 3px 0 var(--k-soft)}
+.ebtn.ghost{background:#fff;color:var(--k)}
+.opt,.q,.wcard,.field input,.field select,.quiz-opt{border-width:2.5px;border-color:var(--k)}
+.board{border:3px solid var(--k);box-shadow:0 4px 0 var(--k-soft)}
+.s-panel{border:3px solid var(--k);box-shadow:0 4px 0 var(--k-soft)}
+.ex-card{border:3px solid var(--k);border-top:8px solid var(--k)}
+.sbtn{border:3px solid var(--k)!important;box-shadow:0 3px 0 var(--k-soft)}
+.fchip{border:3px solid var(--k)}
+.lib-head h1{color:var(--k)}
+.lib-head p{color:var(--muted)}
+.shelf{border:3px solid var(--k);border-radius:14px 14px 0 0}
+.book{border:3px solid var(--k);border-inline-start:12px solid var(--bc,var(--l-red));box-shadow:0 4px 0 var(--k-soft)}
+.tips{background:#fff;color:var(--k);border:3px solid var(--k);box-shadow:0 4px 0 var(--k-soft)}
+.tips b{color:#c2410c}
+.lbtn{border:3px solid var(--k)}
+.hq{border:2.5px solid var(--k)}
 </style>
 
 <div id="app" dir="rtl">
@@ -323,7 +348,7 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 <!-- ================= ENGLISH ================= -->
 <section class="view v-english" id="v-english" hidden>
   <div class="page">
-    <a class="back" href="#home">→ חזרה הביתה</a>
+    <a class="back" href="#home" aria-label="חזרה לדף הבית">→</a>
     <div class="meadow">
       <svg id="meadow-svg" aria-hidden="true"></svg>
       <h1><span class="ltr"><b>Happy</b> School</span><small>אנגלית</small></h1>
@@ -387,7 +412,7 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 <!-- ================= SPORT ================= -->
 <section class="view v-sport" id="v-sport" hidden>
   <div class="page">
-    <a class="back" href="#home">→ חזרה הביתה</a>
+    <a class="back" href="#home" aria-label="חזרה לדף הבית">→</a>
     <div class="board">
       <div class="top">
         <div><h1>מתאמנים <em>בבית</em></h1><p>תרגילים בלי ציוד, עם טיימר שסופר בשבילך. מתחילים תמיד בחימום ומסיימים במתיחות.</p></div>
@@ -442,7 +467,7 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 <!-- ================= HEBREW ================= -->
 <section class="view v-hebrew" id="v-hebrew" hidden>
   <div class="page">
-    <a class="back" href="#home">→ חזרה הביתה</a>
+    <a class="back" href="#home" aria-label="חזרה לדף הבית">→</a>
     <div class="lib-head">
       <h1>הספרייה של יערה</h1>
       <p>בוחרים ספר מהמדף, קוראים את הקטע ועונים על השאלות. בשאלות הפתוחות כותבים תשובה מלאה, ואז אפשר לראות תשובה לדוגמה.</p>

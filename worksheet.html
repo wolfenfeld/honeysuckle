@@ -1,97 +1,47 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>החשבון של יערה – תרגילי המבחן</title></head><body>
+<!doctype html><html lang="he" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>החשבון של יערה – תרגילי המבחן</title></head><body class="themed">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Varela+Round&display=swap">
+<link rel="stylesheet" href="css/theme.css">
 <style>
-:root{
-  --paper:#f7f9fc; --grid:#dfe7f2; --ink:#1f2a44; --muted:#5b6782;
-  --card:#ffffff; --line:#c9d4e5; --accent:#2f6fd6; --accent-ink:#ffffff;
-  --good:#1f8a4c; --good-bg:#e3f5ea; --bad:#c2412d; --bad-bg:#fbe7e3;
-  --sec-add:#2f6fd6; --sec-sub:#8a4fd1; --sec-mul:#d97a12; --sec-par:#0f8a86; --sec-div:#c23b6e;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --paper:#141a26; --grid:#1d2536; --ink:#e7ecf6; --muted:#9aa6c0;
-    --card:#1b2233; --line:#2e3a52; --accent:#6f9ff0; --accent-ink:#0f1522;
-    --good:#5fd08f; --good-bg:#16352a; --bad:#ff8a73; --bad-bg:#3a1f1b;
-    --sec-add:#6f9ff0; --sec-sub:#b58af0; --sec-mul:#f0a24a; --sec-par:#4fd1c5; --sec-div:#f07aa8;
-  }
-}
-:root[data-theme="dark"]{
-  color-scheme:dark;
-  --paper:#141a26; --grid:#1d2536; --ink:#e7ecf6; --muted:#9aa6c0;
-  --card:#1b2233; --line:#2e3a52; --accent:#6f9ff0; --accent-ink:#0f1522;
-  --good:#5fd08f; --good-bg:#16352a; --bad:#ff8a73; --bad-bg:#3a1f1b;
-  --sec-add:#6f9ff0; --sec-sub:#b58af0; --sec-mul:#f0a24a; --sec-par:#4fd1c5; --sec-div:#f07aa8;
-}
-body{
-  background-color:var(--paper);
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:24px 24px;
-  color:var(--ink);
-  font-family:"Varela Round","Rubik",system-ui,sans-serif;
-  font-size:16px;
-  padding:24px 16px 48px;
-}
-.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
-header{display:flex;flex-direction:column;gap:6px}
-h1{font-family:"Rubik",sans-serif;font-weight:700;font-size:2rem;margin:0;text-wrap:balance}
-header p{margin:0;color:var(--muted);max-width:65ch}
-.score{
-  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
-  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;
-}
-.score strong{font-family:"Rubik",sans-serif;font-size:1.4rem;font-variant-numeric:tabular-nums}
-.score .msg{color:var(--muted);flex:1;min-width:180px}
-#sections{display:flex;flex-direction:column;gap:24px}
-section{
-  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;
-  display:flex;flex-direction:column;gap:14px;border-top:5px solid var(--c);
-}
-section.add{--c:var(--sec-add)} section.sub{--c:var(--sec-sub)} section.mul{--c:var(--sec-mul)} section.par{--c:var(--sec-par)} section.div{--c:var(--sec-div)}
-.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-h2{margin:0;font-family:"Rubik",sans-serif;font-size:1.35rem;color:var(--c)}
-.tip{margin:0;color:var(--muted);font-size:.95rem}
-.sec-score{color:var(--muted);font-variant-numeric:tabular-nums}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-section.par .grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-.item{
-  display:flex;align-items:center;gap:10px;justify-content:flex-end;
-  padding:8px 10px;border-radius:10px;border:1px solid transparent;
-}
-.item .n{color:var(--muted);font-size:.85rem;min-width:1.5em;text-align:center}
-.ex{direction:ltr;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;font-family:"Rubik",sans-serif;font-size:1.25rem;font-variant-numeric:tabular-nums}
-.ex input{
-  width:4.8em;font:inherit;text-align:center;padding:4px 6px;
-  border:2px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);
-}
-.ex input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent)}
-.mark{width:1.3em;text-align:center;font-weight:700}
-.item.ok{background:var(--good-bg);border-color:var(--good)}
-.item.ok .mark{color:var(--good)}
-.item.no{background:var(--bad-bg);border-color:var(--bad)}
-.item.no .mark{color:var(--bad)}
+body{padding:0;font-size:17px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding:12px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.pill{direction:ltr;unicode-bidi:isolate;background:#2e9e5b;color:#fff;border:3px solid var(--k);border-radius:999px;padding:6px 14px;font-weight:800;font-variant-numeric:tabular-nums;box-shadow:0 3px 0 var(--k-soft)}
+.lead{margin:0;color:var(--muted)}
+.score{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff;border:3px solid var(--k);border-radius:20px;padding:12px 14px;box-shadow:0 4px 0 var(--k-soft)}
+.score strong{font-size:1.3rem;font-variant-numeric:tabular-nums}
+.score .msg{color:var(--muted);flex:1 1 100%;font-weight:500}
 .btns{display:flex;flex-wrap:wrap;gap:10px}
-button{
-  font-family:"Rubik",sans-serif;font-size:1rem;font-weight:500;cursor:pointer;
-  padding:10px 18px;border-radius:10px;border:2px solid var(--accent);
-  background:var(--accent);color:var(--accent-ink);
-}
-button.ghost{background:transparent;color:var(--accent)}
-button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-.sec-btn{align-self:flex-start;background:var(--c);border-color:var(--c);color:var(--accent-ink)}
-.home-link{display:inline-block;margin:0 0 14px;padding:8px 14px;border-radius:999px;background:var(--card,#fff);border:2px solid var(--line,#ddd);color:var(--ink,#222);text-decoration:none;font-weight:500;font-family:inherit;font-size:.95rem}.home-link:hover{filter:brightness(.97)}
+button{font:inherit;font-weight:700;cursor:pointer;padding:9px 18px;border-radius:999px;border:3px solid var(--k);background:var(--yellow);color:var(--k);box-shadow:0 3px 0 var(--k-soft);min-height:44px}
+button.ghost{background:#fff}
+button:active{transform:translateY(2px)}
+#sections{display:flex;flex-direction:column;gap:16px}
+section{--c:#2e9e5b;background:#fff;border:3px solid var(--k);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 4px 0 var(--k-soft)}
+section.add{--c:#e0475b} section.sub{--c:#d99a00} section.mul{--c:#2f6fd6} section.par{--c:#0f8a86} section.div{--c:#8a3fb0}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h2{margin:0;font-size:1.2rem;font-weight:800;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);border:2.5px solid var(--k)}
+.tip{margin:0;color:var(--muted);font-size:.95rem}
+.sec-score{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.9rem}
+.grid{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.item{display:flex;align-items:center;gap:10px;justify-content:flex-end;padding:8px 10px;border-radius:14px;border:2.5px solid transparent;background:#fffaf0}
+.item .n{color:#a08c78;font-size:.85rem;min-width:1.5em;text-align:center}
+.ex{direction:ltr;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;flex:1;font-family:"Rubik",sans-serif;font-size:1.3rem;font-weight:600;font-variant-numeric:tabular-nums}
+.ex input{width:5.2em;font:inherit;font-weight:700;text-align:center;padding:5px 8px;border:3px solid var(--k);border-radius:14px;background:#fff;color:var(--k)}
+.ex input:focus{outline:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 40%,transparent)}
+.mark{width:1.3em;text-align:center;font-weight:800;font-size:1.3rem}
+.item.ok{background:#d9f3e1;border-color:#2e9e5b}
+.item.ok .mark{color:#1f8a4c}
+.item.no{background:#fbdcdc;border-color:#d64545}
+.item.no .mark{color:#c2412d}
+.sec-btn{align-self:flex-start;background:var(--c);color:#fff}
 </style>
 
 <div class="wrap" dir="rtl">
-  <a class="home-link" href="index.html#home">→ חזרה לדף הבית</a>
-  <header>
-    <h1>החשבון של יערה</h1>
-    <p>כותבים את התשובה בתיבה ולוחצים על "בדיקה". ✓ ירוק זה נכון, ✗ אדום זה לנסות שוב.</p>
-  </header>
+  <div class="t-top"><a class="t-back" href="index.html#home" aria-label="חזרה לדף הבית">→</a><h1>תרגילי המבחן</h1><span class="pill" id="total">0 / 30</span></div>
+  <p class="lead">כותבים את התשובה בתיבה ולוחצים על "בדיקה". ✓ ירוק זה נכון, ✗ אדום זה לנסות שוב.</p>
 
   <div class="score">
-    <strong id="total">0 / 30</strong>
     <span class="msg" id="totalMsg">עדיין לא בדקנו. בהצלחה!</span>
     <div class="btns">
       <button id="checkAll">בדיקת כל התרגילים</button>
