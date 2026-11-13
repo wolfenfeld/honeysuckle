@@ -59,8 +59,7 @@ export const Honey = {
       const who = S.profile?.name || "חבר";
       const subject = `${who} מזמין/ה אותך ללמידה של יערה`;
       const body = `היי!\r\n\r\n${who} הזמין/ה אותך לשחק ב"הלמידה של יערה": תרגילי חשבון והכתבות, קלפי חתולים לאיסוף ואתגרים בין חברים.\r\n\r\nכניסה עם חשבון Google:\r\n${url}\r\n`;
-      toast(added ? "נוספה הרשאה לכתובת. נפתח מייל מוכן לשליחה ✉️" : "נפתח מייל מוכן לשליחה ✉️ (ייתכן שהכתובת כבר רשומה)");
-      location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      inviteDialog({ email, subject, body, url, added });
       return true;
     } catch (e) { console.warn(e); toast("לא הצלחנו להכין את ההזמנה. נסי שוב."); }
   },
@@ -136,7 +135,7 @@ body{margin-top:46px!important}
 .hc-menu small{padding:6px 12px;color:var(--m);overflow-wrap:anywhere}
 .hc-card{position:fixed;z-index:60;bottom:max(14px,env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(440px,calc(100vw - 24px));background:var(--c);border:3px solid var(--g);border-radius:18px;padding:14px 16px;box-shadow:0 14px 34px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px;animation:hcup .25s ease-out}
 .hc-card span{color:var(--m);font-size:.95rem}
-.hc-card .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.hc-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;border:0;padding:0}
 @keyframes hcup{from{transform:translate(-50%,20px);opacity:0}}
 .hc-dlg{border:0;border-radius:20px;padding:0;max-width:min(420px,calc(100vw - 24px));width:100%;background:var(--c);color:var(--i);box-shadow:0 20px 50px rgba(0,0,0,.4)}
 .hc-dlg::backdrop{background:rgba(10,18,36,.55)}
@@ -150,7 +149,7 @@ body{margin-top:46px!important}
 .hc-av span{display:grid;place-items:center;font-size:1.7rem;aspect-ratio:1;border-radius:12px;border:2px solid var(--l);background:#fff}
 .hc-av input:checked+span{border-color:var(--a);background:#fde6ee}
 .hc-av input:focus-visible+span{outline:3px solid var(--g)}
-.hc-dlg .row{display:flex;gap:8px;justify-content:flex-start}
+.hc-dlg .hc-row{justify-content:flex-start;margin-top:0}
 .hc-toast{position:fixed;z-index:70;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2a44;color:#fff;padding:10px 18px;border-radius:999px;font-size:.95rem;max-width:calc(100vw - 24px)}
 .hc-chip{background:#fff4c2;border-color:#f2b705}
 .hc-chip.ready{animation:hcpulse 1.4s ease-in-out infinite}
@@ -180,7 +179,7 @@ function closeCard() { cardEl?.remove(); cardEl = null; clearTimeout(cardTimer);
 function card(html, actions = [], autoClose = 0) {
   closeCard();
   cardEl = el("div", { className: "hc-card", role: "status" }, html);
-  const row = el("div", { className: "row" });
+  const row = el("div", { className: "hc-row" });
   actions.forEach(([label, fn, primary]) => {
     const b = el("button", { className: "hc-btn" + (primary ? " gold" : ""), type: "button" }, esc(label));
     b.onclick = () => fn(b); row.append(b);
@@ -245,7 +244,7 @@ function profileDialog(first) {
         <div style="text-align:center;font-size:2.4rem">${avatarHTML({ photo: S.user?.photo, avatar: cur.avatar }, "big")}</div>
         <label for="hc-name">איך לקרוא לך?</label>
         <input type="text" id="hc-name" maxlength="20" required value="${esc(cur.name)}" autocomplete="off">
-        <div class="row"><button class="hc-btn pri" type="submit">שמירה</button>${first ? "" : '<button class="hc-btn" type="button" id="hc-x">ביטול</button>'}</div>
+        <div class="hc-row"><button class="hc-btn pri" type="submit">שמירה</button>${first ? "" : '<button class="hc-btn" type="button" id="hc-x">ביטול</button>'}</div>
       </form>`);
     root.append(d);
     d.querySelector("form").onsubmit = async (e) => {
@@ -265,10 +264,33 @@ function profileDialog(first) {
   });
 }
 
+// After "invite by email": say what happened and offer three ways to send the prepared message.
+function inviteDialog({ email, subject, body, url, added }) {
+  const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replace(/\r\n/g, "\n"))}`;
+  const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const d = el("dialog", { className: "hc-dlg" }, `<div class="body">
+    <h2>ההזמנה מוכנה ✉️</h2>
+    <p>${added ? `✅ <b dir="ltr">${esc(email)}</b> נוספה לרשימת המוזמנים. מספיק שיכנסו עם Google באותה כתובת.` : `⚠️ לא הצלחנו להוסיף את <b dir="ltr">${esc(email)}</b> לרשימה (אולי היא כבר רשומה, או שהכללים עוד לא עודכנו). הקישור למטה עדיין יעבוד.`}</p>
+    <p>האתר לא שולח מייל בעצמו. בוחרים איך לשלוח את ההודעה המוכנה:</p>
+    <div class="hc-row" style="flex-wrap:wrap">
+      <a class="hc-btn pri" href="${gmail}" target="_blank" rel="noopener">פתיחה ב-Gmail</a>
+      <a class="hc-btn" href="${mailto}">תוכנת המייל</a>
+      <button class="hc-btn" type="button" id="hc-icopy">העתקת הודעה</button>
+      <button class="hc-btn" type="button" id="hc-iclose">סגירה</button>
+    </div></div>`);
+  root.append(d);
+  d.querySelector("#hc-icopy").onclick = async () => {
+    try { await navigator.clipboard.writeText(`${subject}\n\n${body.replace(/\r\n/g, "\n")}`); toast("ההודעה הועתקה 📋"); } catch { prompt("העתיקי את ההודעה:", `${subject}\n${url}`); }
+  };
+  d.querySelector("#hc-iclose").onclick = () => { d.close(); d.remove(); };
+  d.addEventListener("close", () => d.remove());
+  d.showModal();
+}
+
 // Someone opened an invite link but isn't signed in yet: a friendly welcome with one button.
 function welcome() {
   if (!ss.get("honey-invite") || document.querySelector(".hc-welcome")) return;
-  const d = el("dialog", { className: "hc-dlg hc-welcome" }, `<div class="body"><h2>הוזמנת! 🎉</h2><p>חבר/ה הזמינו אותך ללמידה של יערה: תרגילים, קלפי חתולים ואתגרים בין חברים. כדי להצטרף נכנסים עם חשבון Google.</p><div class="row"><button class="hc-btn pri" id="hc-wj" type="button">🔑 כניסה והצטרפות</button><button class="hc-btn" id="hc-wx" type="button">אחר כך</button></div></div>`);
+  const d = el("dialog", { className: "hc-dlg hc-welcome" }, `<div class="body"><h2>הוזמנת! 🎉</h2><p>חבר/ה הזמינו אותך ללמידה של יערה: תרגילים, קלפי חתולים ואתגרים בין חברים. כדי להצטרף נכנסים עם חשבון Google.</p><div class="hc-row"><button class="hc-btn pri" id="hc-wj" type="button">🔑 כניסה והצטרפות</button><button class="hc-btn" id="hc-wx" type="button">אחר כך</button></div></div>`);
   root.append(d);
   d.querySelector("#hc-wj").onclick = () => { d.close(); d.remove(); Honey.signIn(); };
   d.querySelector("#hc-wx").onclick = () => { d.close(); d.remove(); };
@@ -284,8 +306,10 @@ if (be) {
       try {
         const code = ss.get("honey-invite");
         if (code) {
-          try { await be.redeemInvite(code, user); toast("ההזמנה התקבלה. ברוכה הבאה!"); }
-          catch (e) { S.error = e.message || "ההזמנה לא עבדה."; }
+          if (!(await be.membership(user))) { // already pre-approved by email: nothing to redeem
+            try { await be.redeemInvite(code, user); toast("ההזמנה התקבלה. ברוכה הבאה!"); }
+            catch (e) { S.error = e.message || "ההזמנה לא עבדה."; }
+          }
           ss.del("honey-invite");
           if (params.get("invite")) history.replaceState(null, "", location.pathname + location.hash);
         }
