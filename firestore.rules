@@ -1,0 +1,79 @@
+rules_version = '2';
+
+// Honeysuckle: invite-only access, profiles and hall-of-fame scores.
+// Paste into Firebase console → Firestore Database → Rules, then Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Keep in sync with adminEmails in js/firebase-config.js
+    function adminEmails() { return ['wolfenfeld@gmail.com']; }
+
+    function signedIn() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email_verified == true;
+    }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function isAdmin() { return signedIn() && myEmail() in adminEmails(); }
+    function isMember() {
+      return isAdmin()
+        || (signedIn() && exists(/databases/$(database)/documents/members/$(myEmail())));
+    }
+    function invitePath(code) { return /databases/$(database)/documents/invites/$(code); }
+
+    // Guest list: one document per invited Google email (lower case).
+    match /members/{email} {
+      allow read: if isAdmin() || (signedIn() && email == myEmail());
+      allow update, delete: if isAdmin();
+      allow create: if isAdmin() || (
+        signedIn() && email == myEmail()
+        && request.resource.data.keys().hasOnly(['role', 'invite', 'joinedAt', 'name'])
+        && request.resource.data.role == 'member'
+        && request.resource.data.invite is string
+        && exists(invitePath(request.resource.data.invite))
+        && get(invitePath(request.resource.data.invite)).data.usedBy == null
+        && getAfter(invitePath(request.resource.data.invite)).data.usedBy == myEmail()
+      );
+    }
+
+    // One-time invite links. Codes are long random strings.
+    match /invites/{code} {
+      allow list, create, delete: if isAdmin();
+      allow get: if signedIn();
+      allow update: if isAdmin() || (
+        signedIn()
+        && resource.data.usedBy == null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usedBy', 'usedAt'])
+        && request.resource.data.usedBy == myEmail()
+        && existsAfter(/databases/$(database)/documents/members/$(myEmail()))
+      );
+    }
+
+    // Display name + emoji avatar. Members can read everyone's, write only their own.
+    match /profiles/{uid} {
+      allow read: if isMember();
+      allow create, update: if isMember() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name', 'avatar', 'updatedAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 20
+        && request.resource.data.avatar is string && request.resource.data.avatar.size() <= 8;
+    }
+
+    // Hall of fame: one document per player per game (id = uid_game), personal best only.
+    match /scores/{id} {
+      function validScore(d) {
+        return d.keys().hasOnly(['uid', 'game', 'best', 'total', 'updatedAt'])
+          && d.uid == request.auth.uid
+          && id == request.auth.uid + '_' + d.game
+          && d.game in ['math', 'worksheet', 'dictation', 'quiz']
+          && d.best is int && d.best > 0 && d.total is int && d.total >= 0
+          && d.best <= (d.game == 'math' ? 36 : d.game == 'worksheet' ? 30 : d.game == 'quiz' ? 1000 : 100000);
+      }
+      allow read: if isMember();
+      allow create: if isMember() && validScore(request.resource.data);
+      allow update: if isMember() && validScore(request.resource.data)
+        && request.resource.data.best >= resource.data.best;
+      allow delete: if isAdmin();
+    }
+  }
+}

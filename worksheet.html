@@ -172,7 +172,7 @@ function updateTotal(){
     : c>0 ? "התחלה טובה, אפשר לתקן ולבדוק שוב."
     : "עדיין לא בדקנו. בהצלחה!";
 }
-document.getElementById("checkAll").addEventListener("click",()=>{DATA.forEach(s=>checkSection(s.key)); updateTotal();});
+document.getElementById("checkAll").addEventListener("click",()=>{DATA.forEach(s=>checkSection(s.key)); updateTotal(); if(window.Honey) Honey.offer("worksheet", document.querySelectorAll(".item.ok").length, 30);});
 document.getElementById("reset").addEventListener("click",()=>{
   document.querySelectorAll(".item").forEach(r=>{r.classList.remove("ok","no"); r.querySelector("input").value=""; r.querySelector(".mark").textContent="";});
   DATA.forEach(s=>document.getElementById("sc-"+s.key).textContent="");
@@ -192,4 +192,5 @@ document.addEventListener("keydown",e=>{
 });
 </script>
 
+<script type="module" src="js/honey.js"></script>
 </body></html>

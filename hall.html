@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>היכל התהילה</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Suez+One&display=swap">
+<style>
+:root{--bg:#14213d;--bg2:#1d2f57;--card:#fff;--ink:#1f2a44;--muted:#5b6782;--gold:#f2b705;--silver:#b8c2d6;--bronze:#d08a4f;--line:#e1e6f3;--me:#fff4c2}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--ink);min-height:100vh;
+  background:radial-gradient(900px 400px at 50% -10%,#2b4378 0,transparent 70%),var(--bg);color-scheme:light}
+.page{max-width:760px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+a.back{align-self:flex-start;color:#fff;background:rgba(255,255,255,.14);padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem}
+h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2.2rem,7vw,3.4rem);margin:0;color:var(--gold);line-height:1.05;text-wrap:balance}
+.sub{color:#cdd7ee;margin:0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-weight:500;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--gold);border-color:var(--gold);color:#3b2d00}
+.panel{background:var(--card);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.panel h2{margin:0;font-size:1.3rem}
+.panel .blurb{margin:0;color:var(--muted);font-size:.95rem}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:10px;align-items:end;direction:ltr}
+.pod{direction:rtl;border-radius:16px 16px 0 0;text-align:center;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.pod .av{font-size:2.2rem;line-height:1}
+.pod .nm{font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .sc{font-size:.9rem;color:#33405f}
+.pod .medal{font-size:1.6rem}
+.p1{background:linear-gradient(#ffe38a,var(--gold));min-height:170px}
+.p2{background:linear-gradient(#e8edf6,var(--silver));min-height:140px}
+.p3{background:linear-gradient(#f2c9a3,var(--bronze));min-height:120px}
+.pod.empty{opacity:.35}
+.pod.me{outline:3px solid var(--ink)}
+ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+li.row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;border:1px solid var(--line)}
+li.row.me{background:var(--me);border-color:var(--gold)}
+li.row .rk{width:1.8em;text-align:center;font-weight:700;color:var(--muted)}
+li.row .av{font-size:1.5rem}
+li.row .nm{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+li.row .sc{font-variant-numeric:tabular-nums;font-weight:700}
+.mine{background:var(--me);border-radius:12px;padding:10px 12px;font-weight:500}
+.empty-msg,.note{color:var(--muted);margin:0}
+.gate{background:var(--card);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.gate h2{margin:0}
+.gate p{margin:0;color:var(--muted)}
+.btn{border:0;border-radius:12px;padding:10px 18px;background:#d63b70;color:#fff;font:inherit;font-weight:500;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back" href="index.html#home">→ חזרה לדף הבית</a>
+  <header>
+    <h1>🏆 היכל התהילה</h1>
+    <p class="sub">השיאים של כל מי שהוזמנו. אפשר לפרסם תוצאה בסוף כל משחק.</p>
+  </header>
+  <div id="main"><p class="sub">טוען…</p></div>
+</div>
+<script type="module">
+import { Honey, GAMES } from "./js/honey.js";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let board = null, game = sessionStorage.getItem("hall-game") || "math";
+if (!GAMES[game]) game = "math";
+
+function gate(title, text, button) {
+  $("#main").innerHTML = `<div class="gate"><h2>${title}</h2><p>${text}</p>${button ? `<button class="btn" id="g">${button}</button>` : ""}</div>`;
+  if (button) $("#g").onclick = Honey.signIn;
+}
+async function render() {
+  await Honey.ready;
+  if (!Honey.enabled) return gate("עוד לא פעיל", "היכל התהילה יתחבר ברגע שהכניסה לאתר תוגדר. בינתיים כל המשחקים עובדים כרגיל.");
+  if (!Honey.user) return gate("נכנסים כדי לראות", "היכל התהילה פתוח רק למי שהוזמנו.", "🔑 כניסה עם Google");
+  if (!Honey.isMember) return gate("אין עדיין גישה", `נכנסת כ-${esc(Honey.user.email)}, אבל האתר הזה בהזמנה בלבד. אפשר לבקש קישור הזמנה ולפתוח אותו במכשיר הזה.`);
+  try { board ||= await Honey.leaderboard(); }
+  catch { return gate("משהו השתבש", "לא הצלחנו לטעון את הטבלה. נסי לרענן."); }
+  const tabs = Object.entries(GAMES).map(([k, g]) => `<button class="tab" role="tab" data-g="${k}" aria-selected="${k === game}">${g.icon} ${g.title}</button>`).join("");
+  $("#main").innerHTML = `<div class="tabs" role="tablist">${tabs}</div><div class="panel" id="panel" style="margin-top:14px"></div>`;
+  document.querySelectorAll(".tab").forEach((b) => (b.onclick = () => { game = b.dataset.g; sessionStorage.setItem("hall-game", game); render(); }));
+  panel();
+}
+function panel() {
+  const g = GAMES[game], rows = board[game], me = Honey.user.uid;
+  const top = rows.slice(0, 10);
+  const pod = (i, cls, medal) => {
+    const r = rows[i];
+    return r ? `<div class="pod ${cls}${r.uid === me ? " me" : ""}"><span class="medal">${medal}</span><span class="av">${esc(r.avatar)}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></div>`
+             : `<div class="pod ${cls} empty"><span class="medal">${medal}</span><span class="nm">פנוי</span></div>`;
+  };
+  const myIdx = rows.findIndex((r) => r.uid === me);
+  $("#panel").innerHTML = `<h2>${g.icon} ${g.title}</h2><p class="blurb">${g.blurb}</p>` + (rows.length ? `
+    <div class="podium">${pod(1, "p2", "🥈")}${pod(0, "p1", "🥇")}${pod(2, "p3", "🥉")}</div>
+    ${top.length > 3 ? `<ol>${top.slice(3).map((r, i) => `<li class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${esc(r.avatar)}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></li>`).join("")}</ol>` : ""}
+    ${myIdx >= 10 ? `<div class="mine">המקום שלך: ${myIdx + 1} (${esc(g.unit(rows[myIdx].best, rows[myIdx].total))})</div>` : ""}
+    ${myIdx < 0 ? `<p class="note">עוד לא פרסמת תוצאה במשחק הזה. משחקים, ובסוף הסיבוב מופיע כפתור פרסום.</p>` : ""}`
+    : `<p class="empty-msg">עוד אף אחד לא פרסם תוצאה כאן. אפשר להיות הראשונה! 🌟</p>`);
+}
+render();
+Honey.onChange(() => { board = null; render(); });
+</script>
+<script type="module" src="js/honey.js"></script>
+</body>
+</html>
