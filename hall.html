@@ -38,6 +38,7 @@ li.row.me{background:var(--me);border-color:var(--gold)}
 li.row .rk{width:1.8em;text-align:center;font-weight:700;color:var(--muted)}
 li.row .av{font-size:1.5rem}
 li.row .nm{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+li.row .muted-s{color:var(--muted);font-weight:400;font-size:.8rem;margin-inline-start:6px}
 li.row .sc{font-variant-numeric:tabular-nums;font-weight:700}
 .mine{background:var(--me);border-radius:12px;padding:10px 12px;font-weight:500}
 .empty-msg,.note{color:var(--muted);margin:0}
@@ -81,6 +82,7 @@ async function render() {
   document.querySelectorAll(".tab").forEach((b) => (b.onclick = () => { game = b.dataset.g; sessionStorage.setItem("hall-game", game); render(); }));
   panel();
 }
+const sub = (r) => { const t = [r.school, r.grade && "כיתה " + r.grade].filter(Boolean).join(" · "); return t ? ` <small class="muted-s">${esc(t)}</small>` : ""; };
 function panel() {
   const g = GAMES[game], rows = board[game], me = Honey.user.uid;
   const top = rows.slice(0, 10);
@@ -92,7 +94,7 @@ function panel() {
   const myIdx = rows.findIndex((r) => r.uid === me);
   $("#panel").innerHTML = `<h2>${g.icon} ${g.title}</h2><p class="blurb">${g.blurb}</p>` + (rows.length ? `
     <div class="podium">${pod(1, "p2", "🥈")}${pod(0, "p1", "🥇")}${pod(2, "p3", "🥉")}</div>
-    ${top.length > 3 ? `<ol>${top.slice(3).map((r, i) => `<li class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${avatarHTML(r)}</span><span class="nm">${esc(r.name)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></li>`).join("")}</ol>` : ""}
+    ${top.length > 3 ? `<ol>${top.slice(3).map((r, i) => `<li class="row${r.uid === me ? " me" : ""}"><span class="rk">${i + 4}</span><span class="av">${avatarHTML(r)}</span><span class="nm">${esc(r.name)}${sub(r)}</span><span class="sc">${esc(g.unit(r.best, r.total))}</span></li>`).join("")}</ol>` : ""}
     ${myIdx >= 10 ? `<div class="mine">המקום שלך: ${myIdx + 1} (${esc(g.unit(rows[myIdx].best, rows[myIdx].total))})</div>` : ""}
     ${myIdx < 0 ? `<p class="note">עוד לא פרסמת תוצאה במשחק הזה. משחקים, ובסוף הסיבוב מופיע כפתור פרסום.</p>` : ""}`
     : `<p class="empty-msg">עוד אף אחד לא פרסם תוצאה כאן. אפשר להיות הראשונה! 🌟</p>`);

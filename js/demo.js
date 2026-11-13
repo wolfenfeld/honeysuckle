@@ -8,7 +8,7 @@ export function createDemoBackend(adminEmails = []) {
   let listeners = [], signedIn = get("in", true);
   const fire = () => listeners.forEach((cb) => cb(signedIn ? user : null));
   const others = {
-    u1: { name: "נועה", avatar: "🦊" }, u2: { name: "איתי", avatar: "🐼" },
+    u1: { name: "נועה", avatar: "🦊", school: "נילי", grade: "ד׳" }, u2: { name: "איתי", avatar: "🐼", school: "רמות", grade: "ה׳" },
     u3: { name: "מאיה", avatar: "🦄" }, u4: { name: "דניאל", avatar: "🐸" }, u5: { name: "תמר", avatar: "🦋" },
   };
   const fake = [

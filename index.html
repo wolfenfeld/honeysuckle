@@ -280,8 +280,8 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 <section class="view v-home" id="v-home">
   <div class="page">
     <header>
-      <span class="eyebrow">בית ספר נילי · כיתה ד׳</span>
-      <h1>הלמידה של <span>יערה</span></h1>
+      <span class="eyebrow" id="h-eyebrow">בית ספר נילי · כיתה ד׳</span>
+      <h1>הלמידה של <span id="h-name">יערה</span></h1>
       <p>שישה חדרים, ארבעה מקצועות. בוחרים חדר ומתאמנים לקראת המבחן.</p>
     </header>
     <nav class="doors" aria-label="מקצועות">
@@ -1091,5 +1091,13 @@ route();
 <script type="module">
 import { Honey } from "./js/honey.js";
 Honey.ready.then(()=>{ if(!Honey.enabled) document.querySelector(".door.hall").hidden = true; });
+// Greeting follows the signed-in player: their name, school and grade. Signed-out visitors see the defaults.
+function greet(){
+  const p = Honey.profile; if(!p) return;
+  document.getElementById("h-name").textContent = p.name;
+  const line = [p.school, p.grade && "כיתה " + p.grade].filter(Boolean).join(" · ");
+  const eb = document.getElementById("h-eyebrow"); eb.textContent = line; eb.hidden = !line;
+}
+Honey.ready.then(greet); Honey.onChange(greet);
 </script>
 </body></html>

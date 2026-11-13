@@ -99,7 +99,7 @@ export function createBackend(config, adminEmails) {
       return s.exists() ? s.data() : null;
     },
     saveProfile(uid, p) {
-      return setDoc(doc(db, "profiles", uid), { name: p.name, avatar: p.avatar || "⭐", photo: p.photo || "", updatedAt: serverTimestamp() });
+      return setDoc(doc(db, "profiles", uid), { name: p.name, avatar: p.avatar || "⭐", photo: p.photo || "", school: p.school || "", grade: p.grade || "", updatedAt: serverTimestamp() });
     },
     async getScores(uid) {
       const games = ["math", "worksheet", "dictation", "quiz"];

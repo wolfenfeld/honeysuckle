@@ -11,6 +11,7 @@ export const GAMES = {
   dictation: { title: "הכתבה",          icon: "✏️", unit: (b) => `${b} ⭐`,                   blurb: "הכי הרבה כוכבים שנאספו" },
   quiz:      { title: "בוחן מילים",     icon: "🔤", unit: (b, t) => `${b} מתוך ${t || b}`,    blurb: "הכי הרבה תשובות נכונות בסיבוב (10 מילים ומעלה)" },
 };
+export const GRADES = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ז׳","ח׳","ט׳","י׳","י״א","י״ב"];
 export const AVATARS = ["🦊", "🐼", "🦄", "🐸", "🐱", "🐶", "🦋", "🐢", "🦁", "🐙", "🌸", "⭐"];
 
 const params = new URLSearchParams(location.search);
@@ -88,7 +89,7 @@ export const Honey = {
     const out = Object.fromEntries(Object.keys(GAMES).map((g) => [g, []]));
     scores.filter((x) => out[x.game]).forEach((x) => {
       const p = profiles[x.uid] || {};
-      out[x.game].push({ uid: x.uid, name: p.name || "שחקנית", avatar: p.avatar || "⭐", photo: p.photo || "", best: x.best, total: x.total, at: x.at || 0 });
+      out[x.game].push({ uid: x.uid, name: p.name || "שחקנית", avatar: p.avatar || "⭐", photo: p.photo || "", school: p.school || "", grade: p.grade || "", best: x.best, total: x.total, at: x.at || 0 });
     });
     Object.values(out).forEach((a) => a.sort((m, n) => n.best - m.best || m.at - n.at));
     return out;
@@ -150,6 +151,8 @@ body{margin-top:46px!important}
 .hc-dlg form,.hc-dlg .body{padding:20px;display:flex;flex-direction:column;gap:12px}
 .hc-dlg h2{margin:0;font-size:1.3rem}
 .hc-dlg p{margin:0;color:var(--m)}
+.hc-dlg select{font:inherit;font-size:1.05rem;padding:10px 12px;border:2px solid var(--l);border-radius:12px;width:100%;color:var(--i);background:#fff}
+.hc-dlg label{font-weight:500}
 .hc-dlg input[type=text]{font:inherit;font-size:1.1rem;padding:10px 12px;border:2px solid var(--l);border-radius:12px;width:100%;color:var(--i);background:#fff}
 .hc-av{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .hc-av label{cursor:pointer}
@@ -252,6 +255,10 @@ function profileDialog(first) {
         <div style="text-align:center;font-size:2.4rem">${avatarHTML({ photo: S.user?.photo, avatar: cur.avatar }, "big")}</div>
         <label for="hc-name">איך לקרוא לך?</label>
         <input type="text" id="hc-name" maxlength="20" required value="${esc(cur.name)}" autocomplete="off">
+        <label for="hc-school">באיזה בית ספר את/ה לומד/ת?</label>
+        <input type="text" id="hc-school" maxlength="30" value="${esc(cur.school || "")}" placeholder="למשל: נילי" autocomplete="off">
+        <label for="hc-grade">באיזו כיתה?</label>
+        <select id="hc-grade"><option value="">בחרי כיתה</option>${GRADES.map((g) => `<option value="${g}" ${g === cur.grade ? "selected" : ""}>${g}</option>`).join("")}</select>
         <div class="hc-row"><button class="hc-btn pri" type="submit">שמירה</button>${first ? "" : '<button class="hc-btn" type="button" id="hc-x">ביטול</button>'}</div>
       </form>`);
     root.append(d);
@@ -259,10 +266,11 @@ function profileDialog(first) {
       e.preventDefault();
       const name = d.querySelector("#hc-name").value.trim().slice(0, 20);
       const avatar = cur.avatar || AVATARS[0], photo = S.user?.photo || "";
+      const school = d.querySelector("#hc-school").value.trim().slice(0, 30), grade = d.querySelector("#hc-grade").value;
       if (!name) return;
       try {
-        await be.saveProfile(S.user.uid, { name, avatar, photo });
-        S.profile = { name, avatar, photo }; renderBar(); listeners.forEach((f) => f());
+        await be.saveProfile(S.user.uid, { name, avatar, photo, school, grade });
+        S.profile = { name, avatar, photo, school, grade }; renderBar(); listeners.forEach((f) => f());
         d.close(); d.remove(); resolve();
       } catch { toast("לא הצלחנו לשמור. נסי שוב."); }
     };
@@ -326,7 +334,7 @@ if (be) {
         if (S.role) {
           [S.profile, S.best] = await Promise.all([be.getProfile(user.uid), be.getScores(user.uid)]);
           if (S.profile && (S.profile.photo || "") !== (user.photo || "")) { // keep the stored picture in sync with Google
-            const p = { name: S.profile.name, avatar: S.profile.avatar || AVATARS[0], photo: user.photo || "" };
+            const p = { ...S.profile, avatar: S.profile.avatar || AVATARS[0], photo: user.photo || "" };
             try { await be.saveProfile(user.uid, p); S.profile = p; } catch (e) { console.warn("photo sync", e); }
           }
           await Rewards.attach(be, user);
@@ -342,5 +350,9 @@ if (be) {
     S.loaded = true; renderBar(); resolveReady(); listeners.forEach((f) => f());
     if (!user) welcome();
     if (S.role && !S.profile) { await profileDialog(true); }
+    else if (S.role && S.profile && !S.profile.school && !S.profile.grade && ss.get("honey-nudged") !== "1") { // ask once for school and grade
+      ss.set("honey-nudged", "1");
+      try { if (localStorage.getItem("honey-nudged") !== "1") { localStorage.setItem("honey-nudged", "1"); await profileDialog(false); } } catch {}
+    }
   });
 } else { S.loaded = true; renderBar(); resolveReady(); }
