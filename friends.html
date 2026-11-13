@@ -66,6 +66,7 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
   <div class="panel invite" id="invite" hidden>
     <div class="invrow"><div><h2>👋 הזמנת חברים</h2><p class="muted">לוחצים, שולחים בוואטסאפ, וזהו. מי שפותח את הקישור נכנס עם Google ומצטרף ישר.</p></div><button class="btn pink" id="invbtn" type="button">📤 שליחת קישור</button></div>
     <form class="form" id="invform"><input type="email" id="invemail" dir="ltr" placeholder="המייל של החבר/ה (Gmail)" aria-label="מייל של חבר/ה" required style="flex:1;min-width:200px"><button class="btn">✉️ הזמנה במייל</button></form>
+    <p class="muted" id="invmsg" role="status" style="margin:0;font-weight:600"></p>
     <p class="muted" style="margin:0">הכתובת מקבלת הרשאה ישר, ונפתח מייל מוכן לשליחה מתוכנת המייל שלך. החבר/ה נכנסים עם חשבון Google באותה כתובת.</p>
   </div>
   <div id="main"><p class="sub">טוען…</p></div>
@@ -96,7 +97,12 @@ async function load() {
   if (!Honey.isMember) return gate("אין עדיין גישה", "האתר הזה בהזמנה בלבד. אפשר לבקש קישור הזמנה.");
   me = Honey.user.uid;
   $("#invite").hidden = false; $("#invbtn").onclick = () => Honey.invite();
-  $("#invform").onsubmit = async (e) => { e.preventDefault(); if (await Honey.inviteByEmail($("#invemail").value)) $("#invemail").value = ""; };
+  $("#invform").onsubmit = async (e) => {
+    e.preventDefault();
+    const say = (t) => { $("#invmsg").textContent = t; };
+    try { if (await Honey.inviteByEmail($("#invemail").value, say)) $("#invemail").value = ""; }
+    catch (err) { console.warn(err); say("שגיאה: " + (err.message || err)); }
+  };
   const be = Honey.backend;
   try {
     [people, ch, tr, myCards] = await Promise.all([be.listProfiles(), be.listChallenges(me), be.listTrades(me), be.getRewardsOf(me).then((r) => r.cards || {})]);

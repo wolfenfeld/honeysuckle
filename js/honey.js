@@ -47,21 +47,29 @@ export const Honey = {
   // One tap: share your personal invite link (WhatsApp etc. via the share sheet, or copy it).
   // Invite by email: the friend's address is added to the guest list (so signing in with it is enough),
   // and a ready-to-send email opens in the mail app with the site link as a backup.
-  async inviteByEmail(raw) {
+  // say(text) reports progress/errors to the caller, so a failure is never silent.
+  async inviteByEmail(raw, say = () => {}) {
+    const fail = (t) => { say(t); toast(t); };
     const email = String(raw || "").trim().toLowerCase();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast("כתובת המייל לא נראית תקינה");
-    if (!S.user || !S.role) return toast("צריך להיכנס כדי להזמין חברים");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail("כתובת המייל לא נראית תקינה");
+    if (!be) return fail("הכניסה לאתר עוד לא מוגדרת");
+    if (!S.user || !S.role) return fail("צריך להיכנס עם חשבון מוזמן כדי להזמין חברים");
+    const slow = (p, what) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(Object.assign(new Error("timeout"), { code: "timeout", what })), 10000))]);
     try {
-      const code = await be.ensureInviteLink(S.user.uid);
+      say("מכינה את ההזמנה…");
+      let code;
+      try { code = await slow(be.ensureInviteLink(S.user.uid), "link"); }
+      catch (e) { console.warn("ensureInviteLink", e); return fail(`לא הצלחנו ליצור קישור הזמנה (${e.code || e.message}). ייתכן שכללי Firestore עוד לא עודכנו.`); }
       let added = true;
-      try { await be.inviteEmail(S.user.uid, email); } catch (e) { added = false; console.warn("inviteEmail", e); } // e.g. already a member
+      try { await slow(be.inviteEmail(S.user.uid, email), "member"); } catch (e) { added = false; console.warn("inviteEmail", e); } // e.g. already a member
       const url = homeUrl("index.html?invite=" + encodeURIComponent(code));
       const who = S.profile?.name || "חבר";
       const subject = `${who} מזמין/ה אותך ללמידה של יערה`;
       const body = `היי!\r\n\r\n${who} הזמין/ה אותך לשחק ב"הלמידה של יערה": תרגילי חשבון והכתבות, קלפי חתולים לאיסוף ואתגרים בין חברים.\r\n\r\nכניסה עם חשבון Google:\r\n${url}\r\n`;
+      say("");
       inviteDialog({ email, subject, body, url, added });
       return true;
-    } catch (e) { console.warn(e); toast("לא הצלחנו להכין את ההזמנה. נסי שוב."); }
+    } catch (e) { console.warn(e); fail(`משהו השתבש: ${e.message || e}`); }
   },
   async invite() {
     if (!S.user || !S.role) return toast("צריך להיכנס כדי להזמין חברים");
