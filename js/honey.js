@@ -129,24 +129,35 @@ window.Honey = Honey;
 /* ---------- UI ---------- */
 const CSS = `
 .hc,.hc *{box-sizing:border-box;font-family:"Rubik",system-ui,sans-serif}
-.hc{--i:#1f2a44;--m:#5b6782;--l:#d6dded;--c:#fff;--a:#d63b70;--g:#f2b705;direction:rtl;color:var(--i)}
-.hc-bar{position:fixed;top:max(8px,env(safe-area-inset-top,0px));left:max(8px,env(safe-area-inset-left,0px));z-index:40;display:flex;gap:6px;align-items:center}
-body{margin-top:46px!important}
+.hc{--i:#33231a;--m:#6b5a4d;--l:#e3d6bf;--c:#fffaf0;--a:#e0475b;--g:#f7c428;--ol:#33231a;direction:rtl;color:var(--i)}
+.hc-bar{position:absolute;top:max(10px,env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:40;display:flex;justify-content:space-between;align-items:center;gap:8px;pointer-events:none}
+.hc-bar>*{pointer-events:auto}
+.hc-grp{display:flex;gap:8px;align-items:center}
+body{margin-top:64px!important}
 .hc [hidden]{display:none!important}
-.hc-btn{border:2px solid var(--l);background:var(--c);color:var(--i);border-radius:999px;padding:6px 12px;font-size:.9rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.15);max-width:60vw;line-height:1.2}
-.hc-btn:hover{border-color:var(--g)}
-.hc-btn.pri{background:var(--a);border-color:var(--a);color:#fff}
-.hc-btn.gold{background:var(--g);border-color:var(--g);color:#3b2d00}
+.hc-btn{border:2.5px solid var(--ol);background:var(--c);color:var(--i);border-radius:999px;padding:6px 14px;min-height:44px;font-size:.95rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 3px 0 rgba(51,35,26,.22);max-width:60vw;line-height:1.2}
+.hc-btn:hover{background:#fff3d2}
+.hc-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(51,35,26,.22)}
+.hc-ib{padding:0 12px;border-radius:14px;min-width:44px;justify-content:center;position:relative}
+.hc-ib .lab{display:none}
+.hc-ib .badge{position:absolute;top:-8px;inset-inline-start:-6px;background:#e0475b;color:#fff;border:2px solid var(--c);border-radius:999px;font-size:.75rem;min-width:22px;height:22px;display:grid;place-items:center;padding:0 5px}
+.hc-avb{padding:0;width:48px;height:48px;border-radius:50%;justify-content:center;overflow:hidden;position:relative}
+.hc-avb .pimg{width:100%;height:100%;border-radius:0}
+.hc-avb .av-e{font-size:1.6rem}
+.hc-avb .nm{display:none}
+@media (min-width:700px){.hc-ib .lab{display:inline}.hc-avb{width:auto;border-radius:999px;padding:0 14px 0 8px;gap:8px;height:auto}.hc-avb .pimg{width:32px;height:32px;border-radius:50%}.hc-avb .nm{display:inline}}
+.hc-btn.pri{background:var(--a);color:#fff}
+.hc-btn.gold{background:var(--g);color:var(--i)}
 .hc-btn span.n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hc-menu{position:absolute;top:calc(100% + 6px);left:0;min-width:190px;background:var(--c);border:2px solid var(--l);border-radius:14px;padding:6px;box-shadow:0 10px 24px rgba(0,0,0,.25);display:flex;flex-direction:column}
+.hc-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:210px;background:var(--c);border:2.5px solid var(--ol);border-radius:14px;padding:6px;box-shadow:0 10px 24px rgba(0,0,0,.25);display:flex;flex-direction:column}
 .hc-menu a,.hc-menu button{border:0;background:none;text-align:right;padding:9px 12px;border-radius:10px;font-size:.95rem;color:var(--i);cursor:pointer;text-decoration:none}
-.hc-menu a:hover,.hc-menu button:hover{background:#eef2fb}
+.hc-menu a:hover,.hc-menu button:hover{background:#fff0c9}
 .hc-menu small{padding:6px 12px;color:var(--m);overflow-wrap:anywhere}
-.hc-card{position:fixed;z-index:60;bottom:max(14px,env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(440px,calc(100vw - 24px));background:var(--c);border:3px solid var(--g);border-radius:18px;padding:14px 16px;box-shadow:0 14px 34px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px;animation:hcup .25s ease-out}
+.hc-card{position:fixed;z-index:60;bottom:max(14px,env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(440px,calc(100vw - 24px));background:var(--c);border:3px solid var(--ol);border-radius:18px;padding:14px 16px;box-shadow:0 14px 34px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px;animation:hcup .25s ease-out}
 .hc-card span{color:var(--m);font-size:.95rem}
 .hc-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;border:0;padding:0}
 @keyframes hcup{from{transform:translate(-50%,20px);opacity:0}}
-.hc-dlg{border:0;border-radius:20px;padding:0;max-width:min(420px,calc(100vw - 24px));width:100%;background:var(--c);color:var(--i);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.hc-dlg{border:3px solid var(--ol);border-radius:22px;padding:0;max-width:min(420px,calc(100vw - 24px));width:100%;background:var(--c);color:var(--i);box-shadow:0 20px 50px rgba(0,0,0,.4)}
 .hc-dlg::backdrop{background:rgba(10,18,36,.55)}
 .hc-dlg form,.hc-dlg .body{padding:20px;display:flex;flex-direction:column;gap:12px}
 .hc-dlg h2{margin:0;font-size:1.3rem}
@@ -161,11 +172,11 @@ body{margin-top:46px!important}
 .hc-av input:checked+span{border-color:var(--a);background:#fde6ee}
 .hc-av input:focus-visible+span{outline:3px solid var(--g)}
 .hc-dlg .hc-row{justify-content:flex-start;margin-top:0}
-.hc-toast{position:fixed;z-index:70;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2a44;color:#fff;padding:10px 18px;border-radius:999px;font-size:.95rem;max-width:calc(100vw - 24px)}
-.hc-chip{background:#fff4c2;border-color:#f2b705}
+.hc-toast{position:fixed;z-index:70;bottom:20px;left:50%;transform:translateX(-50%);background:#33231a;color:#fff;padding:10px 18px;border-radius:999px;font-size:.95rem;max-width:calc(100vw - 24px)}
+.hc-chip{background:#f7d98a;font-variant-numeric:tabular-nums;font-size:1.05rem}
 .hc-chip.ready{animation:hcpulse 1.4s ease-in-out infinite}
 @keyframes hcpulse{50%{transform:scale(1.07)}}
-.hc-pts{position:fixed;z-index:65;top:calc(max(8px,env(safe-area-inset-top,0px)) + 52px);left:50%;transform:translateX(-50%);width:min(340px,calc(100vw - 24px));background:#fff;border:3px solid #f2b705;border-radius:16px;padding:10px 14px;box-shadow:0 12px 28px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:6px;animation:hcdown .25s ease-out}
+.hc-pts{position:fixed;z-index:65;top:calc(max(10px,env(safe-area-inset-top,0px)) + 62px);left:50%;transform:translateX(-50%);width:min(340px,calc(100vw - 24px));background:#fffaf0;border:3px solid var(--ol);border-radius:16px;padding:10px 14px;box-shadow:0 12px 28px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:6px;animation:hcdown .25s ease-out}
 @keyframes hcdown{from{transform:translate(-50%,-14px);opacity:0}}
 .hc-pts b{font-size:1.15rem}
 .hc-pts .bar{height:10px;border-radius:99px;background:#eef2fb;overflow:hidden}
@@ -212,25 +223,26 @@ function pointsToast(d) {
 }
 function chip() {
   const pts = Rewards.state.points, ready = pts >= COST;
-  return el("a", { className: "hc-btn hc-chip" + (ready ? " ready" : ""), href: homeUrl("cats.html"), title: "אלבום החתולים" },
-    `⭐ <span class=n>${pts}${ready ? " 🎁" : ""}</span>`);
+  return el("a", { className: "hc-btn hc-chip" + (ready ? " ready" : ""), href: homeUrl("cats.html"), title: "הכוכבים שלי · אלבום החתולים" },
+    `<span class=n>${pts}</span> ⭐${ready ? " 🎁" : ""}`);
 }
 Rewards.onChange(() => renderBar());
 
 function renderBar() {
   bar.replaceChildren();
-  bar.append(chip());
-  if (!be) return;
-  if (!S.loaded) return;
-  if (demo) bar.append(el("span", { className: "hc-btn", title: "מצב הדגמה: הכול נשמר רק בדפדפן הזה" }, "🧪 הדגמה"));
-  bar.append(el("a", { className: "hc-btn gold", href: homeUrl("hall.html") }, "🏆 <span class=n>היכל התהילה</span>"));
-  if (S.role) bar.append(el("a", { className: "hc-btn", href: homeUrl("friends.html"), title: "חברים: אתגרים והחלפות" }, `👥${S.pending ? ` <span class=n style="background:#d63b70;color:#fff;border-radius:999px;padding:0 7px">${S.pending}</span>` : ""}`));
+  const right = el("div", { className: "hc-grp" }), left = el("div", { className: "hc-grp" });
+  bar.append(right, left);
+  right.append(chip());
+  if (!be || !S.loaded) return;
+  if (demo) left.append(el("span", { className: "hc-btn hc-ib", title: "מצב הדגמה: הכול נשמר רק בדפדפן הזה" }, "🧪"));
+  if (S.role) left.append(el("a", { className: "hc-btn hc-ib", href: homeUrl("friends.html"), title: "חברים: אתגרים והחלפות" }, `👥<span class="lab">חברים</span>${S.pending ? `<span class="badge">${S.pending}</span>` : ""}`));
+  left.append(el("a", { className: "hc-btn hc-ib", href: homeUrl("hall.html"), title: "היכל התהילה" }, `🏆<span class="lab">היכל התהילה</span>`));
   if (!S.user) {
-    const b = el("button", { className: "hc-btn pri", type: "button" }, "🔑 כניסה"); b.onclick = Honey.signIn; bar.append(b); return;
+    const b = el("button", { className: "hc-btn pri", type: "button" }, "🔑 כניסה"); b.onclick = Honey.signIn; right.prepend(b); return;
   }
   const wrap = el("div", { style: "position:relative" });
-  const b = el("button", { className: "hc-btn", type: "button", "aria-haspopup": "true" },
-    `${S.role && S.profile ? avatarHTML({ photo: S.user.photo, avatar: S.profile.avatar }) : "👤"} <span class=n>${esc(S.role ? (S.profile?.name || "שלום") : "אין גישה")}</span> ▾`);
+  const b = el("button", { className: "hc-btn hc-avb", type: "button", "aria-haspopup": "true", title: S.profile?.name || "הפרופיל שלי" },
+    `${S.role && S.profile ? avatarHTML({ photo: S.user.photo, avatar: S.profile.avatar }) : "👤"}<span class="nm">${esc(S.role ? (S.profile?.name || "שלום") : "אין גישה")} ▾</span>`);
   const menu = el("div", { className: "hc-menu", hidden: true });
   if (S.role) {
     const inv = el("button", { type: "button" }, "👋 הזמנת חברים"); inv.onclick = () => { menu.hidden = true; Honey.invite(); }; menu.append(inv);
@@ -241,7 +253,7 @@ function renderBar() {
   const o = el("button", { type: "button" }, "יציאה"); o.onclick = () => Honey.signOut(); menu.append(o);
   b.onclick = (ev) => { ev.stopPropagation(); menu.hidden = !menu.hidden; };
   document.addEventListener("click", () => (menu.hidden = true));
-  wrap.append(b, menu); bar.append(wrap);
+  wrap.append(b, menu); right.prepend(wrap);
   if (!S.role) menu.hidden = false;
 }
 

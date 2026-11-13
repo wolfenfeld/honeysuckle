@@ -6,69 +6,51 @@
 <title>אלבום החתולים</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Suez+One&display=swap">
 <link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/theme.css">
 <style>
-:root{--ink:#2b2140;--muted:#6d6288;--bg:#fff3f7;--card:#fff;--line:#f0dbe6;--accent:#d63b70;--gold:#f2b705;color-scheme:light}
-*{box-sizing:border-box}
-body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--ink);min-height:100vh;
-  background-color:var(--bg);background-image:radial-gradient(circle at 14px 14px,rgba(214,59,112,.1) 0 6px,transparent 7px),radial-gradient(circle at 44px 40px,rgba(242,183,5,.16) 0 5px,transparent 6px);background-size:60px 56px}
-.page{max-width:980px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
-a.back{align-self:flex-start;color:var(--ink);background:#fff;border:2px solid var(--line);padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem}
-h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2rem,6vw,3rem);margin:0;color:var(--accent);line-height:1.05}
-.sub{margin:4px 0 0;color:var(--muted)}
-.wallet{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
-.wallet .pts{font-size:2.4rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.wallet .pts small{font-size:1rem;font-weight:500;color:var(--muted)}
-.wallet .meter{flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px}
-.wallet .bar{height:14px;background:#f6e8ef;border-radius:99px;overflow:hidden}
-.wallet .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ff7a59);transition:width .4s}
-.wallet .hint{color:var(--muted);font-size:.95rem}
-.btn{border:0;border-radius:14px;padding:12px 22px;background:var(--accent);color:#fff;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 0 #a02450}
-.btn:disabled{background:#cdbfd0;box-shadow:0 4px 0 #b3a5b6;cursor:not-allowed}
-.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #a02450}
-.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--line),0 0 0 2px var(--line) inset}
+.wallet{display:flex;flex-direction:column;gap:12px;align-items:stretch;text-align:center}
+.wallet .row1{display:flex;align-items:center;gap:12px}
+.wallet .row1 .t-bar{flex:1}
+.wallet .hint{color:var(--muted);font-weight:500}
+.wallet .t-btn.big{font-size:1.3rem;padding:12px 30px;align-self:center;min-width:min(100%,280px)}
 .where{font-size:.85rem;color:var(--muted);margin:0}
-.done{background:#fff4c2;border:2px solid var(--gold);border-radius:18px;padding:14px 18px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-weight:700;font-size:1.15rem}
-.done .btn{text-decoration:none;display:inline-block}
+.done{background:#fff4c2;border:3px solid var(--k);border-radius:20px;padding:14px 18px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-weight:800;font-size:1.15rem;box-shadow:0 4px 0 var(--k-soft)}
 .filters{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:.95rem;font-weight:500;color:var(--ink);cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
-.count{color:var(--muted);font-weight:500}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.count{color:var(--muted);font-weight:500;font-size:.95rem}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (min-width:640px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}}
 /* pack opening */
 dialog{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;overflow:visible}
-dialog::backdrop{background:rgba(25,12,45,.82)}
+dialog::backdrop{background:rgba(35,22,14,.85)}
 .stage{display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;color:#fff;text-align:center;width:min(92vw,360px)}
-.flip{width:min(70vw,280px);aspect-ratio:87/97;perspective:900px}
+.flip{width:min(70vw,280px);aspect-ratio:87/115;perspective:900px}
 .flip .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
 .flip.show .in{transform:rotateY(180deg)}
 .flip .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.flip .back{border-radius:16px;border:4px solid #fff;background:repeating-linear-gradient(45deg,#d63b70 0 14px,#f06b97 14px 28px);display:grid;place-items:center;font-size:4.5rem;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.flip .back{border-radius:18px;border:4px solid #fff;background:repeating-linear-gradient(45deg,#e0475b 0 14px,#f06b7d 14px 28px);display:grid;place-items:center;font-size:4.5rem;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 .flip .back.shake{animation:shake .5s ease-in-out infinite}
 @keyframes shake{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
 .flip .front{transform:rotateY(180deg)}
-.flip .front .cat{width:100%;height:100%;aspect-ratio:auto}
-.reveal{min-height:90px;display:flex;flex-direction:column;gap:4px;align-items:center}
-.reveal h2{margin:0;font-family:"Suez One",serif;font-weight:400;font-size:1.7rem}
-.reveal .new{background:var(--gold);color:#3b2d00;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.9rem}
+.flip .front .cat{width:100%;height:100%}
+.flip .front .frame{flex:1;aspect-ratio:auto}
+.flip .front .nm{font-size:1.2rem}
+.reveal{min-height:90px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.reveal h2{margin:0;font-weight:800;font-size:1.7rem}
+.reveal .new{background:var(--yellow);color:var(--k);border:3px solid var(--k);border-radius:999px;padding:2px 14px;font-weight:800;font-size:.9rem}
 .stage .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.stage .t-btn{color:var(--k)}
 </style>
 </head>
-<body>
-<div class="page">
-  <a class="back" href="index.html#home">→ חזרה לדף הבית</a>
-  <header>
-    <h1>🐱 אלבום החתולים</h1>
-    <p class="sub">צוברים כוכבים בסוף כל סיבוב, ופותחים חבילה כדי לקבל חתול אקראי. ככל שיש יותר חתולים על הקלף, הוא נדיר יותר.</p>
-  </header>
-  <section class="wallet" aria-label="הכוכבים שלי">
-    <div class="pts" id="pts">0 <small>כוכבים</small></div>
-    <div class="meter"><div class="bar"><i id="bar" style="width:0"></i></div><span class="hint" id="hint"></span></div>
-    <button class="btn" id="open" type="button">🎁 פתיחת חבילה</button>
+<body class="themed">
+<div class="t-page">
+  <div class="t-top"><a class="t-back" href="index.html#home" aria-label="חזרה לדף הבית">→</a><h1>אלבום החתולים 🐱</h1></div>
+  <section class="t-card wallet" aria-label="הכוכבים שלי">
+    <div class="row1"><span class="t-pill" id="pts">0 ⭐</span><div class="t-bar"><i id="bar" style="width:0"></i></div></div>
+    <div class="hint" id="hint"></div>
+    <button class="t-btn big" id="open" type="button">🎁 פתיחת חבילה</button>
     <p class="where" id="where"></p>
   </section>
-  <div class="done" id="done" hidden>🎉 האלבום שלם! <a class="btn" href="poster.html">🖼️ לפוסטר שלי</a></div>
+  <div class="done" id="done" hidden>🎉 האלבום שלם! <a class="t-btn" href="poster.html">🖼️ לפוסטר שלי</a></div>
   <div class="filters" id="filters" role="group" aria-label="סינון לפי נדירות"></div>
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
@@ -82,8 +64,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
     </div></div>
     <div class="reveal" id="reveal"></div>
     <div class="row" id="drow" hidden>
-      <button class="btn" id="again" type="button">🎁 עוד חבילה</button>
-      <button class="btn ghost" id="close" type="button">לאלבום</button>
+      <button class="t-btn" id="again" type="button">🎁 עוד חבילה</button>
+      <button class="t-btn ghost" id="close" type="button">לאלבום</button>
     </div>
   </div>
 </dialog>
@@ -97,7 +79,7 @@ const $ = (s) => document.querySelector(s);
 let filter = 0;
 function render() {
   const st = Rewards.state, pts = st.points;
-  $("#pts").innerHTML = `${pts} <small>כוכבים</small>`;
+  $("#pts").textContent = `${pts} ⭐`;
   $("#bar").style.width = Math.min(100, (pts / COST) * 100) + "%";
   const packs = Math.floor(pts / COST);
   $("#hint").textContent = packs ? `אפשר לפתוח ${packs} ${packs === 1 ? "חבילה" : "חבילות"}!` : `עוד ${COST - pts} כוכבים לחבילה הבאה (חבילה עולה ${COST}).`;
@@ -106,10 +88,10 @@ function render() {
   const ownedN = CARDS.filter((c) => st.cards[c.id]).length;
   $("#count").textContent = `נאספו ${ownedN} מתוך ${CARDS.length} קלפים · אפשר להחזיק עד ${MAX_COPIES} עותקים מכל קלף, והכפולים טובים להחלפה עם חברים`;
   $("#done").hidden = ownedN < CARDS.length;
-  $("#filters").innerHTML = [`<button class="chip" data-r="0" aria-pressed="${filter === 0}">הכול</button>`]
+  $("#filters").innerHTML = [`<button class="t-chip" data-r="0" aria-pressed="${filter === 0}">הכול</button>`]
     .concat([1, 2, 3, 4, 5].map((r) => {
       const all = CARDS.filter((c) => c.r === r), have = all.filter((c) => st.cards[c.id]).length;
-      return `<button class="chip" data-r="${r}" aria-pressed="${filter === r}">${catIcons(r)} ${have}/${all.length}</button>`;
+      return `<button class="t-chip" data-r="${r}" aria-pressed="${filter === r}">${catIcons(r)} ${have}/${all.length}</button>`;
     })).join("");
   const list = CARDS.filter((c) => !filter || c.r === filter);
   $("#grid").innerHTML = list.map((c) => cardHTML(c, { owned: !!st.cards[c.id], count: st.cards[c.id] || 0 })).join("");
@@ -134,7 +116,7 @@ function openPack() {
     setTimeout(() => {
       const r = RARITY[res.card.r], c = res.card;
       const wow = c.r === 5 ? "אגדי! 🌟" : c.r === 4 ? "אפי! ✨" : c.r === 3 ? "נדיר! 🎉" : "";
-      $("#reveal").innerHTML = `<h2>${esc(c.he)}</h2><div>${catIcons(c.r)} · ${r.name}</div>${wow ? `<b>${wow}</b>` : ""}${res.isNew ? `<span class="new">חדש באלבום!</span>` : `<span>כבר יש לך (×${res.count}${res.count >= MAX_COPIES ? ", המקסימום" : ""}). אפשר להחליף עם חבר</span>`}${CARDS.every((x) => Rewards.state.cards[x.id]) ? `<b>🎉 האלבום שלם!</b><a class="btn" href="poster.html">🖼️ לפוסטר</a>` : ""}`;
+      $("#reveal").innerHTML = `<h2>${esc(c.he)}</h2><div>${catIcons(c.r)} · ${r.name}</div>${wow ? `<b>${wow}</b>` : ""}${res.isNew ? `<span class="new">חדש באלבום!</span>` : `<span>כבר יש לך (×${res.count}${res.count >= MAX_COPIES ? ", המקסימום" : ""}). אפשר להחליף עם חבר</span>`}${CARDS.every((x) => Rewards.state.cards[x.id]) ? `<b>🎉 האלבום שלם!</b><a class="t-btn" href="poster.html">🖼️ לפוסטר</a>` : ""}`;
       $("#drow").hidden = false; $("#again").disabled = Rewards.state.points < COST; $("#again").focus();
       busy = false;
     }, fast ? 0 : 900);

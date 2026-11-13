@@ -33,89 +33,83 @@ button:focus-visible,input:focus-visible,a:focus-visible,textarea:focus-visible,
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- HOME ---------- */
-body[data-s="home"]{background:var(--h-bg);background-image:repeating-linear-gradient(var(--h-bg) 0 31px,var(--h-line) 31px 32px)}
-.v-home header{display:flex;flex-direction:column;gap:8px;padding-top:12px}
-.v-home .eyebrow{font-size:.9rem;color:var(--h-muted);letter-spacing:.04em}
-.v-home h1{font-family:"Secular One",sans-serif;font-size:clamp(2.2rem,6vw,3.4rem);font-weight:400;line-height:1.05}
-.v-home h1 span{color:#c2410c}
-.v-home header p{color:var(--h-muted);max-width:55ch}
-.doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-@media (max-width:620px){.doors{grid-template-columns:1fr}}
-.door{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:190px;padding:18px;border-radius:18px;text-decoration:none;overflow:hidden;box-shadow:0 2px 0 rgba(0,0,0,.08),0 10px 24px -14px rgba(0,0,0,.45);transition:transform .15s}
-.door:hover{transform:translateY(-3px)}
-.door .art{position:absolute;inset:0;pointer-events:none}
-.door .art svg{width:100%;height:100%;display:block}
-.door b{position:relative;font-size:1.7rem;line-height:1.1}
-.door small{position:relative;font-size:.95rem;opacity:.9}
-.door.math{background:linear-gradient(160deg,#1e6b48,#0f3b2a);color:#fff7d6}
-.door.math b{font-family:"Rubik";font-weight:800}
-.door.english{background:linear-gradient(#bfe6ff 0 78%,#8fd16a 78%);color:#23304a}
-.door.english b{font-family:"Fredoka";font-weight:700}
-.door.sport{background:var(--s-track);color:#fff}
-.door.sport b{font-family:"Karantina";font-size:2.6rem;font-weight:700}
-.door.hebrew{background:var(--l-wood);color:var(--l-paper)}
-.door.hebrew b{font-family:"Suez One";font-weight:400}
-.door .label{position:relative;display:inline-block;align-self:flex-start;padding:4px 10px;border-radius:8px}
-.door.english .label{background:rgba(255,255,255,.82)}
-.door.sport .label{background:rgba(20,33,61,.82)}
-.door.hebrew .label{background:rgba(74,46,28,.85)}
-.door.math .label{background:rgba(15,59,42,.75)}
-.door.dictation{background:#fbfdf8;background-image:repeating-linear-gradient(transparent 0 27px,#dcede0 27px 28px);color:#24312a;border:3px solid #f3a6bd}
-.door.dictation b{font-family:"Fredoka";font-weight:700;color:#d63b70}
-.door.dictation .label{background:rgba(255,255,255,.85)}
-.door.worksheet{background-color:#f7f9fc;background-image:linear-gradient(#dfe7f2 1px,transparent 1px),linear-gradient(90deg,#dfe7f2 1px,transparent 1px);background-size:24px 24px;color:#1f2a44}
-.door.worksheet b{font-family:"Rubik";font-weight:800;color:#2f6fd6}
-.door.worksheet .label{background:rgba(255,255,255,.85)}
-.door.cats{grid-column:1/-1;min-height:110px;background:linear-gradient(135deg,#ffd1e3,#ffe9a8);color:#2b2140}
-.door.cats b{font-family:"Suez One";font-weight:400;font-size:1.9rem}
-.door.cats .label{background:rgba(255,255,255,.8)}
-.door.friends{grid-column:1/-1;min-height:100px;background:linear-gradient(135deg,#c9e8ff,#d9ccff);color:#23304a}
-.door.friends b{font-family:"Fredoka";font-weight:700;font-size:1.8rem}
-.door.friends .label{background:rgba(255,255,255,.8)}
-.door.hall{grid-column:1/-1;min-height:120px;background:linear-gradient(135deg,#14213d,#2b4378);color:#ffe38a}
-.door.hall b{font-family:"Suez One";font-weight:400;font-size:2rem}
-.door.hall .label{background:rgba(255,255,255,.12)}
-.home-foot{color:var(--h-muted);font-size:.9rem}
+:root{--k:#33231a;--k-soft:rgba(51,35,26,.25);--cream:#fbf5e4;--yellow:#f7c428;--yellow-d:#d9a000}
+body[data-s="home"]{background-color:var(--cream);background-image:radial-gradient(#d8c9a6 1.4px,transparent 1.5px);background-size:22px 22px}
+.v-home .page{max-width:1000px;gap:26px}
+.greet{position:relative;margin-top:54px;background:#fff;border:3px solid var(--k);border-radius:22px;padding:20px 24px;box-shadow:0 5px 0 var(--k-soft);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+.greet h1{font-family:"Rubik",sans-serif;font-weight:800;font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;color:var(--k)}
+.greet h1 span{color:#c2410c}
+.greet .school{margin:2px 0 0;color:#6b5a4d;font-weight:500;font-size:1.05rem}
+.btn-go{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:var(--k);border:3px solid var(--k);border-radius:999px;padding:12px 26px;font:inherit;font-weight:800;font-size:1.15rem;text-decoration:none;box-shadow:0 5px 0 var(--yellow-d),0 5px 0 3px var(--k)}
+.btn-go:active{transform:translateY(4px);box-shadow:0 1px 0 var(--yellow-d),0 1px 0 3px var(--k)}
+.mascot{position:absolute;top:-62px;left:50%;transform:translateX(-50%);width:132px;height:84px;pointer-events:none}
+@media (min-width:760px){.mascot{left:30%}.greet{flex-wrap:nowrap}}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}}
+.tile{position:relative;aspect-ratio:1.2/1;border:3px solid var(--k);border-radius:22px;overflow:hidden;display:grid;place-items:center;text-decoration:none;box-shadow:0 5px 0 var(--k-soft);transition:transform .15s}
+@media (min-width:760px){.tile{aspect-ratio:1/1.02}}
+.tile:hover{transform:translateY(-4px)}
+.tile:active{transform:translateY(2px)}
+.tile.math{background:linear-gradient(160deg,#4fb06b,#1f7a47)}
+.tile.english{background:#bfe6ff}
+.tile .art{position:absolute;inset:0;pointer-events:none}
+.tile .art svg{width:100%;height:100%;display:block}
+.tile b{position:relative;font-size:clamp(1.7rem,6vw,2.4rem);font-weight:800;color:var(--k);line-height:1;paint-order:stroke fill;-webkit-text-stroke:7px #fff;text-align:center}
+.tile.english b{font-family:"Fredoka",sans-serif;font-size:clamp(1.5rem,5vw,2.1rem)}
+.tile.sport b{font-family:"Karantina",sans-serif;font-size:clamp(2.3rem,8vw,3.2rem)}
+.tile.hebrew b{font-family:"Suez One",serif;font-weight:400}
+.more h2{font-size:1.15rem;font-weight:800;margin:0 0 10px;color:var(--k)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.achip{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--k);border:3px solid var(--k);border-radius:999px;padding:9px 18px;min-height:46px;font-weight:700;font-size:1rem;text-decoration:none;box-shadow:0 3px 0 var(--k-soft)}
+.achip:hover{background:#fff3d2}
+.achip.album{background:#f2c46d}
+.achip .cnt{background:var(--k);color:#fff;border-radius:999px;padding:0 10px;font-size:.85rem;font-variant-numeric:tabular-nums}
+.home-foot{color:#6b5a4d;font-size:.9rem}
 
 /* ---------- MATH: rainforest ---------- */
-body[data-s="math"]{background:var(--m-bg);background-image:radial-gradient(1200px 500px at 80% -10%,#2a7a52 0,transparent 60%),radial-gradient(900px 600px at 0% 100%,#14503a 0,transparent 60%)}
-.v-math{color:var(--m-card)}
-.v-math .back{background:rgba(245,242,223,.14);color:var(--m-card)}
-.canopy{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(#0b2e20,#185c3f);padding:26px 20px 22px;min-height:170px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
-.canopy svg.leaves{position:absolute;inset:0;width:100%;height:100%}
-.canopy h1{position:relative;font-family:"Rubik";font-weight:800;font-size:clamp(1.9rem,5vw,2.8rem);color:#fff7d6;text-shadow:0 2px 0 rgba(0,0,0,.25)}
-.canopy p{position:relative;color:#e5edd0;max-width:60ch}
-.m-score{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--m-card);color:var(--m-ink);border-radius:16px;padding:14px 16px}
-.m-score strong{font-size:1.5rem;font-variant-numeric:tabular-nums}
-.m-score .msg{flex:1;min-width:180px;color:var(--m-muted)}
-.mbtn{font-weight:500;padding:10px 18px;border-radius:12px;border:2px solid var(--m-bg);background:var(--m-bg);color:#fff7d6}
-.mbtn.ghost{background:transparent;color:var(--m-bg)}
-.m-secs{display:flex;flex-direction:column;gap:20px}
-.m-sec{background:var(--m-card);color:var(--m-ink);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:12px;position:relative;border-inline-start:8px solid var(--c)}
-.m-sec .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
-.m-sec h2{font-size:1.35rem;color:var(--c)}
-.m-sec .tip{color:var(--m-muted);font-size:.95rem}
-.m-sec .sc{color:var(--m-muted);font-variant-numeric:tabular-nums}
-.m-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
-.m-sec.par .m-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-.m-sec.word .m-grid{grid-template-columns:1fr}
-.m-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid transparent}
-.m-item .n{color:var(--m-muted);font-size:.85rem;min-width:1.4em;text-align:center}
-.m-ex{direction:ltr;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:1;font-size:1.25rem;font-variant-numeric:tabular-nums;font-family:"Rubik"}
-.m-word{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
-.m-word .q{line-height:1.5}
+body[data-s="math"]{background:var(--cream)}
+.v-math .page{max-width:760px;gap:16px;position:relative}
+.m-deco{position:absolute;inset:-64px 0 auto 0;height:210px;overflow:hidden;opacity:.55;pointer-events:none;-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+.m-deco svg{width:100%;height:100%;display:block}
+.m-head{position:relative;display:flex;align-items:center;gap:12px;margin-top:6px}
+.m-back{flex:none;width:48px;height:48px;border-radius:50%;border:3px solid var(--k);background:#fff;color:var(--k);display:grid;place-items:center;text-decoration:none;font-size:1.5rem;font-weight:800;box-shadow:0 3px 0 var(--k-soft)}
+.m-head h1{flex:1;font-family:"Rubik",sans-serif;font-weight:800;font-size:clamp(1.5rem,5vw,2.1rem);line-height:1.1;color:var(--k)}
+.m-pill{flex:none;background:#2e9e5b;color:#fff;border:3px solid var(--k);border-radius:999px;padding:6px 14px;font-weight:800;font-variant-numeric:tabular-nums;box-shadow:0 3px 0 var(--k-soft)}
+.m-score{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff;border:3px solid var(--k);border-radius:20px;padding:12px 14px;box-shadow:0 4px 0 var(--k-soft);color:var(--k)}
+.m-score .msg{flex:1 1 100%;color:#6b5a4d;font-weight:500}
+.mbtn{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:3px solid var(--k);background:var(--yellow);color:var(--k);cursor:pointer;box-shadow:0 3px 0 var(--k-soft);min-height:44px}
+.mbtn.ghost{background:#fff}
+.mbtn:active{transform:translateY(2px)}
+.m-secs{display:flex;flex-direction:column;gap:16px}
+.m-sec{--c:#2e9e5b;background:#fff;color:var(--k);border:3px solid var(--k);border-radius:20px;padding:0;box-shadow:0 4px 0 var(--k-soft);overflow:hidden}
+.m-sec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;min-height:56px}
+.m-sec>summary::-webkit-details-marker{display:none}
+.m-sec>summary::after{content:"";margin-inline-start:auto;width:10px;height:10px;border-inline-end:3px solid var(--k);border-bottom:3px solid var(--k);transform:rotate(45deg);transition:transform .2s}
+.m-sec[open]>summary::after{transform:rotate(-135deg)}
+.m-sec>summary .dot{width:14px;height:14px;border-radius:50%;background:var(--c);border:2.5px solid var(--k);flex:none}
+.m-sec h2{font-size:1.2rem;font-weight:800;color:var(--k);margin:0}
+.m-sec .sc{color:#6b5a4d;font-size:.9rem;font-variant-numeric:tabular-nums;margin-inline-start:6px}
+.m-sec .inner{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.m-sec .tip{color:#6b5a4d;font-size:.95rem;margin:0}
+.m-grid{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:640px){.m-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.m-sec.word .m-grid{grid-template-columns:1fr}}
+.m-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;border:2.5px solid transparent;background:#fffaf0}
+.m-item .n{color:#a08c78;font-size:.85rem;min-width:1.4em;text-align:center}
+.m-ex{direction:ltr;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;flex:1;font-size:1.35rem;font-weight:600;font-variant-numeric:tabular-nums;font-family:"Rubik"}
+.m-word{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+.m-word .q{line-height:1.55}
 .m-word .a{display:flex;align-items:center;gap:8px}
-.m-item input{width:5em;font:inherit;font-size:1.15rem;text-align:center;padding:4px 6px;border:2px solid var(--m-line);border-radius:8px;background:#fff;color:var(--m-ink)}
-.m-item input:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent)}
-.mark{width:1.3em;text-align:center;font-weight:800}
+.m-item input{width:5.5em;font:inherit;font-size:1.2rem;font-weight:700;text-align:center;padding:6px 8px;border:3px solid var(--k);border-radius:14px;background:#fff;color:var(--k)}
+.m-item input:focus{outline:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 40%,transparent)}
+.mark{width:1.3em;text-align:center;font-weight:800;font-size:1.3rem}
 .m-item.fresh{animation:mfresh .6s ease-out}
-@keyframes mfresh{from{background:#fff7c2}}
-.m-item.ok,.q-ok{background:var(--good-bg);border-color:var(--good)}
-.m-item.ok .mark{color:var(--good)}
-.m-item.no,.q-no{background:var(--bad-bg);border-color:var(--bad)}
-.m-item.no .mark{color:var(--bad)}
-.m-sec .secbtn{align-self:flex-start;font-weight:500;padding:9px 18px;border-radius:12px;border:0;background:var(--c);color:#fff}
-.m-sec.add{--c:var(--m-red)}.m-sec.sub{--c:var(--m-yellow)}.m-sec.mul{--c:var(--m-blue)}.m-sec.div{--c:var(--m-purple)}.m-sec.par{--c:var(--m-teal)}.m-sec.word{--c:var(--m-orange)}
+@keyframes mfresh{from{background:#fff3b0}}
+.m-item.ok,.q-ok{background:#d9f3e1;border-color:#2e9e5b}
+.m-item.ok .mark{color:#1f8a4c}
+.m-item.no,.q-no{background:#fbdcdc;border-color:#d64545}
+.m-item.no .mark{color:#c2412d}
+.m-sec .secbtn{align-self:flex-start;font:inherit;font-weight:700;padding:9px 20px;border-radius:999px;border:3px solid var(--k);background:var(--c);color:#fff;cursor:pointer;box-shadow:0 3px 0 var(--k-soft);min-height:44px}
+.m-sec.add{--c:var(--m-red)}.m-sec.sub{--c:#d99a00}.m-sec.mul{--c:var(--m-blue)}.m-sec.div{--c:var(--m-purple)}.m-sec.par{--c:var(--m-teal)}.m-sec.word{--c:var(--m-orange)}
 
 /* ---------- ENGLISH: happy school ---------- */
 body[data-s="english"]{background-color:#fff6d9;background-image:radial-gradient(circle at 12px 12px,rgba(255,93,115,.18) 0 5px,transparent 6px),radial-gradient(circle at 46px 40px,rgba(47,111,214,.16) 0 5px,transparent 6px),radial-gradient(circle at 70px 10px,rgba(123,92,214,.16) 0 4px,transparent 5px);background-size:84px 56px}
@@ -279,22 +273,30 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 <!-- ================= HOME ================= -->
 <section class="view v-home" id="v-home">
   <div class="page">
-    <header>
-      <span class="eyebrow" id="h-eyebrow">בית ספר נילי · כיתה ד׳</span>
-      <h1>הלמידה של <span id="h-name">יערה</span></h1>
-      <p>שישה חדרים, ארבעה מקצועות. בוחרים חדר ומתאמנים לקראת המבחן.</p>
+    <header class="greet">
+      <svg class="mascot" viewBox="0 0 132 84" aria-hidden="true"><path d="M104 74c18-2 24-26 12-40" fill="none" stroke="#33231a" stroke-width="13" stroke-linecap="round"/><path d="M104 74c18-2 24-26 12-40" fill="none" stroke="#f08a2c" stroke-width="7" stroke-linecap="round"/><path d="M32 30 22 6l28 12z" fill="#f08a2c" stroke="#33231a" stroke-width="3.5" stroke-linejoin="round"/><path d="M100 30 110 6 82 18z" fill="#f08a2c" stroke="#33231a" stroke-width="3.5" stroke-linejoin="round"/><ellipse cx="66" cy="46" rx="44" ry="34" fill="#f5a04a" stroke="#33231a" stroke-width="3.5"/><path d="M66 14v10M52 17l3 9M80 17l-3 9" stroke="#c9691a" stroke-width="3" stroke-linecap="round"/><ellipse cx="66" cy="58" rx="21" ry="15" fill="#fde9c9"/><circle cx="49" cy="43" r="5.5" fill="#33231a"/><circle cx="83" cy="43" r="5.5" fill="#33231a"/><circle cx="50.5" cy="41" r="1.8" fill="#fff"/><circle cx="84.5" cy="41" r="1.8" fill="#fff"/><path d="M62 54h8l-4 5z" fill="#e0475b" stroke="#33231a" stroke-width="2" stroke-linejoin="round"/><path d="M66 59c-2 5-8 5-10 2M66 59c2 5 8 5 10 2" fill="none" stroke="#33231a" stroke-width="2.4" stroke-linecap="round"/><path d="M36 54 16 50M36 60 18 64M96 54l20-4M96 60l18 4" stroke="#33231a" stroke-width="2" stroke-linecap="round"/><ellipse cx="42" cy="80" rx="12" ry="7" fill="#fde9c9" stroke="#33231a" stroke-width="3.2"/><ellipse cx="90" cy="80" rx="12" ry="7" fill="#fde9c9" stroke="#33231a" stroke-width="3.2"/></svg>
+      <div>
+        <h1>הלמידה של <span id="h-name">יערה</span></h1>
+        <p class="school" id="h-eyebrow">בית ספר נילי · כיתה ד׳</p>
+      </div>
+      <a class="btn-go" id="h-go" href="#math">▶ המשך לתרגל</a>
     </header>
-    <nav class="doors" aria-label="מקצועות">
-      <a class="door math" href="#math"><div class="art" id="art-math"></div><span class="label"><b>חשבון</b></span><small>ביער הגשם · תרגילים חדשים בכל פעם</small></a>
-      <a class="door english" href="#english"><div class="art" id="art-english"></div><span class="label"><b>Happy School</b><br><small>אנגלית · הבנת הנקרא ומילים</small></span></a>
-      <a class="door sport" href="#sport"><div class="art" id="art-sport"></div><span class="label"><b>ספורט</b><br><small>אימונים בבית עם טיימר</small></span></a>
-      <a class="door hebrew" href="#hebrew"><div class="art" id="art-hebrew"></div><span class="label"><b>שפה</b><br><small>הבנת הנקרא בספרייה</small></span></a>
-      <a class="door dictation" href="dictation.html"><span class="label"><b>ההכתבה</b><br><small>אנגלית · מקשיבים, כותבים ומקבלים כוכבים</small></span></a>
-      <a class="door worksheet" href="worksheet.html"><span class="label"><b>תרגילי המבחן</b><br><small>חשבון · סט קבוע, חיבור עד סוגריים</small></span></a>
-      <a class="door cats" href="cats.html"><span class="label"><b>🐱 אלבום החתולים</b><br><small>צוברים כוכבים, פותחים חבילות, מחליפים קלפים ואוספים</small></span></a>
-      <a class="door friends" href="friends.html"><span class="label"><b>👥 חברים</b><br><small>אתגרים והחלפת קלפים</small></span></a>
-      <a class="door hall" href="hall.html"><span class="label"><b>🏆 היכל התהילה</b><br><small>השיאים של כולם · נכנסים עם Google (בהזמנה)</small></span></a>
+    <nav class="tiles" aria-label="מקצועות">
+      <a class="tile math" href="#math" aria-label="חשבון"><div class="art" id="art-math"></div><b>חשבון</b></a>
+      <a class="tile english" href="#english" aria-label="Happy School"><div class="art" id="art-english"></div><b>Happy<br>School</b></a>
+      <a class="tile sport" href="#sport" aria-label="ספורט"><div class="art" id="art-sport"></div><b>ספורט</b></a>
+      <a class="tile hebrew" href="#hebrew" aria-label="שפה"><div class="art" id="art-hebrew"></div><b>שפה</b></a>
     </nav>
+    <section class="more">
+      <h2>עוד פעילויות</h2>
+      <div class="chips">
+        <a class="achip album" href="cats.html">🐱 אלבום החתולים <span class="cnt" id="h-album">0/30</span></a>
+        <a class="achip" href="friends.html" id="h-friends">👥 חברים</a>
+        <a class="achip" href="hall.html" id="h-hall">🏆 היכל התהילה</a>
+        <a class="achip" href="dictation.html">✏️ ההכתבה</a>
+        <a class="achip" href="worksheet.html">📝 תרגילי המבחן</a>
+      </div>
+    </section>
     <p class="home-foot">טיפ: מילים חדשות באנגלית נשמרות במחסן המילים, אפשר להוסיף אותן בכל יום.</p>
   </div>
 </section>
@@ -302,14 +304,13 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
 <!-- ================= MATH ================= -->
 <section class="view v-math" id="v-math" hidden>
   <div class="page">
-    <a class="back" href="#home">→ חזרה הביתה</a>
-    <div class="canopy">
-      <svg class="leaves" id="canopy-svg" aria-hidden="true"></svg>
-      <h1>חשבון ביער הגשם</h1>
-      <p>כותבים את התשובה ולוחצים "בדיקה". ✓ ירוק זה נכון, ✗ אדום זה לנסות שוב. כפתור "תרגילים חדשים" מביא סט חדש.</p>
+    <div class="m-deco" aria-hidden="true"><svg id="canopy-svg"></svg></div>
+    <div class="m-head">
+      <a class="m-back" href="#home" aria-label="חזרה לדף הבית">→</a>
+      <h1>חשבון 🌿<br>ביער הגשם</h1>
+      <span class="m-pill" id="m-total">0 נפתרו</span>
     </div>
     <div class="m-score">
-      <strong id="m-total">0 נפתרו</strong>
       <span class="msg" id="m-msg">עדיין לא בדקנו. בהצלחה!</span>
       <button class="mbtn" id="m-checkall">בדיקת הכול</button>
       <button class="mbtn ghost" id="m-new">תרגילים חדשים</button>
@@ -480,6 +481,9 @@ function route(){
   if(!VIEWS.includes(v)) v = "home";
   VIEWS.forEach(n => { $("#v-"+n).hidden = n!==v; });
   document.body.dataset.s = v;
+  try{ if(["math","english","sport","hebrew"].includes(v)) localStorage.setItem("honey-last-room",v); }catch(e){}
+  let last="math"; try{ last=localStorage.getItem("honey-last-room")||"math"; }catch(e){}
+  const go=$("#h-go"); if(go) go.href="#"+last;
   window.scrollTo(0,0);
 }
 window.addEventListener("hashchange", route);
@@ -560,13 +564,15 @@ function flowersSVG(svg, w, h, count){
   svg.innerHTML = out;
 }
 function drawDoorArt(){
-  const m = document.createElementNS(SVGNS,"svg"); $("#art-math").appendChild(m); leafSVG(m,400,190,26,["#2e8b57","#3fa66b","#1f6b44","#5cbf7a"]);
-  const e = document.createElementNS(SVGNS,"svg"); $("#art-english").appendChild(e); schoolSVG(e,400,190);
-  $("#art-sport").innerHTML = `<svg viewBox="0 0 400 190" preserveAspectRatio="none"><g stroke="rgba(255,255,255,.8)" stroke-width="2.5" fill="none"><path d="M-10 40 Q200 0 410 40"/><path d="M-10 75 Q200 35 410 75"/><path d="M-10 110 Q200 70 410 110"/><path d="M-10 145 Q200 105 410 145"/></g><circle cx="330" cy="60" r="34" fill="#c6f432"/><path d="M300 48 Q330 60 360 48 M300 72 Q330 60 360 72" stroke="#fff" stroke-width="3" fill="none"/></svg>`;
+  // Square-ish tiles: math leaves, school (centered), sport track with ball, library shelf with an open book.
+  const m = document.createElementNS(SVGNS,"svg"); $("#art-math").appendChild(m); leafSVG(m,300,300,34,["#2e8b57","#3fa66b","#1f6b44","#5cbf7a"]);
+  m.setAttribute("preserveAspectRatio","xMidYMid slice");
+  const e = document.createElementNS(SVGNS,"svg"); $("#art-english").appendChild(e); schoolSVG(e,400,230); e.setAttribute("preserveAspectRatio","xMidYMax slice");
+  $("#art-sport").innerHTML = `<svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice"><rect width="300" height="300" fill="#e0642e"/><g stroke="rgba(255,255,255,.85)" stroke-width="4" fill="none"><path d="M-10 70 Q150 20 310 70"/><path d="M-10 125 Q150 75 310 125"/><path d="M-10 180 Q150 130 310 180"/><path d="M-10 235 Q150 185 310 235"/><path d="M-10 290 Q150 240 310 290"/></g><circle cx="238" cy="62" r="36" fill="#f7c428" stroke="#33231a" stroke-width="4"/><path d="M215 36 L261 36 L250 58 L226 58Z" fill="#e0475b" opacity=".0"/><path d="M62 0 L86 0 L100 56 L74 62Z" fill="#e0475b" opacity=".9"/></svg>`;
   const cols = ["#7d2732","#b98a2c","#3d5a3a","#2f4a6b","#8a4b2a","#5c3b66"];
-  let sp = `<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice"><rect x="0" y="118" width="400" height="10" fill="#8a5a36"/>`;
-  let x=170; while(x<392){const wd=rnd(14,24),ht=rnd(60,100);sp+=`<rect x="${x}" y="${118-ht}" width="${wd}" height="${ht}" fill="${pick(cols)}" rx="2"/><rect x="${x+3}" y="${118-ht+10}" width="${wd-6}" height="3" fill="#e8c27a" opacity=".6"/>`;x+=wd+2;}
-  sp += `</svg>`; $("#art-hebrew").innerHTML = sp;
+  let sp = `<svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice"><rect width="300" height="300" fill="#c9a8ec"/><rect x="0" y="170" width="300" height="14" fill="#8a5a36"/>`;
+  let x=14; while(x<286){const wd=rnd(16,26),ht=rnd(70,120);sp+=`<rect x="${x}" y="${170-ht}" width="${wd}" height="${ht}" fill="${pick(cols)}" rx="2" stroke="#33231a" stroke-width="2"/><rect x="${x+3}" y="${170-ht+10}" width="${wd-6}" height="3" fill="#e8c27a" opacity=".7"/>`;x+=wd+3;}
+  sp += `<path d="M150 255 Q100 232 52 252 L52 288 Q100 270 150 292Z" fill="#fff8e6" stroke="#33231a" stroke-width="3"/><path d="M150 255 Q200 232 248 252 L248 288 Q200 270 150 292Z" fill="#fff8e6" stroke="#33231a" stroke-width="3"/></svg>`; $("#art-hebrew").innerHTML = sp;
 }
 
 /* =========================================================
@@ -605,14 +611,14 @@ function buildMath(){
   const root=$("#m-secs"); root.innerHTML="";
   MSECS.forEach(sec=>{
     mBySec[sec.key]=mBySec[sec.key]||0;
-    const s=document.createElement("section");
-    s.className="m-sec "+sec.key;
-    s.innerHTML=`<div class="head"><h2>${sec.title}</h2><span class="sc" id="msc-${sec.key}"></span></div><p class="tip">${sec.tip}</p><div class="m-grid"></div>`;
-    const grid=s.querySelector(".m-grid");
+    const s=document.createElement("details");
+    s.className="m-sec "+sec.key; s.open=["add","sub","mul"].includes(sec.key);
+    s.innerHTML=`<summary><span class="dot"></span><h2>${sec.title}</h2><span class="sc" id="msc-${sec.key}"></span></summary><div class="inner"><p class="tip">${sec.tip}</p><div class="m-grid"></div></div>`;
+    const grid=s.querySelector(".m-grid"), inner=s.querySelector(".inner");
     for(let i=0;i<(sec.n||6);i++){ const row=document.createElement("div"); fillRow(row,sec.key,i,freshItem(sec.key)); grid.appendChild(row); }
     const btn=document.createElement("button"); btn.className="secbtn"; btn.textContent="בדיקה";
     btn.onclick=()=>solveRows(s.querySelectorAll(".m-item"));
-    s.appendChild(btn); root.appendChild(s);
+    inner.appendChild(btn); root.appendChild(s);
   });
   updMScore();
 }
@@ -639,7 +645,7 @@ function solveRows(rows){
 function updMScore(){
   $("#m-total").textContent=`${mSession} נפתרו`;
   MSECS.forEach(s=>{ const e=$("#msc-"+s.key); if(e) e.textContent=mBySec[s.key]?`${mBySec[s.key]} נפתרו`:""; });
-  $("#m-msg").textContent=mSession>=25?"מדהים! את על גל! 🌟":mSession>=12?"מצוין, ממשיכים!":mSession>=1?"יפה מאוד! כל תרגיל שנפתר מוחלף בחדש.":`כותבים תשובה ולוחצים "בדיקה". תרגיל שנפתר מוחלף בחדש. (נפתרו עד היום: ${mTotal})`;
+  $("#m-msg").textContent=mSession>=25?"מדהים! את על גל! 🌟":mSession>=12?"מצוין, ממשיכים!":mSession>=1?"יפה מאוד! כל תרגיל שנפתר מוחלף בחדש.":`כותבים תשובה ולוחצים "בדיקה". תרגיל שנפתר מוחלף בחדש. נפתרו עד היום: ${mTotal}`;
   syncPost();
 }
 const waitHoney=()=>window.Honey?Promise.resolve():new Promise(r=>setTimeout(()=>r(waitHoney()),150));
@@ -1090,7 +1096,10 @@ route();
 
 <script type="module">
 import { Honey } from "./js/honey.js";
-Honey.ready.then(()=>{ if(!Honey.enabled) document.querySelector(".door.hall").hidden = true; });
+Honey.ready.then(()=>{ if(!Honey.enabled){ document.getElementById("h-hall").hidden = true; document.getElementById("h-friends").hidden = true; } });
+import { CARDS } from "./js/cards.js";
+const album = () => { const n = CARDS.filter(c => Honey.Rewards.state.cards[c.id]).length; document.getElementById("h-album").textContent = n + "/" + CARDS.length; };
+Honey.Rewards.onChange(album); album();
 // Greeting follows the signed-in player: their name, school and grade. Signed-out visitors see the defaults.
 function greet(){
   const p = Honey.profile; if(!p) return;
