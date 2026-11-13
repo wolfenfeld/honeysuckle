@@ -318,11 +318,9 @@ body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-col
       <a class="tile hebrew" href="#hebrew" aria-label="שפה"><div class="art" id="art-hebrew"></div><b>שפה</b></a>
     </nav>
     <section class="more">
-      <h2>עוד פעילויות</h2>
+      <h2>אלבומי תמונות</h2>
       <div class="chips">
         <a class="achip album" href="cats.html">🐱 אלבום החתולים <span class="cnt" id="h-album">0/30</span></a>
-        <a class="achip" href="friends.html" id="h-friends">👥 חברים</a>
-        <a class="achip" href="hall.html" id="h-hall">🏆 היכל התהילה</a>
       </div>
     </section>
     <p class="home-foot">טיפ: מילים חדשות באנגלית נשמרות במחסן המילים, אפשר להוסיף אותן בכל יום.</p>
@@ -1144,7 +1142,6 @@ route();
 
 <script type="module">
 import { Honey } from "./js/honey.js";
-Honey.ready.then(()=>{ if(!Honey.enabled){ document.getElementById("h-hall").hidden = true; document.getElementById("h-friends").hidden = true; } });
 import { CARDS } from "./js/cards.js";
 const album = () => { const n = CARDS.filter(c => Honey.Rewards.state.cards[c.id]).length; document.getElementById("h-album").textContent = n + "/" + CARDS.length; };
 Honey.Rewards.onChange(album); album();
