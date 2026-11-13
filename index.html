@@ -487,7 +487,7 @@ body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-col
   <div class="page">
     <a class="back" href="#home" aria-label="חזרה לדף הבית">→</a>
     <div class="lib-head">
-      <h1>הספרייה של יערה</h1>
+      <h1>הספרייה של <span id="lib-name">יערה</span></h1>
       <p>בוחרים ספר מהמדף, קוראים את הקטע ועונים על השאלות. בשאלות הפתוחות כותבים תשובה מלאה, ואז אפשר לראות תשובה לדוגמה.</p>
     </div>
     <div>
@@ -1042,7 +1042,7 @@ function next(){ R.i++; if(R.i>=R.steps.length){ finishRun(); return; } R.left=R
 function finishRun(){
   clearInterval(R.timer);
   if(R.isWorkout){ const o=sLoad(); o.all=(o.all||0)+1; o.days=[...(o.days||[]).filter(t=>t>Date.now()-30*864e5),Date.now()]; sSave(o); updCounts(); }
-  $("#r-stage").textContent="סיימת!"; $("#r-name").textContent="כל הכבוד יערה!"; $("#r-name").classList.add("rest");
+  $("#r-stage").textContent="סיימת!"; $("#r-name").textContent="כל הכבוד"+(window.Honey&&Honey.profile?" "+Honey.profile.name:"")+"!"; $("#r-name").classList.add("rest");
   $("#r-how").textContent = R.isWorkout?"עוד אימון נוסף לטבלה. לשתות מים ולנוח.":"התרגיל הושלם.";
   $("#r-time").textContent="✓"; $("#r-arc").style.strokeDashoffset=0; $("#r-next").textContent="";
   $("#r-pause").hidden=true; $("#r-skip").hidden=true; $("#r-stop").textContent="סגירה";
@@ -1152,6 +1152,7 @@ Honey.Rewards.onChange(album); album();
 function greet(){
   const p = Honey.profile; if(!p) return;
   document.getElementById("h-name").textContent = p.name;
+  const ln = document.getElementById("lib-name"); if (ln) ln.textContent = p.name;
   const line = [p.school, p.grade && "כיתה " + p.grade].filter(Boolean).join(" · ");
   const eb = document.getElementById("h-eyebrow"); eb.textContent = line; eb.hidden = !line;
 }

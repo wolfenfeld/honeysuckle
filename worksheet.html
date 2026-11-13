@@ -127,7 +127,7 @@ function updateTotal(){
   document.getElementById("total").textContent = `${c} / 30`;
   if(window.Honey) Honey.award("ws-"+new Date().toISOString().slice(0,10), c+(c===30?5:0), {persist:true});
   document.getElementById("totalMsg").textContent =
-      c===30 ? "מושלם! כל הכבוד יערה! 🌟"
+      c===30 ? "מושלם! כל הכבוד" + (window.Honey && Honey.profile ? " " + Honey.profile.name : "") + "! 🌟"
     : c>=24 ? "מצוין! נשארו רק כמה לתקן."
     : c>=15 ? "יפה מאוד, ממשיכים!"
     : c>0 ? "התחלה טובה, אפשר לתקן ולבדוק שוב."
