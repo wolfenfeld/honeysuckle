@@ -7,7 +7,7 @@ const {
 } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
 const {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
-  doc, getDoc, getDocs, setDoc, deleteDoc, collection, writeBatch, serverTimestamp,
+  doc, getDoc, getDocs, setDoc, deleteDoc, collection, writeBatch, serverTimestamp, increment,
 } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
 
 export function createBackend(config, adminEmails) {
@@ -89,6 +89,18 @@ export function createBackend(config, adminEmails) {
       const profiles = {};
       pr.forEach((d) => { profiles[d.id] = d.data(); });
       return { scores: sc.docs.map((d) => ({ ...d.data(), at: millis(d.data().updatedAt) })), profiles };
+    },
+
+    // ----- rewards (points + cat cards) -----
+    async getRewards(uid) {
+      const s = await getDoc(doc(db, "rewards", uid));
+      return s.exists() ? s.data() : null;
+    },
+    // Uses increments so two devices (or a retry) never overwrite each other.
+    addRewards(uid, { points = 0, cards = {}, opened = 0 }) {
+      const data = { points: increment(points), opened: increment(opened), cards: {}, updatedAt: serverTimestamp() };
+      Object.entries(cards).forEach(([id, n]) => { data.cards[id] = increment(n); });
+      return setDoc(doc(db, "rewards", uid), data, { merge: true });
     },
 
     // ----- admin -----

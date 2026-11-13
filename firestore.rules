@@ -59,6 +59,17 @@ service cloud.firestore {
         && request.resource.data.avatar is string && request.resource.data.avatar.size() <= 8;
     }
 
+    // Reward wallet: points + cat cards owned. Each member reads and writes only their own.
+    match /rewards/{uid} {
+      allow read: if isMember() && request.auth.uid == uid;
+      allow create, update: if isMember() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['points', 'cards', 'opened', 'updatedAt'])
+        && request.resource.data.points is int
+        && request.resource.data.points >= 0 && request.resource.data.points <= 1000000
+        && request.resource.data.cards is map
+        && request.resource.data.opened is int && request.resource.data.opened >= 0;
+    }
+
     // Hall of fame: one document per player per game (id = uid_game), personal best only.
     match /scores/{id} {
       function validScore(d) {

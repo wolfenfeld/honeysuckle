@@ -36,6 +36,13 @@ export function createDemoBackend(adminEmails = []) {
       const profiles = { ...others, demo: get("profile", { name: "אני", avatar: "⭐" }) };
       return { scores: [...fake, ...mine], profiles };
     },
+    async getRewards() { return get("rewards", null); },
+    async addRewards(uid, { points = 0, cards = {}, opened = 0 }) {
+      const r = get("rewards", { points: 0, cards: {}, opened: 0 });
+      r.points = Math.max(0, r.points + points); r.opened += opened;
+      Object.entries(cards).forEach(([id, n]) => { r.cards[id] = (r.cards[id] || 0) + n; });
+      set("rewards", r);
+    },
     async listMembers() { return [{ email: "friend@example.com", role: "member" }]; },
     async addMember() {}, async removeMember() {},
     async listInvites() { return []; },

@@ -165,6 +165,7 @@ function checkSection(key){
 function updateTotal(){
   const c = document.querySelectorAll(".item.ok").length;
   document.getElementById("total").textContent = `${c} / 30`;
+  if(window.Honey) Honey.award("ws-"+new Date().toISOString().slice(0,10), c+(c===30?5:0), {persist:true});
   document.getElementById("totalMsg").textContent =
       c===30 ? "מושלם! כל הכבוד יערה! 🌟"
     : c>=24 ? "מצוין! נשארו רק כמה לתקן."

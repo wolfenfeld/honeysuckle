@@ -444,7 +444,7 @@ function finishDict(){
   if(miss.length) $("#again").onclick = () => { session = {q:shuffle(miss.map(r=>r.w)), i:0, results:[], tries:0, hint:0, fixing:false}; renderDictWord(true); };
   $("#newDict").onclick = () => { session = null; renderDictSetup(); };
   if(pct >= .8) burst(120);
-  if(window.Honey) Honey.offer("dictation", S.stars);
+  if(window.Honey){ Honey.award("d"+Date.now(), good+(good===done.length&&done.length>=10?5:0)); Honey.offer("dictation", S.stars); }
   session = null;
 }
 
@@ -499,7 +499,7 @@ function nextScr(){
     <button class="btn" id="scrAgain" type="button">עוד סיבוב 🔁</button></div>`;
   $("#scrAgain").onclick = renderScrSetup;
   if(scr.good === scr.q.length) burst(120);
-  if(window.Honey) Honey.offer("dictation", S.stars);
+  if(window.Honey){ Honey.award("s"+Date.now(), scr.good+(scr.good===scr.q.length&&scr.q.length>=10?5:0)); Honey.offer("dictation", S.stars); }
 }
 
 /* ---------- confetti ---------- */

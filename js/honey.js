@@ -1,6 +1,7 @@
 // Honeysuckle: login, profile and hall-of-fame glue shared by every page.
 // Loaded with <script type="module" src="js/honey.js">. Exposes window.Honey.
 import { firebaseConfig, adminEmails } from "./firebase-config.js";
+import { Rewards, COST } from "./rewards.js";
 
 export const GAMES = {
   math:      { title: "חשבון ביער הגשם", icon: "🌴", unit: (b, t) => `${b} מתוך ${t || 36}`, blurb: "הציון הכי גבוה מתוך 36 תרגילים" },
@@ -36,7 +37,7 @@ export const Honey = {
   enabled: !!be, demo, ready, GAMES, AVATARS,
   get user() { return S.user; }, get profile() { return S.profile; }, get role() { return S.role; },
   get isMember() { return !!S.role; }, get isAdmin() { return S.role === "admin"; },
-  backend: be, homeUrl,
+  backend: be, homeUrl, Rewards,
   signIn: () => be.signIn().catch((e) => toast("הכניסה לא הצליחה: " + (e.message || e))),
   signOut: () => be.signOut(),
   editProfile: () => profileDialog(false),
@@ -54,6 +55,12 @@ export const Honey = {
   async submit(game, best, total) {
     await be.saveScore(S.user.uid, game, best, total);
     S.best[game] = best;
+  },
+  // Called by the games when a round ends: pays points (once per key) and shows a small "+N" toast.
+  award(key, points, opts) {
+    const d = Rewards.award(key, points, opts);
+    if (d > 0) pointsToast(d);
+    return d;
   },
   // Called by the games when a round ends. Shows a "post to hall of fame" card if it's a new personal best.
   offer(game, best, total) {
@@ -111,7 +118,16 @@ body{margin-top:46px!important}
 .hc-av input:focus-visible+span{outline:3px solid var(--g)}
 .hc-dlg .row{display:flex;gap:8px;justify-content:flex-start}
 .hc-toast{position:fixed;z-index:70;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2a44;color:#fff;padding:10px 18px;border-radius:999px;font-size:.95rem;max-width:calc(100vw - 24px)}
-@media (prefers-reduced-motion:reduce){.hc-card{animation:none}}
+.hc-chip{background:#fff4c2;border-color:#f2b705}
+.hc-chip.ready{animation:hcpulse 1.4s ease-in-out infinite}
+@keyframes hcpulse{50%{transform:scale(1.07)}}
+.hc-pts{position:fixed;z-index:65;top:calc(max(8px,env(safe-area-inset-top,0px)) + 52px);left:50%;transform:translateX(-50%);width:min(340px,calc(100vw - 24px));background:#fff;border:3px solid #f2b705;border-radius:16px;padding:10px 14px;box-shadow:0 12px 28px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:6px;animation:hcdown .25s ease-out}
+@keyframes hcdown{from{transform:translate(-50%,-14px);opacity:0}}
+.hc-pts b{font-size:1.15rem}
+.hc-pts .bar{height:10px;border-radius:99px;background:#eef2fb;overflow:hidden}
+.hc-pts .bar i{display:block;height:100%;background:linear-gradient(90deg,#f2b705,#ff7a59);transition:width .4s}
+.hc-pts span{color:#5b6782;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){.hc-card,.hc-pts,.hc-chip.ready{animation:none}}
 `;
 const root = document.createElement("div");
 root.className = "hc";
@@ -119,7 +135,7 @@ const st = document.createElement("style"); st.textContent = CSS;
 const bar = document.createElement("div"); bar.className = "hc-bar";
 root.append(bar);
 function mount() { document.head.append(st); document.body.append(root); }
-if (be) { if (document.body) mount(); else addEventListener("DOMContentLoaded", mount); }
+if (document.body) mount(); else addEventListener("DOMContentLoaded", mount);
 
 function el(tag, attrs = {}, html = "") { const e = document.createElement(tag); Object.assign(e, attrs); e.innerHTML = html; return e; }
 function toast(msg) {
@@ -140,8 +156,27 @@ function card(html, actions = [], autoClose = 0) {
   if (autoClose) cardTimer = setTimeout(closeCard, autoClose);
 }
 
+function pointsToast(d) {
+  document.querySelector(".hc-pts")?.remove(); clearTimeout(pointsToast.t);
+  const pts = Rewards.state.points, ready = pts >= COST;
+  const t = el("div", { className: "hc-pts", role: "status" }, `
+    <b>+${d} 🐾 נקודות!</b>
+    <div class="bar"><i style="width:${Math.min(100, (pts / COST) * 100)}%"></i></div>
+    <span>${ready ? "יש מספיק לחבילת חתולים! 🎁" : `${pts} מתוך ${COST}. עוד ${COST - pts} לחבילה.`}</span>`);
+  if (ready) { const a = el("a", { className: "hc-btn gold", href: homeUrl("cats.html#open"), style: "align-self:flex-start" }, "🎁 פתיחת חבילה"); t.append(a); }
+  root.append(t); pointsToast.t = setTimeout(() => t.remove(), ready ? 9000 : 4500);
+}
+function chip() {
+  const pts = Rewards.state.points, ready = pts >= COST;
+  return el("a", { className: "hc-btn hc-chip" + (ready ? " ready" : ""), href: homeUrl("cats.html"), title: "אלבום החתולים" },
+    `🐱 <span class=n>${pts}${ready ? " 🎁" : ""}</span>`);
+}
+Rewards.onChange(() => renderBar());
+
 function renderBar() {
   bar.replaceChildren();
+  bar.append(chip());
+  if (!be) return;
   if (!S.loaded) return;
   if (demo) bar.append(el("span", { className: "hc-btn", title: "מצב הדגמה: הכול נשמר רק בדפדפן הזה" }, "🧪 הדגמה"));
   bar.append(el("a", { className: "hc-btn gold", href: homeUrl("hall.html") }, "🏆 <span class=n>היכל התהילה</span>"));
@@ -199,6 +234,7 @@ function profileDialog(first) {
 /* ---------- auth flow ---------- */
 if (be) {
   be.onAuth(async (user) => {
+    if (!user) Rewards.detach();
     S.user = user; S.role = null; S.profile = null; S.best = {}; S.error = "";
     if (user) {
       try {
@@ -213,6 +249,7 @@ if (be) {
         S.role = m ? m.role : null;
         if (S.role) {
           [S.profile, S.best] = await Promise.all([be.getProfile(user.uid), be.getScores(user.uid)]);
+          await Rewards.attach(be, user);
           S.best = S.best || {};
         }
       } catch (e) { console.warn("Honey auth", e); S.error = "הייתה בעיה בטעינה. נסי לרענן."; }
@@ -220,4 +257,4 @@ if (be) {
     S.loaded = true; renderBar(); resolveReady(); listeners.forEach((f) => f());
     if (S.role && !S.profile) { await profileDialog(true); }
   });
-} else resolveReady();
+} else { S.loaded = true; renderBar(); resolveReady(); }

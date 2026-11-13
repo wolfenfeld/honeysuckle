@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>אלבום החתולים</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Suez+One&display=swap">
+<style>
+:root{--ink:#2b2140;--muted:#6d6288;--bg:#fff3f7;--card:#fff;--line:#f0dbe6;--accent:#d63b70;--gold:#f2b705;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--ink);min-height:100vh;
+  background-color:var(--bg);background-image:radial-gradient(circle at 14px 14px,rgba(214,59,112,.1) 0 6px,transparent 7px),radial-gradient(circle at 44px 40px,rgba(242,183,5,.16) 0 5px,transparent 6px);background-size:60px 56px}
+.page{max-width:980px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+a.back{align-self:flex-start;color:var(--ink);background:#fff;border:2px solid var(--line);padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem}
+h1{font-family:"Suez One",serif;font-weight:400;font-size:clamp(2rem,6vw,3rem);margin:0;color:var(--accent);line-height:1.05}
+.sub{margin:4px 0 0;color:var(--muted)}
+.wallet{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.wallet .pts{font-size:2.4rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.wallet .pts small{font-size:1rem;font-weight:500;color:var(--muted)}
+.wallet .meter{flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px}
+.wallet .bar{height:14px;background:#f6e8ef;border-radius:99px;overflow:hidden}
+.wallet .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ff7a59);transition:width .4s}
+.wallet .hint{color:var(--muted);font-size:.95rem}
+.btn{border:0;border-radius:14px;padding:12px 22px;background:var(--accent);color:#fff;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 0 #a02450}
+.btn:disabled{background:#cdbfd0;box-shadow:0 4px 0 #b3a5b6;cursor:not-allowed}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #a02450}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--line),0 0 0 2px var(--line) inset}
+.where{font-size:.85rem;color:var(--muted);margin:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:.95rem;font-weight:500;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.count{color:var(--muted);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+/* the card */
+.cat{--c:#8e9bb0;position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:#222;border:4px solid var(--c);box-shadow:0 6px 16px rgba(60,30,80,.22);display:block;isolation:isolate}
+.cat .art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cat .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(3rem,10vw,4.6rem);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 45%,#fff),color-mix(in srgb,var(--c) 85%,#000))}
+.cat .plate{position:absolute;inset:auto 0 0 0;padding:18px 8px 8px;text-align:center;color:#fff;background:linear-gradient(transparent,rgba(20,10,35,.82) 55%)}
+.cat .nm{font-weight:700;font-size:1rem;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.cat .ico{font-size:.95rem;letter-spacing:1px;line-height:1.3}
+.cat .ico s{text-decoration:none;opacity:.25;filter:grayscale(1)}
+.cat .rn{font-size:.72rem;font-weight:500;opacity:.9}
+.cat .dup{position:absolute;top:6px;left:6px;background:var(--ink);color:#fff;border-radius:999px;font-size:.8rem;font-weight:700;padding:1px 8px;z-index:2}
+.cat.locked .art,.cat.locked .ph{filter:brightness(0) contrast(.2);opacity:.35}
+.cat.locked .plate .nm{filter:blur(5px);opacity:.7}
+.cat.locked .lock{position:absolute;inset:0;display:grid;place-items:center;font-size:2.4rem;color:#fff;z-index:1;opacity:.85}
+.cat.r4{box-shadow:0 0 0 2px #fff inset,0 0 18px color-mix(in srgb,var(--c) 70%,transparent)}
+.cat.r5{border-color:transparent;background:linear-gradient(#222,#222) padding-box,conic-gradient(from 0deg,#ffd84d,#ff7ab6,#7ab8ff,#8dffb0,#ffd84d) border-box;box-shadow:0 0 22px rgba(255,200,60,.65)}
+.cat.r5::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);background-size:250% 100%;animation:shine 3.2s linear infinite;z-index:1;pointer-events:none}
+@keyframes shine{from{background-position:150% 0}to{background-position:-150% 0}}
+.cat.locked.r5::after{display:none}
+/* pack opening */
+dialog{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;overflow:visible}
+dialog::backdrop{background:rgba(25,12,45,.82)}
+.stage{display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;color:#fff;text-align:center;width:min(92vw,360px)}
+.flip{width:min(66vw,260px);aspect-ratio:3/4;perspective:900px}
+.flip .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.flip.show .in{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip .back{border-radius:16px;border:4px solid #fff;background:repeating-linear-gradient(45deg,#d63b70 0 14px,#f06b97 14px 28px);display:grid;place-items:center;font-size:4.5rem;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.flip .back.shake{animation:shake .5s ease-in-out infinite}
+@keyframes shake{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.flip .front{transform:rotateY(180deg)}
+.flip .front .cat{width:100%;height:100%;aspect-ratio:auto}
+.reveal{min-height:90px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.reveal h2{margin:0;font-family:"Suez One",serif;font-weight:400;font-size:1.7rem}
+.reveal .new{background:var(--gold);color:#3b2d00;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.9rem}
+.stage .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back" href="index.html#home">→ חזרה לדף הבית</a>
+  <header>
+    <h1>🐱 אלבום החתולים</h1>
+    <p class="sub">צוברים נקודות בסוף כל סיבוב, ופותחים חבילה כדי לקבל חתול אקראי. ככל שיש יותר חתולים על הקלף, הוא נדיר יותר.</p>
+  </header>
+  <section class="wallet" aria-label="הנקודות שלי">
+    <div class="pts" id="pts">0 <small>נקודות</small></div>
+    <div class="meter"><div class="bar"><i id="bar" style="width:0"></i></div><span class="hint" id="hint"></span></div>
+    <button class="btn" id="open" type="button">🎁 פתיחת חבילה</button>
+    <p class="where" id="where"></p>
+  </section>
+  <div class="filters" id="filters" role="group" aria-label="סינון לפי נדירות"></div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<dialog id="dlg" aria-label="פתיחת חבילה">
+  <div class="stage">
+    <div class="flip" id="flip"><div class="in">
+      <div class="face back" id="back">🐾</div>
+      <div class="face front" id="front"></div>
+    </div></div>
+    <div class="reveal" id="reveal"></div>
+    <div class="row" id="drow" hidden>
+      <button class="btn" id="again" type="button">🎁 עוד חבילה</button>
+      <button class="btn ghost" id="close" type="button">לאלבום</button>
+    </div>
+  </div>
+</dialog>
+
+<script type="module">
+import { Honey } from "./js/honey.js";
+import { CARDS, RARITY, COST, catIcons } from "./js/cards.js";
+const { Rewards } = Honey;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const FALLBACK = { 1: "🐱", 2: "😺", 3: "😸", 4: "😻", 5: "🦁" };
+const EXTS = ["png", "webp", "jpg"];
+
+// If a card image is missing, try the next extension, then show a drawn placeholder.
+document.addEventListener("error", (e) => {
+  const img = e.target; if (!img.classList?.contains("art")) return;
+  const i = +img.dataset.e + 1;
+  if (i < EXTS.length) { img.dataset.e = i; img.src = `cards/${img.dataset.id}.${EXTS[i]}`; }
+  else { const ph = document.createElement("div"); ph.className = "ph"; ph.textContent = FALLBACK[img.dataset.r]; img.replaceWith(ph); }
+}, true);
+
+function cardHTML(c, { owned = true, count = 1, showDup = true } = {}) {
+  const r = RARITY[c.r];
+  const ico = "🐱".repeat(c.r) + "<s>" + "🐱".repeat(5 - c.r) + "</s>";
+  return `<div class="cat r${c.r}${owned ? "" : " locked"}" style="--c:${r.color}" aria-label="${owned ? esc(c.he) : "קלף נעול"}, ${r.name}, ${c.r} מתוך 5">
+    <img class="art" data-id="${c.id}" data-r="${c.r}" data-e="0" src="cards/${c.id}.png" alt="" loading="lazy">
+    ${owned && showDup && count > 1 ? `<span class="dup">×${count}</span>` : ""}
+    ${owned ? "" : `<span class="lock">🔒</span>`}
+    <div class="plate"><div class="nm">${owned ? esc(c.he) : "???"}</div><div class="ico" aria-hidden="true">${ico}</div><div class="rn">${r.name}</div></div>
+  </div>`;
+}
+
+let filter = 0;
+function render() {
+  const st = Rewards.state, pts = st.points;
+  $("#pts").innerHTML = `${pts} <small>נקודות</small>`;
+  $("#bar").style.width = Math.min(100, (pts / COST) * 100) + "%";
+  const packs = Math.floor(pts / COST);
+  $("#hint").textContent = packs ? `אפשר לפתוח ${packs} ${packs === 1 ? "חבילה" : "חבילות"}!` : `עוד ${COST - pts} נקודות לחבילה הבאה (חבילה עולה ${COST}).`;
+  $("#open").disabled = pts < COST;
+  $("#where").textContent = Rewards.mode === "cloud" ? "☁️ נשמר בחשבון שלך, ונשאר בכל מכשיר." : "נשמר בדפדפן הזה. כניסה עם Google (בהזמנה) שומרת את האלבום בכל מכשיר.";
+  const ownedN = CARDS.filter((c) => st.cards[c.id]).length;
+  $("#count").textContent = `נאספו ${ownedN} מתוך ${CARDS.length} קלפים`;
+  $("#filters").innerHTML = [`<button class="chip" data-r="0" aria-pressed="${filter === 0}">הכול</button>`]
+    .concat([1, 2, 3, 4, 5].map((r) => {
+      const all = CARDS.filter((c) => c.r === r), have = all.filter((c) => st.cards[c.id]).length;
+      return `<button class="chip" data-r="${r}" aria-pressed="${filter === r}">${catIcons(r)} ${have}/${all.length}</button>`;
+    })).join("");
+  const list = CARDS.filter((c) => !filter || c.r === filter);
+  $("#grid").innerHTML = list.map((c) => cardHTML(c, { owned: !!st.cards[c.id], count: st.cards[c.id] || 0 })).join("");
+}
+$("#filters").onclick = (e) => { const b = e.target.closest("[data-r]"); if (b) { filter = +b.dataset.r; render(); } };
+Rewards.onChange(render);
+
+/* ---- pack opening ---- */
+const dlg = $("#dlg");
+let busy = false;
+function openPack() {
+  if (busy || Rewards.state.points < COST) return;
+  const res = Rewards.open(); if (!res) return;
+  busy = true;
+  $("#flip").classList.remove("show"); $("#reveal").innerHTML = ""; $("#drow").hidden = true;
+  $("#front").innerHTML = cardHTML(res.card, { showDup: false });
+  const back = $("#back"); back.classList.add("shake");
+  if (!dlg.open) dlg.showModal();
+  const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(() => {
+    back.classList.remove("shake"); $("#flip").classList.add("show");
+    setTimeout(() => {
+      const r = RARITY[res.card.r], c = res.card;
+      const wow = c.r === 5 ? "אגדי! 🌟" : c.r === 4 ? "אפי! ✨" : c.r === 3 ? "נדיר! 🎉" : "";
+      $("#reveal").innerHTML = `<h2>${esc(c.he)}</h2><div>${catIcons(c.r)} · ${r.name}</div>${wow ? `<b>${wow}</b>` : ""}${res.isNew ? `<span class="new">חדש באלבום!</span>` : `<span>כבר יש לך (×${res.count})</span>`}`;
+      $("#drow").hidden = false; $("#again").disabled = Rewards.state.points < COST; $("#again").focus();
+      busy = false;
+    }, fast ? 0 : 900);
+  }, fast ? 0 : 900);
+}
+$("#open").onclick = openPack;
+$("#again").onclick = openPack;
+$("#close").onclick = () => dlg.close();
+dlg.addEventListener("close", () => { busy = false; render(); });
+
+render();
+if (location.hash === "#open") { history.replaceState(null, "", location.pathname + location.search); }
+</script>
+</body>
+</html>

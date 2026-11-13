@@ -66,6 +66,9 @@ body[data-s="home"]{background:var(--h-bg);background-image:repeating-linear-gra
 .door.worksheet{background-color:#f7f9fc;background-image:linear-gradient(#dfe7f2 1px,transparent 1px),linear-gradient(90deg,#dfe7f2 1px,transparent 1px);background-size:24px 24px;color:#1f2a44}
 .door.worksheet b{font-family:"Rubik";font-weight:800;color:#2f6fd6}
 .door.worksheet .label{background:rgba(255,255,255,.85)}
+.door.cats{grid-column:1/-1;min-height:110px;background:linear-gradient(135deg,#ffd1e3,#ffe9a8);color:#2b2140}
+.door.cats b{font-family:"Suez One";font-weight:400;font-size:1.9rem}
+.door.cats .label{background:rgba(255,255,255,.8)}
 .door.hall{grid-column:1/-1;min-height:120px;background:linear-gradient(135deg,#14213d,#2b4378);color:#ffe38a}
 .door.hall b{font-family:"Suez One";font-weight:400;font-size:2rem}
 .door.hall .label{background:rgba(255,255,255,.12)}
@@ -283,6 +286,7 @@ button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid 
       <a class="door hebrew" href="#hebrew"><div class="art" id="art-hebrew"></div><span class="label"><b>שפה</b><br><small>הבנת הנקרא בספרייה</small></span></a>
       <a class="door dictation" href="dictation.html"><span class="label"><b>ההכתבה</b><br><small>אנגלית · מקשיבים, כותבים ומקבלים כוכבים</small></span></a>
       <a class="door worksheet" href="worksheet.html"><span class="label"><b>תרגילי המבחן</b><br><small>חשבון · סט קבוע, חיבור עד סוגריים</small></span></a>
+      <a class="door cats" href="cats.html"><span class="label"><b>🐱 אלבום החתולים</b><br><small>צוברים נקודות, פותחים חבילות ואוספים קלפים</small></span></a>
       <a class="door hall" href="hall.html"><span class="label"><b>🏆 היכל התהילה</b><br><small>השיאים של כולם · נכנסים עם Google (בהזמנה)</small></span></a>
     </nav>
     <p class="home-foot">טיפ: מילים חדשות באנגלית נשמרות במחסן המילים, אפשר להוסיף אותן בכל יום.</p>
@@ -620,7 +624,9 @@ const GEN = {
     const [ex,ans] = f(); return {ex, ans};
   }
 };
+let MSETID="m"+Date.now();
 function buildMath(){
+  MSETID="m"+Date.now()+Math.random().toString(36).slice(2,6);
   GEN._parPool = null; GEN._wPool = null;
   const root = $("#m-secs"); root.innerHTML = "";
   MSECS.forEach(sec=>{
@@ -660,6 +666,7 @@ function checkMSec(k){
 function updMTotal(){
   const c=document.querySelectorAll(".m-item.ok").length;
   $("#m-total").textContent = `${c} / 36`;
+  if(window.Honey) Honey.award(MSETID, c+(c===36?5:0));
   $("#m-msg").textContent = c===36?"מושלם! כל הכבוד יערה! 🌟":c>=28?"מצוין! נשארו רק כמה לתקן.":c>=18?"יפה מאוד, ממשיכים!":c>0?"התחלה טובה, אפשר לתקן ולבדוק שוב.":"עדיין לא בדקנו. בהצלחה!";
 }
 $("#m-checkall").onclick = ()=>{MSECS.forEach(s=>checkMSec(s.key)); updMTotal(); if(window.Honey) Honey.offer("math",document.querySelectorAll(".m-item.ok").length,36);};
@@ -881,7 +888,7 @@ function finishQ(){
     ${wrong.length?`<h3>מילים לחזור עליהן</h3><div class="word-grid">${wrong.map(r=>`<div class="wcard"><div class="txt"><span class="en">${esc(r.w.en)}</span><span class="he">${esc(r.w.he)}</span></div></div>`).join("")}</div>`:""}
     <button class="ebtn pink" id="q-again">בוחן חדש</button>`;
   $("#q-again").onclick=()=>{$("#q-done").hidden=true;$("#q-setup").hidden=false;quizInfo();};
-  if(window.Honey && n>=10) Honey.offer("quiz",Q.pts,n);
+  if(window.Honey){ Honey.award("q"+Date.now(), Q.pts+(Q.pts===n&&n>=10?5:0)); if(n>=10) Honey.offer("quiz",Q.pts,n); }
   // save right/wrong counts, one write per word
   const tally={}; Q.results.forEach(r=>{tally[r.w.id]=tally[r.w.id]||{w:r.w,r:0,x:0}; r.ok?tally[r.w.id].r++:tally[r.w.id].x++;});
   Object.values(tally).forEach(t=>store.update(t.w.id,{right:(t.w.right||0)+t.r,wrong:(t.w.wrong||0)+t.x}).catch(()=>{}));
