@@ -1,0 +1,1093 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>הלמידה של יערה</title></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Varela+Round&family=Fredoka:wght@400;500;600;700&family=Karantina:wght@400;700&family=Heebo:wght@400;500;700;800&family=Frank+Ruhl+Libre:wght@400;500;700&family=Suez+One&family=Secular+One&display=swap">
+<style>
+/* Layout: one app, five rooms (home + 4 subjects). Each room commits to its own single look, so every color is set explicitly. */
+:root{
+  color-scheme:light;
+  /* home */
+  --h-bg:#fbf6ec; --h-line:#e9dfcc; --h-ink:#2a2420; --h-muted:#6f645a;
+  /* math – rainforest */
+  --m-bg:#0f3b2a; --m-bg2:#185c3f; --m-card:#f5f2df; --m-ink:#1b2a1f; --m-muted:#4f6152; --m-line:#cfd6b8;
+  --m-red:#d63a3a; --m-yellow:#e09a00; --m-blue:#1b72c4; --m-purple:#8a3fb0; --m-teal:#0b8f7c; --m-orange:#d9590b;
+  /* english – happy school */
+  --e-sky:#bfe6ff; --e-sky2:#eaf7ff; --e-grass:#8fd16a; --e-grass2:#2f6fd6; --e-ink:#23304a; --e-muted:#5b6680;
+  --e-pink:#ff5d73; --e-yellow:#ffc21a; --e-purple:#7b5cd6; --e-card:#ffffff; --e-line:#e1e6f3; --e-paper:#fffdf6; --e-rule:#cfe0f7; --e-margin:#ff9aa8; --e-soft:#eef3ff;
+  /* sport */
+  --s-field:#2f8a3e; --s-field2:#2a7d37; --s-track:#c64a2e; --s-navy:#14213d; --s-ink:#14213d; --s-muted:#56607a;
+  --s-card:#ffffff; --s-lime:#c6f432; --s-line:#dfe4ee;
+  /* library */
+  --l-wood:#4a2e1c; --l-wood2:#5b3a24; --l-paper:#f6eedb; --l-paper2:#efe3c8; --l-ink:#2d2016; --l-muted:#6c5a48;
+  --l-red:#7d2732; --l-gold:#b98a2c; --l-green:#3d5a3a; --l-blue:#2f4a6b; --l-line:#dccfae;
+  --good:#1f8a4c; --good-bg:#e1f4e7; --bad:#c2412d; --bad-bg:#fbe5e0;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Rubik",system-ui,sans-serif;font-size:17px;color:var(--h-ink);background:var(--h-bg);min-height:100vh;transition:background-color .3s}
+.page{max-width:1000px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+.back{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;text-decoration:none;font-weight:500;padding:8px 14px;border-radius:999px;font-size:.95rem}
+.ltr{direction:ltr;unicode-bidi:isolate}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- HOME ---------- */
+body[data-s="home"]{background:var(--h-bg);background-image:repeating-linear-gradient(var(--h-bg) 0 31px,var(--h-line) 31px 32px)}
+.v-home header{display:flex;flex-direction:column;gap:8px;padding-top:12px}
+.v-home .eyebrow{font-size:.9rem;color:var(--h-muted);letter-spacing:.04em}
+.v-home h1{font-family:"Secular One",sans-serif;font-size:clamp(2.2rem,6vw,3.4rem);font-weight:400;line-height:1.05}
+.v-home h1 span{color:#c2410c}
+.v-home header p{color:var(--h-muted);max-width:55ch}
+.doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:620px){.doors{grid-template-columns:1fr}}
+.door{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:190px;padding:18px;border-radius:18px;text-decoration:none;overflow:hidden;box-shadow:0 2px 0 rgba(0,0,0,.08),0 10px 24px -14px rgba(0,0,0,.45);transition:transform .15s}
+.door:hover{transform:translateY(-3px)}
+.door .art{position:absolute;inset:0;pointer-events:none}
+.door .art svg{width:100%;height:100%;display:block}
+.door b{position:relative;font-size:1.7rem;line-height:1.1}
+.door small{position:relative;font-size:.95rem;opacity:.9}
+.door.math{background:linear-gradient(160deg,#1e6b48,#0f3b2a);color:#fff7d6}
+.door.math b{font-family:"Rubik";font-weight:800}
+.door.english{background:linear-gradient(#bfe6ff 0 78%,#8fd16a 78%);color:#23304a}
+.door.english b{font-family:"Fredoka";font-weight:700}
+.door.sport{background:var(--s-track);color:#fff}
+.door.sport b{font-family:"Karantina";font-size:2.6rem;font-weight:700}
+.door.hebrew{background:var(--l-wood);color:var(--l-paper)}
+.door.hebrew b{font-family:"Suez One";font-weight:400}
+.door .label{position:relative;display:inline-block;align-self:flex-start;padding:4px 10px;border-radius:8px}
+.door.english .label{background:rgba(255,255,255,.82)}
+.door.sport .label{background:rgba(20,33,61,.82)}
+.door.hebrew .label{background:rgba(74,46,28,.85)}
+.door.math .label{background:rgba(15,59,42,.75)}
+.door.dictation{background:#fbfdf8;background-image:repeating-linear-gradient(transparent 0 27px,#dcede0 27px 28px);color:#24312a;border:3px solid #f3a6bd}
+.door.dictation b{font-family:"Fredoka";font-weight:700;color:#d63b70}
+.door.dictation .label{background:rgba(255,255,255,.85)}
+.door.worksheet{background-color:#f7f9fc;background-image:linear-gradient(#dfe7f2 1px,transparent 1px),linear-gradient(90deg,#dfe7f2 1px,transparent 1px);background-size:24px 24px;color:#1f2a44}
+.door.worksheet b{font-family:"Rubik";font-weight:800;color:#2f6fd6}
+.door.worksheet .label{background:rgba(255,255,255,.85)}
+.home-foot{color:var(--h-muted);font-size:.9rem}
+
+/* ---------- MATH: rainforest ---------- */
+body[data-s="math"]{background:var(--m-bg);background-image:radial-gradient(1200px 500px at 80% -10%,#2a7a52 0,transparent 60%),radial-gradient(900px 600px at 0% 100%,#14503a 0,transparent 60%)}
+.v-math{color:var(--m-card)}
+.v-math .back{background:rgba(245,242,223,.14);color:var(--m-card)}
+.canopy{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(#0b2e20,#185c3f);padding:26px 20px 22px;min-height:170px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
+.canopy svg.leaves{position:absolute;inset:0;width:100%;height:100%}
+.canopy h1{position:relative;font-family:"Rubik";font-weight:800;font-size:clamp(1.9rem,5vw,2.8rem);color:#fff7d6;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.canopy p{position:relative;color:#e5edd0;max-width:60ch}
+.m-score{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--m-card);color:var(--m-ink);border-radius:16px;padding:14px 16px}
+.m-score strong{font-size:1.5rem;font-variant-numeric:tabular-nums}
+.m-score .msg{flex:1;min-width:180px;color:var(--m-muted)}
+.mbtn{font-weight:500;padding:10px 18px;border-radius:12px;border:2px solid var(--m-bg);background:var(--m-bg);color:#fff7d6}
+.mbtn.ghost{background:transparent;color:var(--m-bg)}
+.m-secs{display:flex;flex-direction:column;gap:20px}
+.m-sec{background:var(--m-card);color:var(--m-ink);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:12px;position:relative;border-inline-start:8px solid var(--c)}
+.m-sec .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.m-sec h2{font-size:1.35rem;color:var(--c)}
+.m-sec .tip{color:var(--m-muted);font-size:.95rem}
+.m-sec .sc{color:var(--m-muted);font-variant-numeric:tabular-nums}
+.m-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.m-sec.par .m-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.m-sec.word .m-grid{grid-template-columns:1fr}
+.m-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid transparent}
+.m-item .n{color:var(--m-muted);font-size:.85rem;min-width:1.4em;text-align:center}
+.m-ex{direction:ltr;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:1;font-size:1.25rem;font-variant-numeric:tabular-nums;font-family:"Rubik"}
+.m-word{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.m-word .q{line-height:1.5}
+.m-word .a{display:flex;align-items:center;gap:8px}
+.m-item input{width:5em;font:inherit;font-size:1.15rem;text-align:center;padding:4px 6px;border:2px solid var(--m-line);border-radius:8px;background:#fff;color:var(--m-ink)}
+.m-item input:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent)}
+.mark{width:1.3em;text-align:center;font-weight:800}
+.m-item.ok,.q-ok{background:var(--good-bg);border-color:var(--good)}
+.m-item.ok .mark{color:var(--good)}
+.m-item.no,.q-no{background:var(--bad-bg);border-color:var(--bad)}
+.m-item.no .mark{color:var(--bad)}
+.m-sec .secbtn{align-self:flex-start;font-weight:500;padding:9px 18px;border-radius:12px;border:0;background:var(--c);color:#fff}
+.m-sec.add{--c:var(--m-red)}.m-sec.sub{--c:var(--m-yellow)}.m-sec.mul{--c:var(--m-blue)}.m-sec.div{--c:var(--m-purple)}.m-sec.par{--c:var(--m-teal)}.m-sec.word{--c:var(--m-orange)}
+
+/* ---------- ENGLISH: happy school ---------- */
+body[data-s="english"]{background-color:#fff6d9;background-image:radial-gradient(circle at 12px 12px,rgba(255,93,115,.18) 0 5px,transparent 6px),radial-gradient(circle at 46px 40px,rgba(47,111,214,.16) 0 5px,transparent 6px),radial-gradient(circle at 70px 10px,rgba(123,92,214,.16) 0 4px,transparent 5px);background-size:84px 56px}
+.v-english{color:var(--e-ink);font-family:"Fredoka","Rubik",sans-serif}
+.v-english .back{background:#fff;color:var(--e-grass2);border:2px solid var(--e-line)}
+.meadow{position:relative;border-radius:24px;overflow:hidden;background:linear-gradient(var(--e-sky) 0,var(--e-sky2) 100%);min-height:260px;border:4px solid #fff;box-shadow:0 10px 24px -16px rgba(35,48,74,.6);padding:22px 20px;display:flex;flex-direction:column;gap:6px}
+.meadow svg{position:absolute;inset:0;width:100%;height:100%}
+.meadow h1{position:relative;font-weight:700;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;color:var(--e-grass2);display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+@media (max-width:620px){.meadow{min-height:340px}.meadow svg{inset:auto 0 0 0;height:200px}}
+.meadow h1 .ltr{letter-spacing:.01em}
+.meadow h1 .ltr b{color:var(--e-pink);font-weight:700}
+.meadow h1 small{font-size:1.05rem;font-weight:500;color:var(--e-ink)}
+.meadow p{position:relative;align-self:flex-start;color:var(--e-ink);max-width:40ch;background:rgba(255,255,255,.75);border-radius:10px;padding:4px 10px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tab{padding:10px 18px;border-radius:999px;border:2px solid var(--e-line);background:#fff;color:var(--e-ink);font-weight:600}
+.tab[aria-selected="true"]{background:var(--e-pink);border-color:var(--e-pink);color:#fff}
+.e-card{background:var(--e-card);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px;border:2px solid var(--e-line)}
+.e-card h2{font-size:1.4rem;color:var(--e-grass2)}
+.e-card h3{font-size:1.1rem}
+.e-muted{color:var(--e-muted);font-size:.95rem}
+.story-pick{display:flex;flex-wrap:wrap;gap:8px}
+.flower-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 12px;border-radius:12px;border:2px solid var(--e-line);background:#fff;color:var(--e-ink);font-weight:500}
+.flower-btn i{width:28px;height:12px;background:linear-gradient(90deg,#f3cf9c 0 28%,var(--fc) 28%);clip-path:polygon(0 50%,28% 0,100% 0,100% 100%,28% 100%)}
+.flower-btn[aria-pressed="true"]{border-color:var(--fc);background:color-mix(in srgb,var(--fc) 14%,#fff)}
+.e-text{direction:ltr;text-align:left;font-size:1.25rem;line-height:1.75;background-color:var(--e-paper);background-image:linear-gradient(90deg,transparent 0 38px,var(--e-margin) 38px 40px,transparent 40px),repeating-linear-gradient(transparent 0 calc(1.75em - 1px),var(--e-rule) calc(1.75em - 1px) 1.75em);background-position:0 12px;border-radius:6px 14px 14px 6px;padding:12px 18px 18px 54px;border:1px solid var(--e-line);max-width:70ch}
+.e-text h3{font-size:1.25em;line-height:1.4;margin-bottom:4px;color:var(--e-pink)}
+.e-text p{line-height:1.75em}
+.qlist{display:flex;flex-direction:column;gap:12px}
+.q{border:2px solid var(--e-line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.q .qt{font-weight:600}
+.q.ltrq{direction:ltr;text-align:left}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;background:var(--e-soft);border:1px solid var(--e-line);cursor:pointer}
+.opt input{accent-color:var(--e-pink)}
+.ebtn{align-self:flex-start;font-weight:600;padding:10px 20px;border-radius:999px;border:0;background:var(--e-grass2);color:#fff}
+.ebtn.pink{background:var(--e-pink)}
+.ebtn.ghost{background:transparent;color:var(--e-grass2);border:2px solid var(--e-grass2)}
+.ebtn:disabled{opacity:.45;cursor:not-allowed}
+.result{font-weight:600}
+.add-word{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+@media (max-width:560px){.add-word{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:.9rem;color:var(--e-muted)}
+.field input,.field select{font:inherit;padding:10px 12px;border-radius:12px;border:2px solid var(--e-line);background:#fff;color:var(--e-ink);width:100%}
+.words-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.wcard{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:#fff;border:2px solid var(--e-line)}
+.wcard .txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.wcard .en{direction:ltr;text-align:right;font-weight:600;font-size:1.15rem;color:var(--e-grass2);overflow-wrap:anywhere}
+.wcard .he{color:var(--e-muted);overflow-wrap:anywhere}
+.wcard .tag{font-size:.75rem;background:#fff4c2;color:#7a5b00;border-radius:6px;padding:1px 6px;align-self:flex-start}
+.wcard .tag.weak{background:#ffe0ea;color:#a3254f}
+.icon-btn{border:0;background:transparent;color:var(--e-muted);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none}
+.icon-btn:hover{background:var(--e-soft)}
+.icon-btn.danger{color:var(--bad)}
+.icon-btn svg{width:18px;height:18px}
+.store-note{font-size:.85rem;color:var(--e-muted)}
+.quiz-box{display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.quiz-q{font-size:2rem;font-weight:700;text-align:center;color:var(--e-grass2);padding:18px;border-radius:16px;background:linear-gradient(var(--e-soft),#fff);overflow-wrap:anywhere}
+.quiz-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:480px){.quiz-opts{grid-template-columns:1fr}}
+.quiz-opt{padding:14px;border-radius:14px;border:2px solid var(--e-line);background:#fff;font-weight:600;font-size:1.15rem;color:var(--e-ink);overflow-wrap:anywhere}
+.quiz-opt.right{background:var(--good-bg);border-color:var(--good)}
+.quiz-opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.quiz-type{display:flex;gap:10px;flex-wrap:wrap}
+.quiz-type input{flex:1;min-width:0;font:inherit;font-size:1.3rem;padding:12px;border-radius:12px;border:2px solid var(--e-line);direction:ltr;text-align:center}
+.quiz-meta{display:flex;justify-content:space-between;color:var(--e-muted);font-variant-numeric:tabular-nums}
+.progress{height:10px;border-radius:99px;background:var(--e-soft);overflow:hidden}
+.progress span{display:block;height:100%;background:var(--e-pink);transition:width .3s}
+.feedback{text-align:center;font-weight:600;min-height:1.5em}
+
+/* ---------- SPORT ---------- */
+body[data-s="sport"]{background:var(--s-field);background-image:repeating-linear-gradient(90deg,var(--s-field) 0 80px,var(--s-field2) 80px 160px)}
+.v-sport{color:var(--s-ink);font-family:"Heebo",sans-serif}
+.v-sport .back{background:var(--s-navy);color:#fff}
+.board{background:var(--s-navy);color:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.board .top{padding:20px 20px 14px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px}
+.board h1{font-family:"Karantina";font-weight:700;font-size:clamp(3rem,10vw,4.6rem);line-height:.85;letter-spacing:.01em}
+.board h1 em{font-style:normal;color:var(--s-lime)}
+.board p{color:#c9d2e6;max-width:46ch}
+.digits{display:flex;gap:10px}
+.digit{background:#0b1426;border:2px solid #2a3a5e;border-radius:12px;padding:8px 14px;text-align:center;min-width:92px}
+.digit b{display:block;font-size:2.2rem;font-weight:800;color:var(--s-lime);font-variant-numeric:tabular-nums;line-height:1}
+.digit small{font-size:.8rem;color:#9fb0d2}
+.lanes{height:44px;background:var(--s-track);background-image:repeating-linear-gradient(transparent 0 9px,rgba(255,255,255,.85) 9px 11px);position:relative}
+.lanes::after{content:"";position:absolute;inset:0 auto 0 18%;width:6px;background:repeating-linear-gradient(#fff 0 6px,#111 6px 12px)}
+.s-panel{background:var(--s-card);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.s-panel h2{font-family:"Karantina";font-size:2.2rem;font-weight:700;line-height:1}
+.plans{display:flex;flex-wrap:wrap;gap:10px}
+.sbtn{font-weight:700;padding:12px 20px;border-radius:12px;border:0;background:var(--s-track);color:#fff}
+.sbtn.navy{background:var(--s-navy)}
+.sbtn.ghost{background:transparent;border:2px solid var(--s-navy);color:var(--s-navy)}
+.sbtn.small{padding:7px 12px;font-size:.9rem}
+.filter{display:flex;flex-wrap:wrap;gap:8px}
+.fchip{padding:6px 14px;border-radius:999px;border:2px solid var(--s-line);background:#fff;font-weight:500;color:var(--s-ink)}
+.fchip[aria-pressed="true"]{background:var(--s-navy);border-color:var(--s-navy);color:#fff}
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.ex-card{background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;border-top:6px solid var(--k)}
+.ex-card .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ex-card h3{font-size:1.25rem;font-weight:800}
+.ktag{font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--k) 16%,#fff);color:var(--k);white-space:nowrap}
+.amount{font-family:"Karantina";font-size:1.9rem;font-weight:700;line-height:1;color:var(--s-navy)}
+.ex-card ol{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:3px;color:#2f3a52}
+.ex-card .safe{font-size:.9rem;color:var(--s-muted);background:#f4f6fa;border-radius:10px;padding:6px 10px}
+.k-warm{--k:#e07a00}.k-power{--k:#c64a2e}.k-core{--k:#2357c6}.k-balance{--k:#7b3fb8}.k-stretch{--k:#13896f}
+.runner{position:fixed;inset:0;z-index:50;background:rgba(10,18,36,.94);color:#fff;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.runner .inner{width:min(560px,100%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.runner .stage{font-size:.95rem;color:#9fb0d2;font-variant-numeric:tabular-nums}
+.runner .rname{font-family:"Karantina";font-size:clamp(2.6rem,9vw,3.8rem);font-weight:700;line-height:.95}
+.runner .rname.rest{color:var(--s-lime)}
+.runner .rhow{color:#c9d2e6;max-width:44ch;min-height:3em}
+.ring{position:relative;width:200px;height:200px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:4rem;font-weight:800;font-variant-numeric:tabular-nums}
+.runner .rnext{color:#9fb0d2;font-size:.95rem}
+.runner .rbtns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.runner .sbtn.ghost{border-color:#fff;color:#fff}
+.tests li{line-height:1.6}
+
+/* ---------- HEBREW: library ---------- */
+body[data-s="hebrew"]{background:var(--l-wood);background-image:repeating-linear-gradient(92deg,rgba(255,255,255,.025) 0 3px,transparent 3px 11px),linear-gradient(var(--l-wood2),var(--l-wood))}
+.v-hebrew{color:var(--l-paper);font-family:"Frank Ruhl Libre",serif}
+.v-hebrew .back{background:rgba(246,238,219,.12);color:var(--l-paper);font-family:"Rubik"}
+.lib-head{display:flex;flex-direction:column;gap:6px}
+.lib-head h1{font-family:"Suez One";font-weight:400;font-size:clamp(2rem,5.5vw,3rem);color:var(--l-paper)}
+.lib-head p{color:#e3d4b4;max-width:58ch}
+.shelf{display:flex;align-items:flex-end;gap:4px;padding:16px 14px 0;background:linear-gradient(#2c1a0f,#3a2415);border-radius:12px 12px 0 0;min-height:180px;overflow-x:auto}
+.shelf-board{height:16px;background:linear-gradient(#8a5a36,#5b3a24);border-radius:0 0 8px 8px;box-shadow:0 8px 14px -6px rgba(0,0,0,.6);margin-top:-22px}
+.spine{flex:none;border-radius:3px 3px 0 0;box-shadow:inset -3px 0 0 rgba(0,0,0,.18),inset 3px 0 0 rgba(255,255,255,.08);position:relative}
+.spine::before,.spine::after{content:"";position:absolute;inset-inline:4px;height:3px;background:rgba(255,215,140,.55)}
+.spine::before{top:14px}.spine::after{bottom:14px}
+button.spine{border:0;cursor:pointer;color:#fbf2dc;font-family:"Suez One";font-size:1.05rem;writing-mode:vertical-rl;padding:22px 0;width:52px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+button.spine:hover{transform:translateY(-6px)}
+button.spine[aria-pressed="true"]{transform:translateY(-14px);outline:3px solid #ffd27a;outline-offset:2px}
+.book{background:var(--l-paper);color:var(--l-ink);border-radius:6px 16px 16px 6px;padding:22px 22px 24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 18px 30px -18px rgba(0,0,0,.7);border-inline-start:10px solid var(--bc,var(--l-red))}
+.book .kind{font-family:"Rubik";font-size:.85rem;color:var(--l-muted);letter-spacing:.03em}
+.book h2{font-family:"Suez One";font-weight:400;font-size:1.8rem;color:var(--bc,var(--l-red))}
+.book .text{font-size:1.25rem;line-height:1.85;max-width:66ch;display:flex;flex-direction:column;gap:12px}
+.book .text p{text-indent:1.2em}
+.book .text p .pn{font-family:"Rubik";font-size:.75rem;color:var(--l-muted);margin-inline-end:6px;text-indent:0}
+.divider{height:1px;background:var(--l-line);margin:4px 0}
+.book h3{font-family:"Suez One";font-weight:400;font-size:1.3rem}
+.hq{border:1px solid var(--l-line);background:#fbf6e9;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-family:"Rubik"}
+.hq .qt{font-weight:500;line-height:1.5}
+.hq .opt{background:#f3ead4;border-color:var(--l-line)}
+.hq .opt input{accent-color:var(--l-red)}
+.hq textarea{font:inherit;min-height:70px;padding:10px;border-radius:10px;border:1px solid var(--l-line);background:#fff;color:var(--l-ink);resize:vertical;width:100%}
+.hq .model{background:#eef3e6;border-radius:10px;padding:8px 12px;color:#2f4a2c}
+.lbtn{align-self:flex-start;font-family:"Rubik";font-weight:500;padding:10px 18px;border-radius:10px;border:0;background:var(--bc,var(--l-red));color:#fff}
+.lbtn.ghost{background:transparent;color:var(--l-ink);border:1px solid var(--l-line);padding:6px 12px;font-size:.9rem}
+.hq.q-ok{border-color:var(--good)}.hq.q-no{border-color:var(--bad)}
+.lib-score{font-family:"Rubik";font-weight:500}
+.tips{font-family:"Rubik";font-size:.95rem;background:rgba(246,238,219,.1);border:1px solid rgba(246,238,219,.25);border-radius:14px;padding:14px 16px;color:#efe3c8;display:flex;flex-direction:column;gap:6px}
+.tips b{color:#ffd27a}
+.tips ul{margin:0;padding-inline-start:20px}
+</style>
+
+<div id="app" dir="rtl">
+
+<!-- ================= HOME ================= -->
+<section class="view v-home" id="v-home">
+  <div class="page">
+    <header>
+      <span class="eyebrow">בית ספר נילי · כיתה ד׳</span>
+      <h1>הלמידה של <span>יערה</span></h1>
+      <p>שישה חדרים, ארבעה מקצועות. בוחרים חדר ומתאמנים לקראת המבחן.</p>
+    </header>
+    <nav class="doors" aria-label="מקצועות">
+      <a class="door math" href="#math"><div class="art" id="art-math"></div><span class="label"><b>חשבון</b></span><small>ביער הגשם · תרגילים חדשים בכל פעם</small></a>
+      <a class="door english" href="#english"><div class="art" id="art-english"></div><span class="label"><b>Happy School</b><br><small>אנגלית · הבנת הנקרא ומילים</small></span></a>
+      <a class="door sport" href="#sport"><div class="art" id="art-sport"></div><span class="label"><b>ספורט</b><br><small>אימונים בבית עם טיימר</small></span></a>
+      <a class="door hebrew" href="#hebrew"><div class="art" id="art-hebrew"></div><span class="label"><b>שפה</b><br><small>הבנת הנקרא בספרייה</small></span></a>
+      <a class="door dictation" href="dictation.html"><span class="label"><b>ההכתבה</b><br><small>אנגלית · מקשיבים, כותבים ומקבלים כוכבים</small></span></a>
+      <a class="door worksheet" href="worksheet.html"><span class="label"><b>תרגילי המבחן</b><br><small>חשבון · סט קבוע, חיבור עד סוגריים</small></span></a>
+    </nav>
+    <p class="home-foot">טיפ: מילים חדשות באנגלית נשמרות במחסן המילים, אפשר להוסיף אותן בכל יום.</p>
+  </div>
+</section>
+
+<!-- ================= MATH ================= -->
+<section class="view v-math" id="v-math" hidden>
+  <div class="page">
+    <a class="back" href="#home">→ חזרה הביתה</a>
+    <div class="canopy">
+      <svg class="leaves" id="canopy-svg" aria-hidden="true"></svg>
+      <h1>חשבון ביער הגשם</h1>
+      <p>כותבים את התשובה ולוחצים "בדיקה". ✓ ירוק זה נכון, ✗ אדום זה לנסות שוב. כפתור "תרגילים חדשים" מביא סט חדש.</p>
+    </div>
+    <div class="m-score">
+      <strong id="m-total">0 / 36</strong>
+      <span class="msg" id="m-msg">עדיין לא בדקנו. בהצלחה!</span>
+      <button class="mbtn" id="m-checkall">בדיקת הכול</button>
+      <button class="mbtn ghost" id="m-new">תרגילים חדשים</button>
+    </div>
+    <div class="m-secs" id="m-secs"></div>
+  </div>
+</section>
+
+<!-- ================= ENGLISH ================= -->
+<section class="view v-english" id="v-english" hidden>
+  <div class="page">
+    <a class="back" href="#home">→ חזרה הביתה</a>
+    <div class="meadow">
+      <svg id="meadow-svg" aria-hidden="true"></svg>
+      <h1><span class="ltr"><b>Happy</b> School</span><small>אנגלית</small></h1>
+      <p>קוראים סיפורים קצרים, אוספים מילים חדשות ועושים בוחן.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="et-read" aria-selected="true">הבנת הנקרא</button>
+      <button class="tab" role="tab" id="et-words" aria-selected="false">המילים שלי</button>
+      <button class="tab" role="tab" id="et-quiz" aria-selected="false">בוחן מילים</button>
+    </div>
+
+    <div id="ep-read" class="e-card">
+      <h2>Reading</h2>
+      <p class="e-muted">בוחרים סיפור, קוראים אותו ועונים על השאלות.</p>
+      <div class="story-pick" id="e-stories"></div>
+      <div id="e-story"></div>
+    </div>
+
+    <div id="ep-words" class="e-card" hidden>
+      <h2>המילים שלי</h2>
+      <form class="add-word" id="w-form" autocomplete="off">
+        <div class="field"><label for="w-en">המילה באנגלית</label><input id="w-en" dir="ltr" placeholder="flower" required></div>
+        <div class="field"><label for="w-he">הפירוש בעברית</label><input id="w-he" placeholder="פרח" required></div>
+        <button class="ebtn pink" type="submit">הוספה</button>
+      </form>
+      <div class="words-bar">
+        <div class="field" style="flex:1;min-width:180px;max-width:320px"><label for="w-search">חיפוש</label><input id="w-search" placeholder="חיפוש מילה..."></div>
+        <div class="chips"><span class="e-muted" id="w-count"></span><button class="ebtn ghost" id="w-clear-ex" hidden>מחיקת מילות הדוגמה</button></div>
+      </div>
+      <div class="word-grid" id="w-grid"></div>
+      <p class="store-note" id="w-note">טוען את המילים…</p>
+    </div>
+
+    <div id="ep-quiz" class="e-card" hidden>
+      <h2>בוחן מילים</h2>
+      <div id="q-setup" class="quiz-box">
+        <div class="field"><label for="q-mode">סוג הבוחן</label>
+          <select id="q-mode">
+            <option value="en-he">רואים באנגלית, בוחרים בעברית</option>
+            <option value="he-en">רואים בעברית, בוחרים באנגלית</option>
+            <option value="spell">רואים בעברית, כותבים באנגלית</option>
+          </select></div>
+        <div class="field"><label for="q-count">כמה מילים?</label>
+          <select id="q-count"><option value="10">10</option><option value="20">20</option><option value="all">כל המילים</option></select></div>
+        <p class="e-muted" id="q-info"></p>
+        <button class="ebtn pink" id="q-start">מתחילים</button>
+      </div>
+      <div id="q-run" class="quiz-box" hidden>
+        <div class="quiz-meta"><span id="q-pos"></span><span id="q-pts"></span></div>
+        <div class="progress"><span id="q-bar"></span></div>
+        <div class="quiz-q" id="q-word"></div>
+        <div id="q-answer"></div>
+        <div class="feedback" id="q-fb" aria-live="polite"></div>
+        <button class="ebtn" id="q-next" hidden>הבאה</button>
+      </div>
+      <div id="q-done" class="quiz-box" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPORT ================= -->
+<section class="view v-sport" id="v-sport" hidden>
+  <div class="page">
+    <a class="back" href="#home">→ חזרה הביתה</a>
+    <div class="board">
+      <div class="top">
+        <div><h1>מתאמנים <em>בבית</em></h1><p>תרגילים בלי ציוד, עם טיימר שסופר בשבילך. מתחילים תמיד בחימום ומסיימים במתיחות.</p></div>
+        <div class="digits">
+          <div class="digit"><b id="s-week">0</b><small>אימונים השבוע</small></div>
+          <div class="digit"><b id="s-all">0</b><small>סך הכול</small></div>
+        </div>
+      </div>
+      <div class="lanes" aria-hidden="true"></div>
+    </div>
+    <div class="s-panel">
+      <h2>אימון עם טיימר</h2>
+      <p>בכל פעם הטיימר בוחר תרגילים אחרים: קודם חימום, אחר כך כוח, בטן ושיווי משקל, ובסוף מתיחות. בין התרגילים יש הפסקה קצרה, ואפשר לעצור או לדלג.</p>
+      <div class="plans">
+        <button class="sbtn" data-plan="short">אימון קצר · כ-6 דקות</button>
+        <button class="sbtn navy" data-plan="full">אימון מלא · כ-11 דקות</button>
+        <button class="sbtn ghost" data-plan="test">הכנה למבחן הכושר</button>
+      </div>
+    </div>
+    <div class="s-panel">
+      <h2>כל התרגילים</h2>
+      <div class="filter" id="s-filter"></div>
+      <div class="ex-grid" id="s-grid"></div>
+    </div>
+    <div class="s-panel tests">
+      <h2>מבחן הכושר בבית הספר</h2>
+      <ul>
+        <li><b>כפיפות בטן:</b> מתאמנים עם "כפיפות בטן" ו"פלאנק".</li>
+        <li><b>שכיבות סמיכה:</b> מתחילים על הברכיים, ומוסיפים 1–2 בכל שבוע.</li>
+        <li><b>גמישות (ישיבה והושטה):</b> "מתיחת ירך אחורית" כל יום, בלי לקפוץ.</li>
+        <li><b>ריצה וקפיצה:</b> "ריצה במקום", "קפיצות סקי" ו"קפיצות צפרדע".</li>
+      </ul>
+      <p>3 אימונים בשבוע זה מצוין. לשתות מים, ואם משהו כואב עוצרים ומספרים להורה.</p>
+    </div>
+  </div>
+  <div class="runner" id="runner" hidden role="dialog" aria-modal="true" aria-label="טיימר אימון">
+    <div class="inner">
+      <span class="stage" id="r-stage"></span>
+      <div class="rname" id="r-name"></div>
+      <p class="rhow" id="r-how"></p>
+      <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#2a3a5e" stroke-width="8"/><circle id="r-arc" cx="50" cy="50" r="44" fill="none" stroke="#c6f432" stroke-width="8" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="0"/></svg><b id="r-time">0</b></div>
+      <span class="rnext" id="r-next"></span>
+      <div class="rbtns">
+        <button class="sbtn" id="r-pause">הפסקה</button>
+        <button class="sbtn ghost" id="r-skip">דילוג</button>
+        <button class="sbtn ghost" id="r-stop">יציאה</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HEBREW ================= -->
+<section class="view v-hebrew" id="v-hebrew" hidden>
+  <div class="page">
+    <a class="back" href="#home">→ חזרה הביתה</a>
+    <div class="lib-head">
+      <h1>הספרייה של יערה</h1>
+      <p>בוחרים ספר מהמדף, קוראים את הקטע ועונים על השאלות. בשאלות הפתוחות כותבים תשובה מלאה, ואז אפשר לראות תשובה לדוגמה.</p>
+    </div>
+    <div>
+      <div class="shelf" id="shelf"></div>
+      <div class="shelf-board"></div>
+    </div>
+    <article class="book" id="book"></article>
+    <div class="tips">
+      <b>איך עונים בהבנת הנקרא?</b>
+      <ul>
+        <li>קוראים את השאלה, ואז חוזרים לקטע ומחפשים בו את התשובה.</li>
+        <li>עונים במשפט מלא שמתחיל במילים מהשאלה.</li>
+        <li>בשאלה "הסבירו" או "מדוע" כותבים גם סיבה, למשל "...כי...".</li>
+        <li>במשמעות מילה, מנסים להחליף את המילה בקטע ולבדוק אם המשפט עדיין הגיוני.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const rnd = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const SVGNS = "http://www.w3.org/2000/svg";
+
+/* ---------- Routing ---------- */
+const VIEWS = ["home","math","english","sport","hebrew"];
+function route(){
+  let v = (location.hash||"").replace("#","");
+  if(!VIEWS.includes(v)) v = "home";
+  VIEWS.forEach(n => { $("#v-"+n).hidden = n!==v; });
+  document.body.dataset.s = v;
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- Decorative art ---------- */
+function leafSVG(svg, w, h, count, palette){
+  svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  svg.setAttribute("preserveAspectRatio","xMidYMin slice");
+  let out = `<defs><path id="lf" d="M0 0 C18 -26 58 -28 84 0 C58 28 18 26 0 0 Z"/></defs>`;
+  // vines
+  for(let i=0;i<7;i++){
+    const x = rnd(20,w-20), len = rnd(50,h*0.7);
+    out += `<path d="M${x} 0 Q${x+rnd(-20,20)} ${len/2} ${x+rnd(-10,10)} ${len}" stroke="#2f7a3f" stroke-width="2.5" fill="none"/>`;
+    for(let y=20;y<len;y+=rnd(18,28)) out += `<use href="#lf" fill="#3f9a4c" transform="translate(${x} ${y}) rotate(${pick([30,150,60,120])}) scale(.22)"/>`;
+  }
+  for(let i=0;i<count;i++){
+    const x = rnd(-30,w), y = rnd(-20, h*0.35), r = rnd(0,360), s = (rnd(50,120)/100);
+    out += `<use href="#lf" fill="${pick(palette)}" transform="translate(${x} ${y}) rotate(${r}) scale(${s})"/>`;
+  }
+  // parrot-colored flowers (orchids)
+  for(let i=0;i<5;i++){
+    const x=rnd(30,w-30), y=rnd(10,h*0.3), c=pick(["#d63a3a","#e09a00","#c03fb0"]);
+    for(let k=0;k<5;k++) out += `<ellipse cx="${x}" cy="${y-7}" rx="4" ry="8" fill="${c}" transform="rotate(${k*72} ${x} ${y})"/>`;
+    out += `<circle cx="${x}" cy="${y}" r="3" fill="#fff3b0"/>`;
+  }
+  svg.innerHTML = out;
+}
+function schoolSVG(svg, w, h){
+  svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  svg.setAttribute("preserveAspectRatio","xMinYMax slice");
+  const g = h*0.78, bx = 50;
+  let o = "";
+  // rainbow behind the school
+  ["#ff5d73","#ff9f43","#ffc21a","#6cc04a","#2f6fd6","#7b5cd6"].forEach((c,i)=>{const r=215-i*14;o+=`<path d="M${bx+150-r} ${g} A${r} ${r} 0 0 1 ${bx+150+r} ${g}" stroke="${c}" stroke-width="14" fill="none" opacity=".85"/>`;});
+  // sun with a smile and clouds
+  const sx=w*0.44, sy=46;
+  for(let k=0;k<10;k++){const a=k*Math.PI/5;o+=`<line x1="${sx+Math.cos(a)*30}" y1="${sy+Math.sin(a)*30}" x2="${sx+Math.cos(a)*40}" y2="${sy+Math.sin(a)*40}" stroke="#ffc21a" stroke-width="4" stroke-linecap="round"/>`;}
+  o+=`<circle cx="${sx}" cy="${sy}" r="24" fill="#ffd84d"/><circle cx="${sx-8}" cy="${sy-4}" r="2.6" fill="#23304a"/><circle cx="${sx+8}" cy="${sy-4}" r="2.6" fill="#23304a"/><path d="M${sx-9} ${sy+6} Q${sx} ${sy+15} ${sx+9} ${sy+6}" stroke="#23304a" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  o+=`<g fill="#fff"><ellipse cx="${w*0.34}" cy="40" rx="34" ry="12"/><ellipse cx="${w*0.34+22}" cy="32" rx="22" ry="12"/><ellipse cx="${w*0.7}" cy="66" rx="30" ry="10"/></g>`;
+  // ground + path
+  o+=`<rect x="0" y="${g}" width="${w}" height="${h-g}" fill="#8fd16a"/><path d="M${bx+132} ${g} L${bx+168} ${g} L${bx+190} ${h} L${bx+110} ${h} Z" fill="#f3e1b5"/>`;
+  // building
+  o+=`<rect x="${bx+110}" y="${g-160}" width="80" height="60" fill="#ff9f73"/>`;
+  o+=`<path d="M${bx+100} ${g-160} L${bx+150} ${g-196} L${bx+200} ${g-160} Z" fill="#e5484d"/>`;
+  o+=`<line x1="${bx+150}" y1="${g-196}" x2="${bx+150}" y2="${g-226}" stroke="#5b6680" stroke-width="3"/><path d="M${bx+150} ${g-226} L${bx+176} ${g-218} L${bx+150} ${g-210} Z" fill="#2f6fd6"/>`;
+  o+=`<circle cx="${bx+150}" cy="${g-136}" r="15" fill="#fff" stroke="#5b6680" stroke-width="2"/><path d="M${bx+150} ${g-136} V${g-146} M${bx+150} ${g-136} H${bx+158}" stroke="#23304a" stroke-width="2.5" stroke-linecap="round"/>`;
+  o+=`<rect x="${bx}" y="${g-110}" width="300" height="110" fill="#ff8a5c"/><rect x="${bx-8}" y="${g-118}" width="316" height="12" rx="3" fill="#e5484d"/>`;
+  o+=`<rect x="${bx+92}" y="${g-102}" width="116" height="20" rx="5" fill="#fff"/><text x="${bx+150}" y="${g-87}" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="13" fill="#e5484d">HAPPY SCHOOL</text>`;
+  [[bx+20,g-84],[bx+250,g-84],[bx+20,g-42],[bx+80,g-42],[bx+190,g-42],[bx+250,g-42]].forEach(([x,y])=>{o+=`<rect x="${x}" y="${y}" width="32" height="28" rx="3" fill="#ffe9a8" stroke="#2f6fd6" stroke-width="3"/><path d="M${x+16} ${y} V${y+28} M${x} ${y+14} H${x+32}" stroke="#2f6fd6" stroke-width="2"/>`;});
+  o+=`<path d="M${bx+128} ${g} V${g-44} Q${bx+150} ${g-62} ${bx+172} ${g-44} V${g} Z" fill="#7b5cd6"/><circle cx="${bx+164}" cy="${g-24}" r="2.5" fill="#ffc21a"/>`;
+  // trees
+  [[bx-18,1],[bx+325,1.15]].forEach(([x,s])=>{o+=`<rect x="${x-4}" y="${g-40*s}" width="8" height="${40*s}" fill="#9a6a3f"/><circle cx="${x}" cy="${g-50*s}" r="${22*s}" fill="#4caf50"/><circle cx="${x-10*s}" cy="${g-38*s}" r="${14*s}" fill="#43a047"/><circle cx="${x+11*s}" cy="${g-40*s}" r="${14*s}" fill="#66bb6a"/>`;});
+  // school bus
+  const x=bx+385, y=g-52;
+  o+=`<rect x="${x}" y="${y}" width="150" height="44" rx="9" fill="#ffc21a"/><rect x="${x+150}" y="${y+18}" width="26" height="26" rx="6" fill="#ffc21a"/><rect x="${x}" y="${y+30}" width="176" height="4" fill="#23304a"/>`;
+  for(let k=0;k<4;k++) o+=`<rect x="${x+10+k*34}" y="${y+7}" width="26" height="17" rx="3" fill="#bfe6ff" stroke="#23304a" stroke-width="2"/>`;
+  [x+32,x+132].forEach(cx=>{o+=`<circle cx="${cx}" cy="${g-6}" r="11" fill="#23304a"/><circle cx="${cx}" cy="${g-6}" r="4" fill="#cfd6e3"/>`;});
+  o+=`<circle cx="${x+172}" cy="${y+28}" r="3" fill="#fff3b0"/>`;
+  // little flowers on the lawn
+  for(let k=0;k<26;k++){const fx=rnd(0,w),fy=rnd(g+10,h-6),c=pick(["#ff5d73","#ffc21a","#fff","#7b5cd6"]);o+=`<circle cx="${fx}" cy="${fy}" r="3.5" fill="${c}"/><circle cx="${fx}" cy="${fy}" r="1.3" fill="#ff9f43"/>`;}
+  svg.innerHTML = o;
+}
+function flowersSVG(svg, w, h, count){
+  svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  svg.setAttribute("preserveAspectRatio","xMidYMax slice");
+  let out = `<circle cx="${w-70}" cy="48" r="30" fill="#ffd84d"/><circle cx="${w-70}" cy="48" r="42" fill="#ffd84d" opacity=".25"/>`;
+  out += `<g fill="#fff" opacity=".9"><ellipse cx="${w*0.35}" cy="40" rx="40" ry="14"/><ellipse cx="${w*0.35+30}" cy="32" rx="26" ry="14"/><ellipse cx="${w*0.6}" cy="70" rx="34" ry="11"/></g>`;
+  const ground = h*0.58;
+  for(let i=0;i<count;i++){
+    const x = rnd(0,w), base = rnd(ground+8,h), top = base - rnd(18,46);
+    const c = pick(["#ec6f9f","#ffcc33","#8c6bd6","#ffffff","#ff8a5c"]), r = rnd(4,8);
+    out += `<path d="M${x} ${base} Q${x+rnd(-6,6)} ${(base+top)/2} ${x} ${top}" stroke="#3d7f2a" stroke-width="2" fill="none"/>`;
+    for(let k=0;k<5;k++) out += `<circle cx="${x+Math.cos(k*1.2566)*r}" cy="${top+Math.sin(k*1.2566)*r}" r="${r*0.75}" fill="${c}"/>`;
+    out += `<circle cx="${x}" cy="${top}" r="${r*0.55}" fill="${c==="#ffcc33"?"#b5651d":"#ffcc33"}"/>`;
+  }
+  // butterflies
+  for(let i=0;i<2;i++){const x=rnd(w*0.15,w*0.8),y=rnd(30,ground-30);out+=`<g transform="translate(${x} ${y})"><ellipse cx="-6" cy="0" rx="7" ry="9" fill="#ec6f9f"/><ellipse cx="6" cy="0" rx="7" ry="9" fill="#8c6bd6"/><rect x="-1" y="-8" width="2" height="16" fill="#24361f"/></g>`;}
+  svg.innerHTML = out;
+}
+function drawDoorArt(){
+  const m = document.createElementNS(SVGNS,"svg"); $("#art-math").appendChild(m); leafSVG(m,400,190,26,["#2e8b57","#3fa66b","#1f6b44","#5cbf7a"]);
+  const e = document.createElementNS(SVGNS,"svg"); $("#art-english").appendChild(e); schoolSVG(e,400,190);
+  $("#art-sport").innerHTML = `<svg viewBox="0 0 400 190" preserveAspectRatio="none"><g stroke="rgba(255,255,255,.8)" stroke-width="2.5" fill="none"><path d="M-10 40 Q200 0 410 40"/><path d="M-10 75 Q200 35 410 75"/><path d="M-10 110 Q200 70 410 110"/><path d="M-10 145 Q200 105 410 145"/></g><circle cx="330" cy="60" r="34" fill="#c6f432"/><path d="M300 48 Q330 60 360 48 M300 72 Q330 60 360 72" stroke="#fff" stroke-width="3" fill="none"/></svg>`;
+  const cols = ["#7d2732","#b98a2c","#3d5a3a","#2f4a6b","#8a4b2a","#5c3b66"];
+  let sp = `<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice"><rect x="0" y="118" width="400" height="10" fill="#8a5a36"/>`;
+  let x=170; while(x<392){const wd=rnd(14,24),ht=rnd(60,100);sp+=`<rect x="${x}" y="${118-ht}" width="${wd}" height="${ht}" fill="${pick(cols)}" rx="2"/><rect x="${x+3}" y="${118-ht+10}" width="${wd-6}" height="3" fill="#e8c27a" opacity=".6"/>`;x+=wd+2;}
+  sp += `</svg>`; $("#art-hebrew").innerHTML = sp;
+}
+
+/* =========================================================
+   MATH
+   ========================================================= */
+const MSECS = [
+  {key:"add", title:"חיבור (אלפים)", tip:"מחברים מהאחדות, ולא שוכחים את ההעברה (הקפיצה) לעשרות."},
+  {key:"sub", title:"חיסור (אלפים)", tip:"כשאין מספיק, פורטים מהספרה שמשמאל. אפשר לבדוק בחיבור."},
+  {key:"mul", title:"כפל", tip:"בכפל בעשרות: מכפילים את הספרות ומוסיפים את האפסים."},
+  {key:"div", title:"חילוק", tip:"בודקים בכפל: התשובה כפול המחלק צריכה לתת את המספר שהתחלנו ממנו."},
+  {key:"par", title:"סוגריים וסדר פעולות", tip:"קודם סוגריים, אחר כך כפל וחילוק, ובסוף חיבור וחיסור."},
+  {key:"word", title:"בעיות מילוליות", tip:"קוראים פעמיים, מסמנים את המספרים ומחליטים איזו פעולה צריך."}
+];
+const GEN = {
+  add(){ const a=rnd(1200,6999), b=rnd(1100,9800-a); return {ex:`${a} + ${b}`, ans:a+b}; },
+  sub(){
+    let a, b;
+    if(Math.random()<0.35){ a = rnd(3,9)*1000 + pick([0,0,rnd(1,9),rnd(10,99)]); }
+    else a = rnd(3000,9899);
+    b = rnd(1000, a-200);
+    return {ex:`${a} − ${b}`, ans:a-b};
+  },
+  mul(){
+    const t = rnd(0,3);
+    if(t===0){const a=rnd(12,99),b=rnd(3,9);return {ex:`${a} × ${b}`,ans:a*b};}
+    if(t===1){const a=rnd(102,399),b=rnd(2,6);return {ex:`${a} × ${b}`,ans:a*b};}
+    if(t===2){const a=rnd(2,9)*10,b=rnd(2,9)*10;return {ex:`${a} × ${b}`,ans:a*b};}
+    const a=rnd(12,99),b=pick([10,100]);return {ex:`${a} × ${b}`,ans:a*b};
+  },
+  div(){
+    const t = rnd(0,2);
+    if(t===0){const d=rnd(2,9),q=rnd(11,40);return {ex:`${q*d} ÷ ${d}`,ans:q};}
+    if(t===1){const d=rnd(3,9),q=rnd(21,99);return {ex:`${q*d} ÷ ${d}`,ans:q};}
+    const d=rnd(2,9)*10,q=rnd(2,9)*10;return {ex:`${q*d} ÷ ${d}`,ans:q};
+  },
+  par(){
+    const T = [
+      ()=>{const a=rnd(10,40),b=rnd(5,30),c=rnd(2,6);return [`(${a} + ${b}) × ${c}`,(a+b)*c];},
+      ()=>{const a=rnd(10,40),b=rnd(5,30),c=rnd(2,6);return [`${a} + ${b} × ${c}`,a+b*c];},
+      ()=>{const c=rnd(2,5),b=rnd(5,20),a=b*c+rnd(5,40);return [`${a} − ${b} × ${c}`,a-b*c];},
+      ()=>{const b=rnd(10,40),a=b+rnd(5,40),c=rnd(2,6);return [`(${a} − ${b}) × ${c}`,(a-b)*c];},
+      ()=>{const a=rnd(2,9),b=rnd(3,9),c=rnd(2,9),d=rnd(3,9);return [`${a} × ${b} + ${c} × ${d}`,a*b+c*d];},
+      ()=>{const a=rnd(3,9),b=rnd(2,9),d=rnd(2,8),c=d+rnd(2,6);return [`(${a} + ${b}) × (${c} − ${d})`,(a+b)*(c-d)];},
+      ()=>{const a=rnd(2,6),c=rnd(5,20),b=c+rnd(5,25),d=rnd(5,30);return [`${a} × (${b} − ${c}) + ${d}`,a*(b-c)+d];},
+      ()=>{const b=rnd(2,9),q=rnd(3,12),c=rnd(5,40);return [`${q*b} ÷ ${b} + ${c}`,q+c];},
+      ()=>{const b=rnd(2,6),c=rnd(2,6),q=rnd(3,10);return [`${q*b*c} ÷ (${b} × ${c})`,q];}
+    ];
+    const f = this._parPool && this._parPool.length ? this._parPool.pop() : (this._parPool = shuffle(T), this._parPool.pop());
+    const [ex,ans] = f(); return {ex, ans};
+  },
+  word(){
+    const T = [
+      ()=>{const a=rnd(4,9),b=rnd(12,35);return [`ביער הגשם יש ${a} עצים גבוהים, ועל כל עץ יושבים ${b} תוכים. כמה תוכים יש על כל העצים?`,a*b];},
+      ()=>{const a=rnd(30,60),b=rnd(5,a-10),c=rnd(5,20);return [`באוטובוס לטיול היו ${a} ילדים. בתחנה הראשונה ירדו ${b} ילדים ועלו ${c}. כמה ילדים יש עכשיו באוטובוס?`,a-b+c];},
+      ()=>{const n=rnd(2,5),p=rnd(4,9),s=n*p<50?50:100;return [`יערה קנתה ${n} מחברות, כל מחברת עולה ${p} ₪. היא שילמה בשטר של ${s} ₪. כמה עודף קיבלה?`,s-n*p];},
+      ()=>{const k=rnd(3,9),q=rnd(6,15);return [`${k*q} בננות חולקו שווה בשווה בין ${k} קופים. כמה בננות קיבל כל קוף?`,q];},
+      ()=>{const a=rnd(120,480),b=rnd(20,90);return [`ביום ראשון נסעה משפחה ${a} ק״מ, וביום שני נסעה ${b} ק״מ יותר מביום ראשון. כמה ק״מ נסעו בשני הימים יחד?`,a+a+b];},
+      ()=>{const r=rnd(6,12),c=rnd(10,25),x=rnd(5,30);return [`בחורשה יש ${r} שורות של עצים, ובכל שורה ${c} עצים. ${x} עצים נכרתו. כמה עצים נשארו?`,r*c-x];},
+      ()=>{const w=rnd(3,8);return [`צפרדע קופצת ${w*3} פעמים בכל דקה. כמה פעמים תקפוץ ב-${w} דקות?`,w*3*w];},
+      ()=>{const t=rnd(1500,4500),s=rnd(300,1200);return [`בספריית בית הספר היו ${t} ספרים. השנה קנו עוד ${s} ספרים. כמה ספרים יש עכשיו בספרייה?`,t+s];}
+    ];
+    const f = this._wPool && this._wPool.length ? this._wPool.pop() : (this._wPool = shuffle(T), this._wPool.pop());
+    const [ex,ans] = f(); return {ex, ans};
+  }
+};
+function buildMath(){
+  GEN._parPool = null; GEN._wPool = null;
+  const root = $("#m-secs"); root.innerHTML = "";
+  MSECS.forEach(sec=>{
+    const s = document.createElement("section");
+    s.className = "m-sec "+sec.key;
+    s.innerHTML = `<div class="head"><h2>${sec.title}</h2><span class="sc" id="msc-${sec.key}"></span></div><p class="tip">${sec.tip}</p><div class="m-grid"></div>`;
+    const grid = s.querySelector(".m-grid");
+    const seen = new Set();
+    for(let i=0;i<6;i++){
+      let it, guard=0; do { it = GEN[sec.key](); } while(seen.has(it.ex) && guard++<20); seen.add(it.ex);
+      const id = `m-${sec.key}-${i}`, row = document.createElement("div");
+      row.className = "m-item"; row.dataset.ans = it.ans;
+      if(sec.key==="word"){
+        row.innerHTML = `<span class="n">${i+1}</span><div class="m-word"><span class="q">${it.ex}</span><span class="a"><label for="${id}">תשובה:</label><input id="${id}" inputmode="numeric" autocomplete="off"><span class="mark" aria-live="polite"></span></span></div>`;
+      } else {
+        row.innerHTML = `<span class="n">${i+1}</span><span class="m-ex"><span>${it.ex} =</span><input id="${id}" inputmode="numeric" autocomplete="off" aria-label="תשובה לתרגיל ${it.ex}"><span class="mark" aria-live="polite"></span></span>`;
+      }
+      grid.appendChild(row);
+    }
+    const btn = document.createElement("button"); btn.className="secbtn"; btn.textContent="בדיקה";
+    btn.onclick = ()=>{checkMSec(sec.key); updMTotal();};
+    s.appendChild(btn); root.appendChild(s);
+  });
+  updMTotal();
+}
+function checkMRow(row){
+  const v=row.querySelector("input").value.trim(), mark=row.querySelector(".mark");
+  row.classList.remove("ok","no");
+  if(v===""){mark.textContent="";return;}
+  const ok = Number(v)===Number(row.dataset.ans);
+  row.classList.add(ok?"ok":"no"); mark.textContent = ok?"✓":"✗";
+}
+function checkMSec(k){
+  const rows=document.querySelectorAll(`.m-sec.${k} .m-item`); rows.forEach(checkMRow);
+  $("#msc-"+k).textContent = `${document.querySelectorAll(`.m-sec.${k} .m-item.ok`).length} מתוך 6 נכונים`;
+}
+function updMTotal(){
+  const c=document.querySelectorAll(".m-item.ok").length;
+  $("#m-total").textContent = `${c} / 36`;
+  $("#m-msg").textContent = c===36?"מושלם! כל הכבוד יערה! 🌟":c>=28?"מצוין! נשארו רק כמה לתקן.":c>=18?"יפה מאוד, ממשיכים!":c>0?"התחלה טובה, אפשר לתקן ולבדוק שוב.":"עדיין לא בדקנו. בהצלחה!";
+}
+$("#m-checkall").onclick = ()=>{MSECS.forEach(s=>checkMSec(s.key)); updMTotal();};
+$("#m-new").onclick = ()=>{buildMath(); window.scrollTo({top:0,behavior:"smooth"});};
+document.addEventListener("input",e=>{
+  if(e.target.matches(".m-item input")){
+    e.target.value=e.target.value.replace(/[^\d]/g,"");
+    const r=e.target.closest(".m-item"); r.classList.remove("ok","no"); r.querySelector(".mark").textContent="";
+  }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter" && e.target.matches(".m-item input")){
+    const all=[...document.querySelectorAll(".m-item input")], i=all.indexOf(e.target);
+    if(all[i+1]) all[i+1].focus();
+  }
+});
+
+/* =========================================================
+   ENGLISH
+   ========================================================= */
+const STORIES = [
+  {title:"My Dog Max", color:"#ec6f9f", text:[
+    "Hi! My name is Noa. I am nine years old. I have a dog. His name is Max.",
+    "Max is big and brown. He has long ears and a short tail. Max likes to run in the park.",
+    "Every morning I give Max water and food. In the evening we play with a red ball. Max is my best friend!"],
+   qs:[
+    {t:"How old is Noa?", o:["eight","nine","ten"], a:1},
+    {t:"What color is Max?", o:["black","white","brown"], a:2},
+    {t:"Where does Max like to run?", o:["in the park","in the school","in the house"], a:0},
+    {t:"What does Noa give Max every morning?", o:["a ball","water and food","milk"], a:1},
+    {t:"Max has a long tail.", o:["True","False"], a:1},
+    {t:"What color is the ball?", o:["red","blue","yellow"], a:0}]},
+  {title:"At the Beach", color:"#ffb020", text:[
+    "It is summer. Tom and his sister Lily go to the beach with their mom.",
+    "The sun is hot and the sea is blue. Tom swims in the water. Lily makes a big sandcastle.",
+    "At twelve o'clock they eat sandwiches and apples. Then Mom reads a book under a big umbrella. They are very happy."],
+   qs:[
+    {t:"Who is Lily?", o:["Tom's mom","Tom's sister","Tom's friend"], a:1},
+    {t:"What does Tom do?", o:["He swims.","He reads.","He sleeps."], a:0},
+    {t:"What does Lily make?", o:["a cake","a sandcastle","a kite"], a:1},
+    {t:"When do they eat?", o:["at ten o'clock","at twelve o'clock","at five o'clock"], a:1},
+    {t:"The sea is green.", o:["True","False"], a:1},
+    {t:"Where does Mom read?", o:["in the water","under an umbrella","in the car"], a:1}]},
+  {title:"My School Bag", color:"#8c6bd6", text:[
+    "This is my school bag. It is blue and it is heavy!",
+    "In my bag I have a red pencil case, two books and a green notebook. I have a sandwich, an orange and a bottle of water too.",
+    "On Sunday I have English, math and sport. I love English because my teacher sings songs with us."],
+   qs:[
+    {t:"What color is the bag?", o:["red","blue","green"], a:1},
+    {t:"How many books are in the bag?", o:["one","two","three"], a:1},
+    {t:"What fruit is in the bag?", o:["an apple","a banana","an orange"], a:2},
+    {t:"The notebook is green.", o:["True","False"], a:0},
+    {t:"Which lessons are on Sunday?", o:["English, math and sport","art and music","science and Hebrew"], a:0},
+    {t:"Why does the child love English?", o:["The teacher sings songs.","There is no homework.","It is short."], a:0}]},
+  {title:"The Little Bee", color:"#4f9a36", text:[
+    "Bella is a little bee. She lives in a hive with many other bees.",
+    "Every day Bella flies to the flowers. She likes pink flowers and yellow flowers. She takes nectar from the flowers and makes honey.",
+    "One day it rains. Bella can't fly, so she stays in the hive and sleeps. The next day the sun is back, and Bella flies again."],
+   qs:[
+    {t:"Where does Bella live?", o:["in a tree","in a hive","in a house"], a:1},
+    {t:"Which flowers does Bella like?", o:["pink and yellow","red and blue","white and black"], a:0},
+    {t:"What does Bella make?", o:["bread","honey","milk"], a:1},
+    {t:"Why does Bella stay in the hive?", o:["It is hot.","It rains.","She is sad."], a:1},
+    {t:"Bella lives alone.", o:["True","False"], a:1}]}
+];
+let curStory = 0;
+function renderStoryPicker(){
+  $("#e-stories").innerHTML = STORIES.map((s,i)=>`<button class="flower-btn ltr" style="--fc:${s.color}" aria-pressed="${i===curStory}" data-i="${i}"><i></i>${esc(s.title)}</button>`).join("");
+  $("#e-stories").querySelectorAll("button").forEach(b=>b.onclick=()=>{curStory=+b.dataset.i;renderStoryPicker();renderStory();});
+}
+function renderStory(){
+  const s = STORIES[curStory];
+  $("#e-story").innerHTML = `<div class="e-text"><h3>${esc(s.title)}</h3>${s.text.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+    <h3>Questions <span class="e-muted">· שאלות</span></h3>
+    <div class="qlist">${s.qs.map((q,i)=>`<div class="q ltrq" data-a="${q.a}"><span class="qt">${i+1}. ${esc(q.t)}</span><div class="opts">${q.o.map((o,j)=>`<label class="opt"><input type="radio" name="eq${i}" value="${j}">${esc(o)}</label>`).join("")}</div></div>`).join("")}</div>
+    <button class="ebtn" id="e-check">בדיקה</button><p class="result" id="e-res" aria-live="polite"></p>`;
+  $("#e-check").onclick = ()=>{
+    let c=0; const qs=document.querySelectorAll("#e-story .q");
+    qs.forEach((q,i)=>{const sel=q.querySelector("input:checked"); q.classList.remove("q-ok","q-no"); if(!sel) return; const ok=+sel.value===+q.dataset.a; q.classList.add(ok?"q-ok":"q-no"); if(ok)c++;});
+    $("#e-res").textContent = `${c} מתוך ${qs.length} נכונות` + (c===qs.length?" · Excellent! 🍎":c>=qs.length-1?" · Very good!":" · אפשר לחזור לסיפור ולנסות שוב");
+  };
+}
+/* tabs */
+const ETABS = ["read","words","quiz"];
+function eTab(t){ ETABS.forEach(n=>{$("#et-"+n).setAttribute("aria-selected",n===t);$("#ep-"+n).hidden=n!==t;}); if(t==="quiz") quizInfo(); }
+ETABS.forEach(n=>$("#et-"+n).onclick=()=>eTab(n));
+
+/* ---- word store: shared db when available, browser storage otherwise ---- */
+let WORDS = [], storeKind = "loading", store = null;
+const LKEY = "yaara-words-v1";
+function localStore(){
+  const read=()=>{try{return JSON.parse(localStorage.getItem(LKEY)||"[]");}catch(e){return [];}};
+  const write=a=>{try{localStorage.setItem(LKEY,JSON.stringify(a));}catch(e){}};
+  let cb=()=>{};
+  return {
+    subscribe(f){cb=f;f(read());},
+    async add(o){const a=read();a.push({id:"w"+Date.now()+Math.random().toString(36).slice(2,6),...o});write(a);cb(a);},
+    async remove(id){const a=read().filter(w=>w.id!==id);write(a);cb(a);},
+    async update(id,p){const a=read().map(w=>w.id===id?{...w,...p}:w);write(a);cb(a);}
+  };
+}
+function dbStore(db){
+  const col = db.collection("words");
+  return {
+    subscribe(f){col.onSnapshot(s=>f(s.docs.map(d=>({id:d.id,...d.data()}))), err=>{$("#w-note").textContent="לא הצלחתי לטעון את המילים. נסי לרענן את הדף.";});},
+    add(o){return col.add(o);},
+    remove(id){return col.doc(id).delete();},
+    update(id,p){return col.doc(id).update(p);}
+  };
+}
+function startStore(s, kind){
+  store = s; storeKind = kind;
+  store.subscribe(list=>{WORDS = list.sort((a,b)=>(b.created||0)-(a.created||0)); renderWords(); quizInfo();});
+}
+(async()=>{
+  let db=null;
+  try{ if(window.claude && window.claude.use) db = await window.claude.use("db"); }catch(e){ db=null; }
+  if(db) startStore(dbStore(db),"db"); else startStore(localStore(),"local");
+})();
+
+const ICON_SPEAK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+const ICON_DEL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>`;
+const canSpeak = "speechSynthesis" in window;
+function speak(t){ if(!canSpeak) return; try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="en-US"; u.rate=.85; speechSynthesis.speak(u);}catch(e){} }
+const isWeak = w => (w.wrong||0) > (w.right||0);
+let pendingDel = null;
+function renderWords(){
+  const q = $("#w-search").value.trim().toLowerCase();
+  const list = WORDS.filter(w=>!q || w.en.toLowerCase().includes(q) || w.he.includes(q));
+  const exCount = WORDS.filter(w=>w.example).length;
+  $("#w-count").textContent = `${WORDS.length} מילים במחסן` + (WORDS.filter(isWeak).length?` · ${WORDS.filter(isWeak).length} לחיזוק`:"");
+  $("#w-clear-ex").hidden = !exCount;
+  $("#w-note").textContent = storeKind==="db" ? "המילים נשמרות באתר, ונשארות גם בפעם הבאה." : storeKind==="local" ? "המילים נשמרות בדפדפן הזה במחשב הזה." : "טוען את המילים…";
+  if(!WORDS.length){ $("#w-grid").innerHTML = `<p class="e-muted">עוד אין מילים. כותבים מילה באנגלית ואת הפירוש שלה, ולוחצים "הוספה".</p>`; return; }
+  $("#w-grid").innerHTML = list.map(w=>`<div class="wcard"><div class="txt"><span class="en">${esc(w.en)}</span><span class="he">${esc(w.he)}</span>${w.example?`<span class="tag">דוגמה</span>`:""}${isWeak(w)?`<span class="tag weak">לחזק</span>`:""}</div>
+    ${canSpeak?`<button class="icon-btn" data-say="${esc(w.en)}" aria-label="להשמיע ${esc(w.en)}">${ICON_SPEAK}</button>`:""}
+    <button class="icon-btn danger" data-del="${esc(w.id)}" aria-label="מחיקת ${esc(w.en)}">${pendingDel===w.id?"<small>בטוח?</small>":ICON_DEL}</button></div>`).join("") || `<p class="e-muted">לא מצאתי מילה כזאת.</p>`;
+}
+$("#w-grid").addEventListener("click",e=>{
+  const s=e.target.closest("[data-say]"); if(s){speak(s.dataset.say);return;}
+  const d=e.target.closest("[data-del]"); if(!d) return;
+  const id=d.dataset.del;
+  if(pendingDel===id){ pendingDel=null; store.remove(id).catch(()=>{}); }
+  else { pendingDel=id; renderWords(); setTimeout(()=>{ if(pendingDel===id){pendingDel=null;renderWords();} },3000); }
+});
+$("#w-search").addEventListener("input",renderWords);
+$("#w-form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const en=$("#w-en").value.trim(), he=$("#w-he").value.trim();
+  if(!en||!he||!store) return;
+  if(WORDS.some(w=>w.en.toLowerCase()===en.toLowerCase())){ $("#w-note").textContent=`המילה "${en}" כבר נמצאת במחסן.`; return; }
+  try{ await store.add({en,he,created:Date.now(),right:0,wrong:0}); $("#w-en").value=""; $("#w-he").value=""; $("#w-en").focus(); }
+  catch(err){ $("#w-note").textContent="לא הצלחתי לשמור. אולי צריך הרשאה לשמור באתר."; }
+});
+let clearArmed=false;
+$("#w-clear-ex").onclick=()=>{
+  if(!clearArmed){clearArmed=true;$("#w-clear-ex").textContent="ללחוץ שוב כדי למחוק";setTimeout(()=>{clearArmed=false;$("#w-clear-ex").textContent="מחיקת מילות הדוגמה";},3000);return;}
+  clearArmed=false; $("#w-clear-ex").textContent="מחיקת מילות הדוגמה";
+  WORDS.filter(w=>w.example).forEach(w=>store.remove(w.id).catch(()=>{}));
+};
+
+/* ---- quiz ---- */
+let Q = null;
+function quizInfo(){
+  const n=WORDS.length, mode=$("#q-mode").value;
+  const need = mode==="spell"?1:4;
+  $("#q-start").disabled = n<need;
+  $("#q-info").textContent = n<need ? `צריך לפחות ${need} מילים במחסן לבוחן הזה. כרגע יש ${n}.` : `יש ${n} מילים במחסן. מילים שטעית בהן בעבר יופיעו קודם.`;
+}
+$("#q-mode").onchange = quizInfo;
+$("#q-start").onclick = ()=>{
+  const mode=$("#q-mode").value, cnt=$("#q-count").value;
+  const weak=shuffle(WORDS.filter(isWeak)), rest=shuffle(WORDS.filter(w=>!isWeak(w)));
+  let items=[...weak,...rest]; if(cnt!=="all") items=items.slice(0,+cnt); items=shuffle(items);
+  Q={mode,items,i:0,pts:0,results:[]};
+  $("#q-setup").hidden=true; $("#q-done").hidden=true; $("#q-run").hidden=false; showQ();
+};
+function showQ(){
+  const w=Q.items[Q.i], mode=Q.mode;
+  $("#q-pos").textContent=`שאלה ${Q.i+1} מתוך ${Q.items.length}`;
+  $("#q-pts").textContent=`${Q.pts} נכונות`;
+  $("#q-bar").style.width=`${(Q.i/Q.items.length)*100}%`;
+  $("#q-fb").textContent=""; $("#q-next").hidden=true;
+  const showEn = mode==="en-he";
+  $("#q-word").innerHTML = showEn ? `<span class="ltr">${esc(w.en)}</span>` : esc(w.he);
+  if(showEn) speak(w.en);
+  if(mode==="spell"){
+    $("#q-answer").innerHTML=`<form class="quiz-type" id="q-form"><input id="q-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type in English"><button class="ebtn pink" type="submit">בדיקה</button></form>`;
+    $("#q-in").focus();
+    $("#q-form").onsubmit=e=>{e.preventDefault(); const v=$("#q-in").value.trim().toLowerCase(); if(!v) return; answer(v===w.en.toLowerCase(), w); $("#q-in").disabled=true; e.target.querySelector("button").disabled=true;};
+  } else {
+    const others=shuffle(WORDS.filter(x=>x.id!==w.id)).slice(0,3);
+    const opts=shuffle([w,...others]);
+    const key = mode==="en-he"?"he":"en";
+    $("#q-answer").innerHTML=`<div class="quiz-opts">${opts.map(o=>`<button class="quiz-opt ${key==="en"?"ltr":""}" data-id="${esc(o.id)}">${esc(o[key])}</button>`).join("")}</div>`;
+    $("#q-answer").querySelectorAll(".quiz-opt").forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.id===w.id;
+      $("#q-answer").querySelectorAll(".quiz-opt").forEach(x=>{x.disabled=true; if(x.dataset.id===w.id) x.classList.add("right");});
+      if(!ok) b.classList.add("wrong");
+      answer(ok,w);
+    });
+  }
+}
+function answer(ok,w){
+  if(ok) Q.pts++;
+  Q.results.push({w,ok});
+  $("#q-pts").textContent=`${Q.pts} נכונות`;
+  $("#q-fb").innerHTML = ok ? pick(["נכון! Great!","יופי! Well done!","מעולה! Super!"]) : `לא נורא. התשובה: <span class="ltr">${esc(w.en)}</span> = ${esc(w.he)}`;
+  if(Q.mode!=="en-he" && canSpeak) speak(w.en);
+  $("#q-next").hidden=false; $("#q-next").textContent = Q.i+1<Q.items.length?"הבאה":"לסיכום"; $("#q-next").focus();
+}
+$("#q-next").onclick=()=>{ Q.i++; if(Q.i<Q.items.length) showQ(); else finishQ(); };
+function finishQ(){
+  $("#q-run").hidden=true; $("#q-done").hidden=false;
+  const n=Q.items.length, wrong=Q.results.filter(r=>!r.ok);
+  $("#q-done").innerHTML = `<div class="quiz-q">${Q.pts} / ${n}</div>
+    <p class="feedback">${Q.pts===n?"מושלם! You are a star! ⭐":Q.pts>=n*0.8?"כל הכבוד! עוד קצת ומושלם.":"ממשיכים להתאמן, כל פעם זה משתפר."}</p>
+    ${wrong.length?`<h3>מילים לחזור עליהן</h3><div class="word-grid">${wrong.map(r=>`<div class="wcard"><div class="txt"><span class="en">${esc(r.w.en)}</span><span class="he">${esc(r.w.he)}</span></div></div>`).join("")}</div>`:""}
+    <button class="ebtn pink" id="q-again">בוחן חדש</button>`;
+  $("#q-again").onclick=()=>{$("#q-done").hidden=true;$("#q-setup").hidden=false;quizInfo();};
+  // save right/wrong counts, one write per word
+  const tally={}; Q.results.forEach(r=>{tally[r.w.id]=tally[r.w.id]||{w:r.w,r:0,x:0}; r.ok?tally[r.w.id].r++:tally[r.w.id].x++;});
+  Object.values(tally).forEach(t=>store.update(t.w.id,{right:(t.w.right||0)+t.r,wrong:(t.w.wrong||0)+t.x}).catch(()=>{}));
+}
+
+/* =========================================================
+   SPORT
+   ========================================================= */
+const KINDS = {warm:"חימום",power:"כוח",core:"בטן וגב",balance:"שיווי משקל",stretch:"מתיחות"};
+const EXS = [
+  {id:"jacks",k:"warm",n:"קפיצות סקי",amt:"30 שניות",sec:30,how:["עומדים ישר, ידיים לצד הגוף.","קופצים ופותחים רגליים, הידיים עולות מעל הראש.","קופצים חזרה וסוגרים."],safe:"נוחתים רך על כריות כפות הרגליים."},
+  {id:"knees",k:"warm",n:"ריצה במקום עם ברכיים גבוהות",amt:"30 שניות",sec:30,how:["רצים במקום.","מרימים כל ברך עד גובה המותניים.","הידיים זזות כמו בריצה."],safe:"גב ישר, מבט קדימה."},
+  {id:"arms",k:"warm",n:"סיבובי ידיים",amt:"20 שניות",sec:20,how:["פותחים ידיים לצדדים.","עושים עיגולים קטנים קדימה, ואחר כך גדולים.","מחליפים כיוון באמצע."],safe:"הכתפיים רפויות."},
+  {id:"squat",k:"power",n:"סקוואט (כריעה)",amt:"12 פעמים",sec:40,how:["רגליים ברוחב הכתפיים.","יורדים כאילו מתיישבים על כיסא.","עולים חזרה לעמידה."],safe:"הברכיים לא עוברות את קצות האצבעות."},
+  {id:"lunge",k:"power",n:"מכרע (לאנג׳)",amt:"8 לכל רגל",sec:45,how:["צעד גדול קדימה.","יורדים עד ששתי הברכיים בזווית ישרה.","חוזרים ומחליפים רגל."],safe:"הברך האחורית לא נוגעת חזק ברצפה."},
+  {id:"push",k:"power",n:"שכיבות סמיכה על הברכיים",amt:"8 פעמים",sec:35,how:["ידיים על הרצפה ברוחב הכתפיים, ברכיים על הרצפה.","מורידים את החזה לאט.","דוחפים חזרה למעלה."],safe:"הגוף בקו ישר מהראש עד הברכיים."},
+  {id:"frog",k:"power",n:"קפיצות צפרדע",amt:"8 קפיצות",sec:30,how:["כורעים נמוך, ידיים ליד הרגליים.","קופצים קדימה ולמעלה.","נוחתים רך וחוזרים לכריעה."],safe:"צריך מקום פנוי מסביב."},
+  {id:"plank",k:"core",n:"פלאנק",amt:"20 שניות",sec:20,how:["נשענים על האמות ועל קצות האצבעות.","הגוף ישר כמו קרש.","נושמים רגיל ומחזיקים."],safe:"לא מורידים את הישבן ולא מרימים אותו גבוה."},
+  {id:"situp",k:"core",n:"כפיפות בטן",amt:"12 פעמים",sec:40,how:["שוכבים על הגב, ברכיים כפופות.","ידיים על החזה.","מרימים את הכתפיים מהרצפה ויורדים לאט."],safe:"לא מושכים את הראש עם הידיים."},
+  {id:"bridge",k:"core",n:"גשר",amt:"12 פעמים",sec:35,how:["שוכבים על הגב, כפות רגליים על הרצפה.","מרימים את האגן למעלה.","מחזיקים שנייה ויורדים."],safe:"לוחצים עם העקבים."},
+  {id:"superman",k:"core",n:"סופרמן",amt:"10 פעמים",sec:35,how:["שוכבים על הבטן, ידיים קדימה.","מרימים ידיים ורגליים יחד.","מחזיקים שנייה ויורדים."],safe:"המבט לרצפה, הצוואר ארוך."},
+  {id:"flamingo",k:"balance",n:"עמידת פלמינגו",amt:"20 שניות לכל רגל",sec:40,how:["עומדים על רגל אחת.","ידיים לצדדים.","באמצע הזמן מחליפים רגל."],safe:"קרוב לקיר, אם צריך להיתמך."},
+  {id:"wall",k:"balance",n:"כיסא דמיוני",amt:"20 שניות",sec:20,how:["גב צמוד לקיר.","יורדים עד שהברכיים בזווית ישרה.","מחזיקים."],safe:"כפות הרגליים רחוקות קצת מהקיר."},
+  {id:"ham",k:"stretch",n:"מתיחת ירך אחורית",amt:"30 שניות",sec:30,how:["יושבים עם רגליים ישרות קדימה.","מושיטים ידיים לכיוון האצבעות.","מחזיקים בלי לקפוץ."],safe:"מותחים עד שמרגישים משיכה, לא כאב."},
+  {id:"butterfly",k:"stretch",n:"מתיחת פרפר",amt:"30 שניות",sec:30,how:["יושבים, מצמידים כפות רגליים.","מחזיקים בקרסוליים.","מורידים ברכיים בעדינות לכיוון הרצפה."],safe:"גב ישר."},
+  {id:"cat",k:"stretch",n:"חתול וגמל",amt:"30 שניות",sec:30,how:["עומדים על ידיים וברכיים.","מקמרים את הגב למעלה כמו חתול.","מורידים את הבטן ומרימים ראש. חוזרים לאט."],safe:"נושמים עמוק."},
+  {id:"kicks",k:"warm",n:"בעיטות לאחור",amt:"30 שניות",sec:30,how:["רצים במקום.","בכל צעד העקב עולה לכיוון הישבן.","הידיים זזות כמו בריצה."],safe:"רצים קל, על קצות האצבעות."},
+  {id:"shuffle",k:"warm",n:"צעדי צד",amt:"30 שניות",sec:30,how:["עומדים בכריעה קלה.","זזים 3 צעדים מהירים ימינה.","ואז 3 צעדים שמאלה, וחוזר חלילה."],safe:"לא מצליבים את הרגליים."},
+  {id:"jumpsq",k:"power",n:"סקוואט עם קפיצה",amt:"8 פעמים",sec:35,how:["יורדים לסקוואט.","קופצים למעלה כמה שיותר גבוה.","נוחתים רך וחוזרים לסקוואט."],safe:"נוחתים עם ברכיים כפופות."},
+  {id:"skate",k:"power",n:"קפיצות מחליק",amt:"20 שניות",sec:20,how:["קופצים הצידה מרגל לרגל.","הרגל השנייה עוברת מאחור.","כמו מחליקה על הקרח."],safe:"צריך מקום פנוי מהצדדים."},
+  {id:"climber",k:"core",n:"מטפסת הרים",amt:"20 שניות",sec:20,how:["עמידת שכיבת סמיכה, ידיים ישרות.","מביאים ברך אחת לחזה.","מחליפים רגליים מהר, כמו ריצה."],safe:"הישבן לא עולה גבוה."},
+  {id:"sideplank",k:"core",n:"פלאנק צד",amt:"15 שניות לכל צד",sec:30,how:["שוכבים על הצד, נשענים על האמה.","מרימים את האגן כך שהגוף ישר.","באמצע הזמן מחליפים צד."],safe:"אפשר להתחיל עם ברכיים על הרצפה."},
+  {id:"bike",k:"core",n:"אופניים באוויר",amt:"20 שניות",sec:20,how:["שוכבים על הגב, ידיים ליד הראש.","מרימים רגליים ו\"מדוושים\" באוויר.","מקרבים מרפק לברך הנגדית."],safe:"לא מושכים את הצוואר."},
+  {id:"airplane",k:"balance",n:"עמידת מטוס",amt:"15 שניות לכל רגל",sec:30,how:["עומדים על רגל אחת.","מטים את הגוף קדימה והרגל השנייה נמתחת לאחור.","הידיים פתוחות כמו כנפיים."],safe:"לאט, וקרוב לקיר אם צריך."},
+  {id:"tightrope",k:"balance",n:"הליכה על חבל",amt:"30 שניות",sec:30,how:["הולכים בקו ישר.","העקב נוגע בקצות האצבעות של הרגל הקודמת.","ידיים לצדדים."],safe:"אפשר לסמן קו עם סרט דבק."},
+  {id:"quad",k:"stretch",n:"מתיחת ירך קדמית",amt:"15 שניות לכל רגל",sec:30,how:["עומדים על רגל אחת ליד קיר.","תופסים את הקרסול של הרגל השנייה מאחור.","מקרבים את העקב לישבן."],safe:"הברכיים צמודות."},
+  {id:"child",k:"stretch",n:"תנוחת הילד",amt:"30 שניות",sec:30,how:["יושבים על העקבים.","מתכופפים קדימה, מצח לרצפה.","ידיים ישרות קדימה, נושמים לאט."],safe:"נרגעים ומשחררים."}
+];
+// Each plan says how many exercises to draw from each kind; "must" are always included.
+const PLANS = {
+  short:{warm:2,power:2,core:1,balance:1,stretch:2},
+  full:{warm:3,power:4,core:3,balance:2,stretch:3},
+  test:{warm:2,power:1,core:1,stretch:1,must:["situp","plank","push","ham"]}
+};
+const LASTKEY="yaara-last-workout";
+function buildPlan(name){
+  const plan=PLANS[name], must=plan.must||[];
+  let last=[]; try{last=JSON.parse(localStorage.getItem(LASTKEY)||"[]");}catch(e){}
+  const out=[];
+  Object.keys(KINDS).forEach(k=>{
+    const fixed=EXS.filter(x=>x.k===k&&must.includes(x.id)).map(x=>x.id);
+    const pool=EXS.filter(x=>x.k===k&&!must.includes(x.id));
+    // prefer exercises that were not in the last workout
+    const fresh=shuffle(pool.filter(x=>!last.includes(x.id))), used=shuffle(pool.filter(x=>last.includes(x.id)));
+    const picked=[...fresh,...used].slice(0,plan[k]||0).map(x=>x.id);
+    out.push(...shuffle([...fixed,...picked]));
+  });
+  try{localStorage.setItem(LASTKEY,JSON.stringify(out));}catch(e){}
+  return out;
+}
+const REST = 15;
+let sFilter = "all";
+function renderSport(){
+  $("#s-filter").innerHTML = [["all","הכול"],...Object.entries(KINDS)].map(([k,v])=>`<button class="fchip" data-k="${k}" aria-pressed="${sFilter===k}">${v}</button>`).join("");
+  $("#s-filter").querySelectorAll("button").forEach(b=>b.onclick=()=>{sFilter=b.dataset.k;renderSport();});
+  $("#s-grid").innerHTML = EXS.filter(x=>sFilter==="all"||x.k===sFilter).map(x=>`<div class="ex-card k-${x.k}">
+    <div class="row"><h3>${x.n}</h3><span class="ktag">${KINDS[x.k]}</span></div>
+    <span class="amount">${x.amt}</span>
+    <ol>${x.how.map(h=>`<li>${h}</li>`).join("")}</ol>
+    <p class="safe">שימי לב: ${x.safe}</p>
+    <button class="sbtn small navy" data-one="${x.id}">טיימר לתרגיל הזה</button></div>`).join("");
+  $("#s-grid").querySelectorAll("[data-one]").forEach(b=>b.onclick=()=>startRun([b.dataset.one],false));
+  updCounts();
+}
+const SKEY="yaara-sport-v1";
+function sLoad(){try{return JSON.parse(localStorage.getItem(SKEY)||'{"all":0,"days":[]}');}catch(e){return {all:0,days:[]};}}
+function sSave(o){try{localStorage.setItem(SKEY,JSON.stringify(o));}catch(e){}}
+function updCounts(){
+  const o=sLoad(), weekAgo=Date.now()-7*864e5;
+  $("#s-week").textContent = (o.days||[]).filter(t=>t>weekAgo).length;
+  $("#s-all").textContent = o.all||0;
+}
+let R=null, actx=null;
+function beep(f=880,d=.12){ try{ if(!actx) return; const o=actx.createOscillator(), g=actx.createGain(); o.frequency.value=f; o.connect(g); g.connect(actx.destination); g.gain.setValueAtTime(.18,actx.currentTime); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d); o.start(); o.stop(actx.currentTime+d);}catch(e){} }
+function startRun(ids, isWorkout=true){
+  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx=null; }
+  const steps=[]; ids.forEach((id,i)=>{const x=EXS.find(e=>e.id===id); steps.push({x,sec:x.sec}); if(i<ids.length-1) steps.push({rest:true,sec:REST,nextX:EXS.find(e=>e.id===ids[i+1])});});
+  R={steps,i:0,left:steps[0].sec,paused:false,isWorkout,timer:null,total:ids.length};
+  $("#runner").hidden=false; document.body.style.overflow="hidden";
+  showStep(); R.timer=setInterval(tick,1000);
+}
+function showStep(){
+  const st=R.steps[R.i];
+  const exIdx = R.steps.slice(0,R.i+1).filter(s=>!s.rest).length;
+  $("#r-stage").textContent = st.rest ? "מנוחה קצרה" : `תרגיל ${exIdx} מתוך ${R.total} · ${KINDS[st.x.k]}`;
+  $("#r-name").textContent = st.rest ? "לנשום ולשתות" : st.x.n;
+  $("#r-name").classList.toggle("rest",!!st.rest);
+  $("#r-how").textContent = st.rest ? `הבא בתור: ${st.nextX.n} (${st.nextX.amt})` : `${st.x.amt} · ${st.x.how.join(" ")}`;
+  const nx = R.steps[R.i+1]; $("#r-next").textContent = nx ? (nx.rest?"אחר כך: מנוחה":`אחר כך: ${nx.x.n}`) : "זה האחרון!";
+  $("#r-time").textContent=R.left; arc();
+  beep(st.rest?520:880,.2);
+}
+function arc(){ const st=R.steps[R.i]; $("#r-arc").style.strokeDashoffset = 276.5*(1-R.left/st.sec); }
+function tick(){
+  if(R.paused) return;
+  R.left--; if(R.left<=3 && R.left>0) beep(660,.08);
+  if(R.left<=0){ next(); return; }
+  $("#r-time").textContent=R.left; arc();
+}
+function next(){ R.i++; if(R.i>=R.steps.length){ finishRun(); return; } R.left=R.steps[R.i].sec; showStep(); }
+function finishRun(){
+  clearInterval(R.timer);
+  if(R.isWorkout){ const o=sLoad(); o.all=(o.all||0)+1; o.days=[...(o.days||[]).filter(t=>t>Date.now()-30*864e5),Date.now()]; sSave(o); updCounts(); }
+  $("#r-stage").textContent="סיימת!"; $("#r-name").textContent="כל הכבוד יערה!"; $("#r-name").classList.add("rest");
+  $("#r-how").textContent = R.isWorkout?"עוד אימון נוסף לטבלה. לשתות מים ולנוח.":"התרגיל הושלם.";
+  $("#r-time").textContent="✓"; $("#r-arc").style.strokeDashoffset=0; $("#r-next").textContent="";
+  $("#r-pause").hidden=true; $("#r-skip").hidden=true; $("#r-stop").textContent="סגירה";
+  beep(988,.15); setTimeout(()=>beep(1318,.3),180);
+  R=null;
+}
+function closeRun(){ if(R){clearInterval(R.timer);R=null;} $("#runner").hidden=true; document.body.style.overflow=""; $("#r-pause").hidden=false; $("#r-skip").hidden=false; $("#r-stop").textContent="יציאה"; $("#r-pause").textContent="הפסקה"; }
+$("#r-pause").onclick=()=>{ if(!R) return; R.paused=!R.paused; $("#r-pause").textContent=R.paused?"המשך":"הפסקה"; };
+$("#r-skip").onclick=()=>{ if(R) next(); };
+$("#r-stop").onclick=closeRun;
+document.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>startRun(buildPlan(b.dataset.plan),true));
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("#runner").hidden) closeRun(); });
+
+/* =========================================================
+   HEBREW – library
+   ========================================================= */
+const BOOKS = [
+  {title:"הנמלים", kind:"קטע מידע", color:"#7d2732",
+   text:[
+    "הנמלה היא חרק קטן מאוד, אבל היא אחת החיות החרוצות בטבע. נמלים חיות יחד במושבות גדולות. במושבה אחת יכולות לחיות אלפי נמלים, ולפעמים אפילו מיליוני נמלים.",
+    "לכל נמלה במושבה יש תפקיד. המלכה מטילה ביצים. הנמלים הפועלות אוספות מזון, מנקות את הקן ושומרות עליו. יש נמלים שתפקידן לטפל בביצים ובגורים.",
+    "נמלה יכולה להרים משקל כבד פי עשרה ויותר ממשקל גופה. אילו אדם היה חזק כמו נמלה, הוא היה יכול להרים מכונית!",
+    "איך נמלים יודעות לאן ללכת? כשנמלה מוצאת מזון, היא חוזרת לקן ומשאירה בדרך ריח מיוחד. הנמלים האחרות מריחות את הריח והולכות בעקבותיו עד המזון. כך נוצר \"שביל נמלים\" ארוך."],
+   qs:[
+    {t:"היכן חיות הנמלים?", o:["כל נמלה חיה לבד","במושבות גדולות","בתוך פרחים","רק על עצים"], a:1},
+    {t:"מה תפקידה של המלכה?", o:["לאסוף מזון","להטיל ביצים","לשמור על הקן","לנקות את הקן"], a:1},
+    {t:"מה פירוש המילה \"חרוצות\" בפסקה הראשונה?", o:["עצלות","עובדות קשה","קטנות מאוד","מהירות"], a:1},
+    {t:"איך נמלה מראה לנמלים אחרות את הדרך למזון?", o:["היא משאירה ריח בדרך","היא קוראת להן בקול","היא מסמנת באבנים קטנות","היא נושאת אותן על הגב"], a:0},
+    {open:true, t:"מדוע הכותב מספר שאדם חזק כמו נמלה היה יכול להרים מכונית?", m:"כדי להמחיש לנו כמה הנמלה חזקה ביחס לגודל שלה. קשה לדמיין \"פי עשרה ממשקל הגוף\", ודוגמה של מכונית עוזרת להבין."},
+    {open:true, t:"תני כותרת אחרת לקטע, והסבירי למה בחרת בה.", m:"לדוגמה: \"עובדות בצוות\", כי בקטע מסופר שלכל נמלה יש תפקיד וכולן עוזרות זו לזו. (כל כותרת שמתאימה לכל הקטע ויש לה הסבר נחשבת נכונה.)"}]},
+  {title:"העפיפון של נועם", kind:"סיפור", color:"#2f4a6b",
+   text:[
+    "ביום שישי בבוקר יצא נועם עם סבא לשדה שליד הבית. בידיו החזיק עפיפון אדום שבנה בעצמו מנייר, ממקלות ומשרוך ארוך.",
+    "\"היום יש רוח טובה,\" אמר סבא. נועם רץ מהר, והעפיפון עלה לשמיים. הוא טס גבוה, מעל העצים ומעל הגגות. נועם צחק בקול.",
+    "פתאום נשבה רוח חזקה. השרוך נקרע, והעפיפון עף רחוק ונתקע בענפים של עץ אורן גבוה. נועם הביט בו, ועיניו התמלאו דמעות. \"עבדתי עליו שבוע שלם,\" לחש.",
+    "סבא הניח יד על כתפו. \"עפיפון אפשר לבנות שוב,\" אמר, \"ועכשיו אתה כבר יודע איך. בפעם הבאה נשתמש בשרוך חזק יותר.\"",
+    "בדרך הביתה נועם כבר תכנן את העפיפון הבא: כחול, גדול יותר, עם זנב ארוך של סרטים צבעוניים."],
+   qs:[
+    {t:"עם מי יצא נועם לשדה?", o:["עם אבא","עם סבא","עם חבר","עם אחותו"], a:1},
+    {t:"ממה בנה נועם את העפיפון?", o:["מפלסטיק","מנייר, ממקלות ומשרוך","מבד","מקרטון"], a:1},
+    {t:"מה גרם לעפיפון לעוף רחוק?", o:["נועם עזב אותו","רוח חזקה קרעה את השרוך","סבא חתך את השרוך","ציפור משכה אותו"], a:1},
+    {t:"איך הרגיש נועם כשהעפיפון נתקע בעץ?", o:["שמח","עצוב","כועס על סבא","משועמם"], a:1},
+    {open:true, t:"מה למד נועם מסבא? הסבירי.", m:"שאם משהו לא מצליח, אפשר לנסות שוב, ושלומדים מהטעות. סבא אמר שבפעם הבאה ישתמשו בשרוך חזק יותר."},
+    {open:true, t:"איך השתנתה ההרגשה של נועם מתחילת הסיפור ועד סופו?", m:"בהתחלה הוא היה שמח ונרגש (צחק בקול), אחר כך היה עצוב מאוד (עיניו התמלאו דמעות), ובסוף הרגיש תקווה והתחיל לתכנן עפיפון חדש."}]},
+  {title:"הירח", kind:"קטע מידע", color:"#3d5a3a",
+   text:[
+    "יש לילות שבהם אנחנו רואים בשמיים ירח עגול ומאיר, ויש לילות שבהם רואים רק פס דק, כמו חיוך. האם הירח באמת משנה את צורתו? לא! הירח תמיד עגול, כמו כדור.",
+    "הירח אינו מאיר בעצמו. הוא מקבל את האור שלו מהשמש. השמש מאירה תמיד חצי אחד של הירח, והחצי השני חשוך.",
+    "הירח מקיף את כדור הארץ, וכל סיבוב נמשך כחודש. בזמן שהוא נע, אנחנו רואים בכל לילה חלק אחר מהצד המואר שלו. כשאנחנו רואים את כל הצד המואר, יש \"ירח מלא\". כשהצד המואר פונה הרחק מאיתנו, כמעט לא רואים את הירח, וזה נקרא \"מולד\".",
+    "מעניין לדעת שהלוח העברי בנוי לפי הירח. בראש כל חודש עברי הירח נמצא במולד, ובאמצע החודש, בט\"ו בחודש, הירח מלא."],
+   qs:[
+    {t:"מה הצורה האמיתית של הירח?", o:["חצי עיגול","עגול כמו כדור","פס דק","משתנה כל לילה"], a:1},
+    {t:"מאין מקבל הירח את האור שלו?", o:["מעצמו","מהשמש","מהכוכבים","מכדור הארץ"], a:1},
+    {t:"כמה זמן נמשך סיבוב אחד של הירח סביב כדור הארץ?", o:["יום","שבוע","כחודש","שנה"], a:2},
+    {t:"מה זה \"מולד\" לפי הקטע?", o:["הלילה שבו הירח מלא","הזמן שבו כמעט לא רואים את הירח","יום ההולדת של הירח","אמצע החודש"], a:1},
+    {open:true, t:"הסבירי במילים שלך למה בלילות מסוימים רואים רק חלק מהירח.", m:"כי הירח מסתובב סביב כדור הארץ, והשמש מאירה רק חצי ממנו. בכל לילה אנחנו רואים חלק אחר מהצד המואר."},
+    {open:true, t:"מה הקשר בין הירח ללוח העברי?", m:"הלוח העברי בנוי לפי הירח: בראש החודש הירח במולד, ובט\"ו בחודש הירח מלא."}]}
+];
+let curBook = 0;
+function renderShelf(){
+  const deco = ["#5c3b66","#8a4b2a","#b98a2c","#4a5d73","#6b2f2f","#2f5a54","#8c6a3a"];
+  let html = ""; const seq=[];
+  for(let i=0;i<3;i++) seq.push({d:true});
+  BOOKS.forEach((b,i)=>{ seq.push({b,i}); seq.push({d:true}); seq.push({d:true}); });
+  seq.forEach((s,idx)=>{
+    if(s.d){ const w=rnd(18,30), h=rnd(100,150); html+=`<span class="spine" aria-hidden="true" style="width:${w}px;height:${h}px;background:${deco[idx%deco.length]}"></span>`; }
+    else html+=`<button class="spine" style="height:${150+ (s.i%2)*10}px;background:${s.b.color}" aria-pressed="${s.i===curBook}" data-b="${s.i}">${s.b.title}</button>`;
+  });
+  $("#shelf").innerHTML = html;
+  $("#shelf").querySelectorAll("button").forEach(b=>b.onclick=()=>{curBook=+b.dataset.b;$("#shelf").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderBook();});
+}
+function renderBook(){
+  const b=BOOKS[curBook], el=$("#book");
+  el.style.setProperty("--bc",b.color);
+  el.innerHTML = `<span class="kind">${b.kind}</span><h2>${b.title}</h2>
+   <div class="text">${b.text.map((p,i)=>`<p><span class="pn">${i+1}</span>${esc(p)}</p>`).join("")}</div>
+   <div class="divider"></div><h3>שאלות</h3>
+   ${b.qs.map((q,i)=> q.open
+     ? `<div class="hq"><span class="qt">${i+1}. ${esc(q.t)}</span><textarea id="hq-${curBook}-${i}" aria-label="תשובה לשאלה ${i+1}"></textarea><button class="lbtn ghost" data-model="${i}">הצגת תשובה לדוגמה</button><p class="model" id="hm-${i}" hidden>${esc(q.m)}</p></div>`
+     : `<div class="hq" data-a="${q.a}" data-mc="1"><span class="qt">${i+1}. ${esc(q.t)}</span><div class="opts">${q.o.map((o,j)=>`<label class="opt"><input type="radio" name="hq${i}" value="${j}">${esc(o)}</label>`).join("")}</div></div>`).join("")}
+   <button class="lbtn" id="h-check">בדיקת שאלות הבחירה</button><p class="lib-score" id="h-res" aria-live="polite"></p>`;
+  el.querySelectorAll("[data-model]").forEach(btn=>btn.onclick=()=>{const m=$("#hm-"+btn.dataset.model); m.hidden=!m.hidden; btn.textContent=m.hidden?"הצגת תשובה לדוגמה":"הסתרת התשובה";});
+  $("#h-check").onclick=()=>{
+    const qs=el.querySelectorAll('.hq[data-mc]'); let c=0;
+    qs.forEach(q=>{const s=q.querySelector("input:checked"); q.classList.remove("q-ok","q-no"); if(!s) return; const ok=+s.value===+q.dataset.a; q.classList.add(ok?"q-ok":"q-no"); if(ok)c++;});
+    $("#h-res").textContent=`${c} מתוך ${qs.length} נכונות` + (c===qs.length?". מצוין! עכשיו נסי את השאלות הפתוחות.":". חזרי לקטע ונסי שוב את מה שסומן באדום.");
+  };
+}
+
+/* ---------- boot ---------- */
+drawDoorArt();
+leafSVG($("#canopy-svg"),1000,240,70,["#2e8b57","#3fa66b","#1f6b44","#5cbf7a","#27764b"]);
+schoolSVG($("#meadow-svg"),1000,260);
+buildMath();
+renderStoryPicker(); renderStory();
+renderSport();
+renderShelf(); renderBook();
+route();
+</script>
+
+</body></html>

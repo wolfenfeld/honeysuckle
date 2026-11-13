@@ -1,0 +1,525 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>ההכתבה של יערה</title></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a lined school notebook page (margin line on the right, RTL) — header, word-group stickers, three practice modes */
+:root{
+  --paper:#FBFDF8; --card:#FFFFFF; --ink:#24312A; --muted:#617066; --line:#DCEDE0; --margin:#F3A6BD;
+  --green:#3F8F22; --green-soft:#E6F4DC; --pink:#D63B70; --pink-soft:#FDE6EE; --sun:#F2B705; --sun-soft:#FFF4CC;
+  --sky:#E1F1FB; --ok:#23884D; --ok-soft:#DDF5E6; --bad:#C7323E; --bad-soft:#FCE3E5; --shadow:rgba(36,49,42,.10);
+  --f-ui:"Fredoka","Varela Round","Arial Hebrew",system-ui,sans-serif;
+  --f-word:"Andika","Comic Sans MS","Trebuchet MS",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#13201A; --card:#1B2B23; --ink:#EAF3EC; --muted:#9FB3A6; --line:#203528; --margin:#7A3550;
+  --green:#8BD45E; --green-soft:#24391F; --pink:#FF7EA8; --pink-soft:#3C1E2A; --sun:#F6C343; --sun-soft:#3A3115;
+  --sky:#1B3140; --ok:#62D48E; --ok-soft:#173A27; --bad:#FF8089; --bad-soft:#3E1C20; --shadow:rgba(0,0,0,.35); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#13201A; --card:#1B2B23; --ink:#EAF3EC; --muted:#9FB3A6; --line:#203528; --margin:#7A3550;
+  --green:#8BD45E; --green-soft:#24391F; --pink:#FF7EA8; --pink-soft:#3C1E2A; --sun:#F6C343; --sun-soft:#3A3115;
+  --sky:#1B3140; --ok:#62D48E; --ok-soft:#173A27; --bad:#FF8089; --bad-soft:#3E1C20; --shadow:rgba(0,0,0,.35); color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  margin:0; font-family:var(--f-ui); color:var(--ink); font-size:17px; line-height:1.5;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(to left, transparent 38px, var(--margin) 38px, var(--margin) 40px, transparent 40px),
+    repeating-linear-gradient(to bottom, transparent 0 35px, var(--line) 35px 36px);
+}
+.wrap{max-width:900px; margin:0 auto; padding-block:20px 60px;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(56px, env(safe-area-inset-right,0px))}
+@media (max-width:560px){ .wrap{padding-right:max(48px, env(safe-area-inset-right,0px))} }
+button{font-family:inherit; color:inherit; cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--pink); outline-offset:2px}
+
+/* header */
+header{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px}
+h1{margin:0; font-size:clamp(30px,6vw,46px); font-weight:700; line-height:1.1; text-wrap:balance}
+h1 .hl{color:var(--pink); position:relative; white-space:nowrap}
+h1 .hl::after{content:""; position:absolute; inset:auto -4px 2px -4px; height:.32em; background:var(--sun-soft); z-index:-1; border-radius:6px}
+.sub{margin:6px 0 0; color:var(--muted); font-size:16px}
+.starbox{display:flex; align-items:center; gap:8px; background:var(--card); border:2px solid var(--sun); border-radius:999px; padding:6px 16px 6px 12px; font-weight:600; box-shadow:0 3px 0 var(--sun)}
+.starbox .big{font-size:26px; line-height:1}
+.starbox b{font-size:22px; font-variant-numeric:tabular-nums}
+
+/* section labels */
+.label{font-weight:600; font-size:15px; color:var(--green); letter-spacing:.02em; margin:0 0 8px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.label .link{font-weight:500; background:none; border:0; color:var(--pink); text-decoration:underline; padding:0; font-size:14px}
+
+/* group stickers */
+.groups{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px}
+.chip{border:2px solid var(--green); background:var(--card); border-radius:14px; padding:6px 12px; font-size:15px; font-weight:500; display:flex; align-items:center; gap:6px; transition:transform .12s}
+.chip .n{font-size:12px; color:var(--muted); background:var(--green-soft); border-radius:8px; padding:0 6px; font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--green); color:var(--paper); box-shadow:0 3px 0 color-mix(in srgb, var(--green) 60%, #000)}
+.chip[aria-pressed="true"] .n{background:color-mix(in srgb, var(--paper) 25%, transparent); color:var(--paper)}
+.chip.trouble{border-color:var(--pink)}
+.chip.trouble[aria-pressed="true"]{background:var(--pink); box-shadow:0 3px 0 color-mix(in srgb, var(--pink) 60%, #000)}
+.chip:active{transform:translateY(2px)}
+
+/* mode tabs */
+.tabs{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px}
+.tab{border:0; border-radius:18px; padding:12px 8px; background:var(--card); font-size:18px; font-weight:600; box-shadow:0 4px 0 var(--line), 0 0 0 2px var(--line) inset; display:flex; flex-direction:column; align-items:center; gap:2px}
+.tab .ic{font-size:28px; line-height:1}
+.tab small{font-weight:400; font-size:13px; color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--pink); color:#fff; box-shadow:0 4px 0 color-mix(in srgb, var(--pink) 60%, #000)}
+.tab[aria-selected="true"] small{color:#fff}
+
+.panel{background:var(--card); border-radius:24px; padding:22px; box-shadow:0 6px 24px var(--shadow); border:2px solid var(--line)}
+@media (max-width:560px){ .panel{padding:16px} }
+
+/* learn mode */
+.learnbar{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+.toggle{display:flex; align-items:center; gap:8px; font-size:15px; cursor:pointer}
+.toggle input{width:20px; height:20px; accent-color:var(--pink)}
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px}
+.wcard{border:2px solid var(--line); background:var(--paper); border-radius:18px; padding:12px 8px 10px; display:flex; flex-direction:column; align-items:center; gap:2px; min-width:0; transition:transform .12s, border-color .12s}
+.wcard:hover{border-color:var(--green); transform:translateY(-2px)}
+.wcard .emo{font-size:34px; line-height:1.15; min-height:40px; display:flex; align-items:center}
+.wcard .emo.txt{font-family:var(--f-ui); font-weight:700; font-size:22px; color:var(--green)}
+.wcard .en{font-family:var(--f-word); font-size:24px; font-weight:700; direction:ltr; overflow-wrap:anywhere}
+.wcard .he{font-size:14px; color:var(--muted)}
+.wcard.hide .en{color:transparent; background:var(--line); border-radius:8px; min-width:70px; user-select:none}
+.wcard.hide.revealed .en{color:var(--ink); background:none}
+.wcard .spk{font-size:12px; color:var(--pink)}
+
+/* dictation */
+.setup{display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px; padding:10px 0}
+.setup h2{margin:0; font-size:26px}
+.setup p{margin:0; color:var(--muted); max-width:46ch}
+.row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center}
+.sizepick{display:flex; gap:6px}
+.sizepick button{border:2px solid var(--green); background:var(--card); border-radius:12px; padding:6px 14px; font-weight:600}
+.sizepick button[aria-pressed="true"]{background:var(--green); color:var(--paper)}
+.btn{border:0; border-radius:16px; padding:12px 22px; font-size:18px; font-weight:600; background:var(--green); color:var(--paper); box-shadow:0 4px 0 color-mix(in srgb, var(--green) 55%, #000)}
+.btn:active{transform:translateY(3px); box-shadow:0 1px 0 color-mix(in srgb, var(--green) 55%, #000)}
+.btn.pink{background:var(--pink); color:#fff; box-shadow:0 4px 0 color-mix(in srgb, var(--pink) 55%, #000)}
+.btn.ghost{background:var(--card); color:var(--ink); box-shadow:0 4px 0 var(--line), 0 0 0 2px var(--line) inset}
+.btn[disabled]{opacity:.5; cursor:not-allowed}
+
+.progress{display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-bottom:16px; direction:rtl}
+.progress span{width:14px; height:14px; border-radius:50%; background:var(--line)}
+.progress span.now{background:var(--sun); transform:scale(1.25)}
+.progress span.ok{background:var(--ok)}
+.progress span.bad{background:var(--bad)}
+.counter{color:var(--muted); font-size:14px; text-align:center; margin-bottom:6px; font-variant-numeric:tabular-nums}
+
+.stage{display:flex; flex-direction:column; align-items:center; gap:16px}
+.speakers{display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:center}
+.bigspeak{width:120px; height:120px; border-radius:50%; border:0; background:var(--sun); font-size:52px; box-shadow:0 6px 0 color-mix(in srgb, var(--sun) 60%, #000); display:grid; place-items:center}
+.bigspeak:active{transform:translateY(4px); box-shadow:0 2px 0 color-mix(in srgb, var(--sun) 60%, #000)}
+.bigspeak.pulse{animation:pulse .6s ease}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.smallspeak{border:2px solid var(--line); background:var(--card); border-radius:14px; padding:8px 12px; font-size:15px; font-weight:500}
+.prompt{display:flex; flex-direction:column; align-items:center; gap:4px; background:var(--sky); border-radius:20px; padding:16px 28px; min-width:min(100%,320px)}
+.prompt .emo{font-size:52px; line-height:1.1}
+.prompt .emo.txt{font-size:34px; font-weight:700; color:var(--green)}
+.prompt .heword{font-size:clamp(32px,7vw,44px); font-weight:700; line-height:1.15; text-align:center}
+.prompt .ask{font-size:15px; color:var(--muted)}
+.hintbox{min-height:56px; display:flex; align-items:center; justify-content:center; gap:10px; font-size:18px; text-align:center; flex-wrap:wrap}
+.hintbox .emo{font-size:40px}
+.hintbox .first{font-family:var(--f-word); direction:ltr; font-weight:700; color:var(--pink); font-size:22px; letter-spacing:.15em}
+.answer{width:min(100%,420px); font-family:var(--f-word); font-size:34px; text-align:center; direction:ltr; padding:10px 14px; border-radius:16px; border:3px solid var(--line); background:var(--paper); color:var(--ink)}
+.answer:focus{border-color:var(--green); outline:none}
+.answer.wrong{border-color:var(--bad); animation:shake .35s}
+.answer.right{border-color:var(--ok); background:var(--ok-soft)}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.feedback{min-height:28px; font-size:18px; font-weight:600; text-align:center}
+.feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)} .feedback.tip{color:var(--muted); font-weight:500; font-size:16px}
+.fix{background:var(--bad-soft); border-radius:16px; padding:12px 16px; text-align:center; width:min(100%,420px)}
+.fix .lbl{font-size:14px; color:var(--muted)}
+.fix .w{font-family:var(--f-word); font-size:36px; direction:ltr; font-weight:700; letter-spacing:.04em}
+.fix .w .miss{color:var(--bad); text-decoration:underline wavy; text-underline-offset:6px}
+.fix .yours{font-family:var(--f-word); direction:ltr; color:var(--muted); text-decoration:line-through; font-size:20px}
+
+.results{display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center}
+.results .score{font-size:56px; font-weight:700; color:var(--green); line-height:1; font-variant-numeric:tabular-nums}
+.results .stars{font-size:40px; letter-spacing:4px}
+.results h2{margin:0; font-size:26px}
+.misslist{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:560px}
+.misslist button{border:2px solid var(--pink); background:var(--pink-soft); border-radius:12px; padding:4px 12px; font-family:var(--f-word); font-size:20px; direction:ltr; font-weight:700}
+
+/* scramble */
+.tiles,.slots{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; direction:ltr}
+.tile,.slot{width:52px; height:58px; border-radius:12px; font-family:var(--f-word); font-size:30px; font-weight:700; display:grid; place-items:center}
+.tile{border:0; background:var(--sun-soft); box-shadow:0 4px 0 var(--sun); color:var(--ink)}
+.tile[disabled]{opacity:.25; box-shadow:none; cursor:default}
+.slot{border:3px dashed var(--line); background:var(--paper)}
+.slot.filled{border-style:solid; border-color:var(--green); cursor:pointer}
+.slots.ok .slot{border-color:var(--ok); background:var(--ok-soft)}
+.slots.bad .slot{border-color:var(--bad); background:var(--bad-soft); animation:shake .35s}
+@media (max-width:480px){ .tile,.slot{width:42px; height:50px; font-size:24px} }
+
+.empty{text-align:center; color:var(--muted); padding:30px 10px}
+.note{font-size:13px; color:var(--muted); text-align:center; margin-top:18px}
+canvas#confetti{position:fixed; inset:0; pointer-events:none; z-index:50}
+@media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important} }
+.home-link{display:inline-block;margin:0 0 14px;padding:8px 14px;border-radius:999px;background:var(--card,#fff);border:2px solid var(--line,#ddd);color:var(--ink,#222);text-decoration:none;font-weight:500;font-family:inherit;font-size:.95rem}.home-link:hover{filter:brightness(.97)}
+</style>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="wrap" dir="rtl">
+  <a class="home-link" href="index.html#home">→ חזרה לדף הבית</a>
+  <header>
+    <div>
+      <h1>ההכתבה של <span class="hl">יערה</span></h1>
+      <p class="sub">מתכוננות למבחן הכתבה באנגלית — מקשיבים, כותבים, ומקבלים כוכבים</p>
+    </div>
+    <div class="starbox" title="כוכבים שאספת"><span class="big">⭐</span><b id="starCount">0</b><span>כוכבים</span></div>
+  </header>
+
+  <p class="label">באילו מילים נתאמן? <button class="link" id="allBtn" type="button">לבחור הכל</button><button class="link" id="noneBtn" type="button">לנקות</button></p>
+  <div class="groups" id="groups"></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-learn" aria-selected="true" data-mode="learn"><span class="ic">📖</span>לומדים<small>מסתכלים ומקשיבים</small></button>
+    <button class="tab" role="tab" id="tab-dict" aria-selected="false" data-mode="dict"><span class="ic">✏️</span>הכתבה<small>שומעים וכותבים</small></button>
+    <button class="tab" role="tab" id="tab-scr" aria-selected="false" data-mode="scr"><span class="ic">🧩</span>אותיות מבולבלות<small>מסדרים את המילה</small></button>
+  </div>
+
+  <section class="panel" id="panel"></section>
+  <p class="note" id="voiceNote"></p>
+</div>
+
+<script>
+const GROUPS = [
+  {id:"a", name:"צליל a קצר", words:[
+    ["cat","חתול","🐱"],["hat","כובע","🎩"],["mat","שטיחון","🧘‍♀️"],["fat","שמן","🐷"],["bad","רע","👎"],["mad","כועס","😠"],["sad","עצוב","😢"],["dad","אבא","👨"],
+    ["man","איש","🧔"],["can","יכול / פחית","🥫"],["van","טנדר","🚐"],["Ann","אן (שם של ילדה)","👧"],["hand","יד","✋"],["stand","לעמוד","🧍"],["black","שחור","⚫"],["lamp","מנורה","💡"],["bag","תיק","🎒"]]},
+  {id:"u", name:"צליל u קצר", words:[
+    ["up","למעלה","⬆️"],["cup","כוס","☕"],["fun","כיף","🎉"],["run","לרוץ","🏃‍♀️"],["bus","אוטובוס","🚌"],["us","אותנו","👫"],
+    ["hug","חיבוק","🤗"],["rug","שטיח","🧶"],["duck","ברווז","🦆"],["luck","מזל","🍀"],["under","מתחת","👇"],["umbrella","מטרייה","☂️"]]},
+  {id:"snd", name:"צירופי אותיות", words:[
+    ["grade","כיתה / ציון","📝"],["name","שם","🏷️"],["game","משחק","🎲"],["town","עיירה","🏘️"],["down","למטה","⬇️"],["brown","חום","🟤"],["how","איך","❓"],
+    ["mouse","עכבר","🐭"],["house","בית","🏠"],["louse","כינה","🪲"],["pool","בריכה","🏊‍♀️"],["cool","מגניב","😎"],["school","בית ספר","🏫"],
+    ["no","לא","🙅‍♀️"],["go","ללכת","🚦"],["yo-yo","יו־יו","🪀"],["sister","אחות","👧"],["brother","אח","👦"],["hamburger","המבורגר","🍔"],["three","שלוש","3️⃣"]]},
+  {id:"col", name:"צבעים", words:[
+    ["red","אדום","🔴"],["green","ירוק","🟢"],["blue","כחול","🔵"],["yellow","צהוב","🟡"],["brown","חום","🟤"],["black","שחור","⚫"],["gray","אפור","🩶"],["orange","כתום","🟠"],["white","לבן","⚪"]]},
+  {id:"days", name:"ימות השבוע", words:[
+    ["Sunday","יום ראשון","א׳"],["Monday","יום שני","ב׳"],["Tuesday","יום שלישי","ג׳"],["Wednesday","יום רביעי","ד׳"],["Thursday","יום חמישי","ה׳"],["Friday","יום שישי","ו׳"],["Saturday","שבת","ש׳"]]},
+  {id:"ppl", name:"אנשים וחיות", words:[
+    ["boy","ילד","👦"],["girl","ילדה","👧"],["grandma","סבתא","👵"],["grandpa","סבא","👴"],["teacher","מורה","👩‍🏫"],["friend","חבר / חברה","🧑‍🤝‍🧑"],
+    ["dog","כלב","🐶"],["cat","חתול","🐱"],["fish","דג","🐟"],["rabbit","ארנב","🐰"]]},
+  {id:"things", name:"אוכל וחפצים", words:[
+    ["carrot","גזר","🥕"],["egg","ביצה","🥚"],["milk","חלב","🥛"],["salad","סלט","🥗"],["banana","בננה","🍌"],
+    ["pen","עט","🖊️"],["pens","עטים","🖊️🖊️"],["desk","שולחן כתיבה","🗄️"],["test","מבחן","📝"],["box","קופסה","📦"]]},
+  {id:"verbs", name:"פעלים ותארים", words:[
+    ["jump","לקפוץ","🦘"],["sing","לשיר","🎤"],["swim","לשחות","🏊‍♀️"],["cut","לחתוך","✂️"],["sit","לשבת","🪑"],["rest","לנוח","😴"],["help","לעזור","🤝"],
+    ["fast","מהיר","⚡"],["hot","חם","🔥"],["long","ארוך","📏"],["tall","גבוה","🦒"],["soft","רך","🧸"]]},
+  {id:"num", name:"מספרים ומילים קטנות", words:[
+    ["ten","עשר","🔟"],["seven","שבע","7️⃣"],["three","שלוש","3️⃣"],["are","הם / אתם","🟰"],["years","שנים","🎂"],["old","זקן / בן (גיל)","🧓"],["new","חדש","✨"]]}
+];
+const INFO = {};
+GROUPS.forEach(g => g.words.forEach(([en,he,emo]) => { if(!INFO[en]) INFO[en] = {en,he,emo}; }));
+
+/* ---------- saved progress (this browser only) ---------- */
+const KEY = "yaara-dictation-v1";
+let S = {stars:0, trouble:{}, groups:["a"], size:10};
+try{ const raw = localStorage.getItem(KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- speech ---------- */
+let voice = null;
+function pickVoice(){
+  if(!("speechSynthesis" in window)) return;
+  const vs = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+  const pref = ["Samantha","Google US English","Microsoft Aria","Microsoft Jenny","Karen","Daniel"];
+  voice = pref.map(p => vs.find(v => v.name.includes(p))).find(Boolean) || vs.find(v => /en-US/i.test(v.lang)) || vs[0] || null;
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+else document.getElementById("voiceNote").textContent = "הדפדפן הזה לא יודע להקריא מילים — בקשי ממישהו להקריא לך, או השתמשי ברמז 💡";
+function speak(text, slow){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = slow ? 0.5 : 0.85; if(voice) u.voice = voice;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const isTxtEmo = e => /^[֐-׿]/.test(e);
+function emoHTML(e, cls="emo"){ return `<span class="${cls}${isTxtEmo(e)?" txt":""}">${esc(e)}</span>`; }
+function currentWords(){
+  const set = new Set();
+  S.groups.forEach(id => {
+    if(id === "trouble") Object.keys(S.trouble).forEach(w => set.add(w));
+    else (GROUPS.find(g=>g.id===id)?.words || []).forEach(w => set.add(w[0]));
+  });
+  return [...set].filter(w => INFO[w]);
+}
+function addStars(n){ S.stars += n; save(); $("#starCount").textContent = S.stars; }
+$("#starCount").textContent = S.stars;
+
+/* ---------- group stickers ---------- */
+function renderGroups(){
+  const box = $("#groups"); box.innerHTML = "";
+  const list = GROUPS.map(g => ({id:g.id, name:g.name, n:g.words.length}));
+  const tn = Object.keys(S.trouble).length;
+  if(tn) list.push({id:"trouble", name:"💗 המילים הקשות שלי", n:tn});
+  else S.groups = S.groups.filter(x => x !== "trouble");
+  list.forEach(g => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip" + (g.id==="trouble" ? " trouble" : ""); b.id = "grp-"+g.id;
+    b.setAttribute("aria-pressed", S.groups.includes(g.id));
+    b.innerHTML = `${esc(g.name)} <span class="n">${g.n}</span>`;
+    b.onclick = () => { S.groups = S.groups.includes(g.id) ? S.groups.filter(x=>x!==g.id) : [...S.groups, g.id]; save(); renderGroups(); onGroupsChanged(); };
+    box.appendChild(b);
+  });
+}
+$("#allBtn").onclick = () => { S.groups = GROUPS.map(g=>g.id); save(); renderGroups(); onGroupsChanged(); };
+$("#noneBtn").onclick = () => { S.groups = []; save(); renderGroups(); onGroupsChanged(); };
+
+/* ---------- modes ---------- */
+let mode = "learn";
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  mode = t.dataset.mode;
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t));
+  render();
+});
+function onGroupsChanged(){ if(mode === "learn" || !session) render(); }
+function render(){
+  if(mode === "learn") renderLearn();
+  else if(mode === "dict"){ session = null; renderDictSetup(); }
+  else { scr = null; renderScrSetup(); }
+}
+function noWords(){ $("#panel").innerHTML = `<div class="empty">בחרי למעלה לפחות קבוצת מילים אחת 👆</div>`; }
+
+/* ===== LEARN ===== */
+let hideEn = false;
+function renderLearn(){
+  const words = currentWords(); if(!words.length) return noWords();
+  $("#panel").innerHTML = `
+    <div class="learnbar">
+      <span>${words.length} מילים · לחצי על כרטיס כדי לשמוע</span>
+      <label class="toggle"><input type="checkbox" id="hideEn" ${hideEn?"checked":""}> לבדוק את עצמי (להסתיר את האנגלית)</label>
+    </div>
+    <div class="cards">${words.map(w => { const i = INFO[w]; return `
+      <button type="button" class="wcard${hideEn?" hide":""}" data-w="${esc(w)}">
+        ${emoHTML(i.emo)}<span class="en">${esc(w)}</span><span class="he">${esc(i.he)}</span><span class="spk">🔊</span>
+      </button>`;}).join("")}</div>`;
+  $("#hideEn").onchange = e => { hideEn = e.target.checked; renderLearn(); };
+  document.querySelectorAll(".wcard").forEach(c => c.onclick = () => { speak(c.dataset.w); if(hideEn) c.classList.toggle("revealed"); });
+}
+
+/* ===== DICTATION ===== */
+let session = null;
+function renderDictSetup(){
+  const words = currentWords(); if(!words.length) return noWords();
+  const sizes = [[10,"10"],[20,"20"],[0,"כל המילים"]];
+  $("#panel").innerHTML = `
+    <div class="setup">
+      <div style="font-size:54px">🇮🇱➡️🇬🇧</div>
+      <h2>הכתבה</h2>
+      <p>תופיע מילה בעברית, ואת כותבת אותה באנגלית. אם צריך עזרה, אפשר לבקש רמז או לשמוע את המילה.</p>
+      <div class="row"><span>כמה מילים?</span>
+        <div class="sizepick">${sizes.map(([n,l]) => `<button type="button" id="size-${n}" data-n="${n}" aria-pressed="${S.size===n}">${l}</button>`).join("")}</div>
+      </div>
+      <div class="row"><span style="color:var(--muted)">בקבוצות שבחרת יש ${words.length} מילים</span></div>
+      <button class="btn pink" id="startDict" type="button">מתחילים! 🚀</button>
+    </div>`;
+  document.querySelectorAll(".sizepick button").forEach(b => b.onclick = () => { S.size = +b.dataset.n; save(); renderDictSetup(); });
+  $("#startDict").onclick = () => startDict(words);
+}
+function startDict(words){
+  let q = shuffle(words); if(S.size) q = q.slice(0, S.size);
+  session = {q, i:0, results:[], tries:0, hint:0, fixing:false};
+  renderDictWord(true);
+}
+function renderDictWord(autoSpeak){
+  const s = session, w = s.q[s.i], info = INFO[w];
+  $("#panel").innerHTML = `
+    <div class="counter">מילה ${s.i+1} מתוך ${s.q.length}</div>
+    <div class="progress">${s.q.map((_,k)=>`<span class="${k<s.i ? (s.results[k].ok?"ok":"bad") : k===s.i?"now":""}"></span>`).join("")}</div>
+    <div class="stage">
+      <div class="prompt">${emoHTML(info.emo)}<div class="heword">${esc(info.he)}</div><div class="ask">איך כותבים את זה באנגלית?</div></div>
+      <div class="row">
+        <button class="smallspeak" id="hintBtn" type="button">💡 רמז</button>
+        <button class="smallspeak" id="say" type="button">🔊 לשמוע</button>
+      </div>
+      <div class="hintbox" id="hint"></div>
+      <input class="answer" id="ans" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="כתבי כאן" aria-label="המילה שלך">
+      <div class="feedback" id="fb"></div>
+      <div id="fixBox"></div>
+      <div class="row">
+        <button class="btn" id="check" type="button">בדיקה ✔️</button>
+        <button class="btn ghost" id="quit" type="button">לסיים</button>
+      </div>
+    </div>`;
+  const ans = $("#ans");
+  $("#say").onclick = () => { s.helped = true; speak(w, true); ans.focus(); };
+  if(!("speechSynthesis" in window)) $("#say").hidden = true;
+  $("#hintBtn").onclick = () => { s.hint = Math.min(s.hint+1, 2); s.helped = true; showHint(); ans.focus(); };
+  $("#check").onclick = checkDict;
+  $("#quit").onclick = () => finishDict();
+  ans.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); checkDict(); } });
+  showHint();
+  ans.focus();
+}
+function showHint(){
+  const w = session.q[session.i], info = INFO[w], h = $("#hint");
+  if(session.hint === 0){ h.innerHTML = `<span style="color:var(--muted)">בלי עזרה מקבלים 2 כוכבים ⭐⭐</span>`; return; }
+  const n = w.length;
+  const pat = session.hint === 1 ? w[0] + "_".repeat(n-1) : (n > 2 ? w[0] + "_".repeat(n-2) + w[n-1] : w[0] + "_");
+  h.innerHTML = `<span>${n} אותיות:</span><span class="first">${esc(pat)}</span>`;
+}
+const norm = s => s.trim().replace(/\s+/g," ").replace(/[‐‑–—]/g,"-");
+function checkDict(){
+  const s = session, w = s.q[s.i], ans = $("#ans"), fb = $("#fb");
+  const v = norm(ans.value);
+  if(!v){ ans.focus(); return; }
+  if(s.fixing){
+    if(v === w){ ans.classList.add("right"); fb.className="feedback ok"; fb.textContent = "יפה! עכשיו את יודעת 💪"; setTimeout(nextDict, 900); }
+    else { ans.classList.remove("wrong"); void ans.offsetWidth; ans.classList.add("wrong"); fb.className="feedback bad"; fb.textContent = "העתיקי בדיוק את המילה שלמעלה"; }
+    return;
+  }
+  const exact = v === w, ci = v.toLowerCase() === w.toLowerCase();
+  if(exact || ci){
+    ans.classList.add("right");
+    const firstTry = s.tries === 0 && !s.helped;
+    s.results[s.i] = {w, ok:true};
+    if(S.trouble[w]){ S.trouble[w]--; if(S.trouble[w] <= 0) delete S.trouble[w]; save(); }
+    addStars(firstTry ? 2 : 1);
+    fb.className = "feedback ok";
+    fb.textContent = firstTry ? "מעולה! +2 ⭐⭐" : "נכון! +1 ⭐";
+    if(!exact){
+      const tip = /^[A-Z]/.test(w) ? `שימי לב: ${w} מתחיל באות גדולה` : `שימי לב: ${w} נכתב באותיות קטנות`;
+      fb.insertAdjacentHTML("afterend", `<div class="feedback tip">${esc(tip)}</div>`);
+    }
+    burst(firstTry ? 50 : 25);
+    setTimeout(nextDict, exact ? 1000 : 2200);
+    return;
+  }
+  s.tries++;
+  ans.classList.remove("wrong"); void ans.offsetWidth; ans.classList.add("wrong");
+  if(s.tries === 1){
+    fb.className = "feedback bad"; fb.textContent = "כמעט! בדקי את האותיות ונסי עוד פעם 🙂";
+    ans.select();
+  } else {
+    s.results[s.i] = {w, ok:false, typed:v};
+    S.trouble[w] = (S.trouble[w]||0) + 2; save();
+    fb.className = "feedback bad"; fb.textContent = "לא נורא, ככה לומדים!";
+    $("#fixBox").innerHTML = `<div class="fix"><div class="lbl">ככה כותבים:</div><div class="w">${diffHTML(w, v)}</div><div class="yours">${esc(v)}</div><div class="lbl">כתבי את המילה הנכונה כדי להמשיך</div></div>`;
+    s.fixing = true; ans.value = ""; ans.classList.remove("wrong"); ans.focus();
+    speak(w, true);
+  }
+}
+function diffHTML(target, typed){
+  const a = target.toLowerCase(), b = typed.toLowerCase(), n=a.length, m=b.length;
+  const L = Array.from({length:n+1}, () => new Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--) for(let j=m-1;j>=0;j--) L[i][j] = a[i]===b[j] ? L[i+1][j+1]+1 : Math.max(L[i+1][j], L[i][j+1]);
+  const keep = new Array(n).fill(false); let i=0,j=0;
+  while(i<n && j<m){ if(a[i]===b[j]){ keep[i]=true; i++; j++; } else if(L[i+1][j] >= L[i][j+1]) i++; else j++; }
+  return [...target].map((c,k) => keep[k] ? esc(c) : `<span class="miss">${esc(c)}</span>`).join("");
+}
+function nextDict(){
+  const s = session; s.i++; s.tries = 0; s.hint = 0; s.helped = false; s.fixing = false;
+  if(s.i >= s.q.length) finishDict(); else renderDictWord(true);
+}
+function finishDict(){
+  const s = session; if(!s) return;
+  const done = s.results.filter(Boolean), good = done.filter(r=>r.ok).length, miss = done.filter(r=>!r.ok);
+  if(!done.length){ session = null; renderDictSetup(); return; }
+  const pct = good / done.length;
+  const stars = pct === 1 ? "⭐⭐⭐" : pct >= .7 ? "⭐⭐" : "⭐";
+  const msg = pct === 1 ? "מושלם! את אלופה! 🏆" : pct >= .8 ? "כל הכבוד! כמעט הכל נכון 🎉" : pct >= .5 ? "עבודה יפה! עוד קצת תרגול 💪" : "התחלה טובה! נתרגל עוד 🌱";
+  renderGroups();
+  $("#panel").innerHTML = `
+    <div class="results">
+      <div class="stars">${stars}</div>
+      <div class="score">${good}/${done.length}</div>
+      <h2>${msg}</h2>
+      ${miss.length ? `<p style="margin:0;color:var(--muted)">המילים לתרגול (לחצי כדי לשמוע):</p>
+        <div class="misslist">${miss.map(r=>`<button type="button" data-w="${esc(r.w)}">${esc(r.w)}</button>`).join("")}</div>` : ""}
+      <div class="row">
+        ${miss.length ? `<button class="btn pink" id="again" type="button">לתרגל את הטעויות 🔁</button>` : ""}
+        <button class="btn" id="newDict" type="button">הכתבה חדשה ✏️</button>
+      </div>
+    </div>`;
+  document.querySelectorAll(".misslist button").forEach(b => b.onclick = () => speak(b.dataset.w, true));
+  if(miss.length) $("#again").onclick = () => { session = {q:shuffle(miss.map(r=>r.w)), i:0, results:[], tries:0, hint:0, fixing:false}; renderDictWord(true); };
+  $("#newDict").onclick = () => { session = null; renderDictSetup(); };
+  if(pct >= .8) burst(120);
+  session = null;
+}
+
+/* ===== SCRAMBLE ===== */
+let scr = null;
+function renderScrSetup(){
+  const words = currentWords().filter(w => w.length >= 2); if(!words.length) return noWords();
+  scr = {q:shuffle(words).slice(0,10), i:0, good:0};
+  renderScr();
+}
+function renderScr(){
+  const w = scr.q[scr.i], info = INFO[w];
+  let letters = shuffle([...w.toLowerCase()].map((c,k)=>({c, k})));
+  if(w.length > 2) for(let t=0; t<5 && letters.map(x=>x.c).join("") === w.toLowerCase(); t++) letters = shuffle(letters);
+  const placed = [];
+  $("#panel").innerHTML = `
+    <div class="counter">מילה ${scr.i+1} מתוך ${scr.q.length} · ⭐ ${scr.good}</div>
+    <div class="stage">
+      <div class="hintbox">${emoHTML(info.emo)}<span>${esc(info.he)}</span>
+        <button class="smallspeak" id="sSay" type="button">🔊 לשמוע</button></div>
+      <div class="slots" id="slots"></div>
+      <div class="tiles" id="tiles"></div>
+      <div class="feedback" id="sfb"></div>
+      <div class="row"><button class="btn ghost" id="sSkip" type="button">לדלג ⏭️</button></div>
+    </div>`;
+  $("#sSay").onclick = () => speak(w);
+  $("#sSkip").onclick = () => { $("#sfb").className="feedback tip"; $("#sfb").textContent = `התשובה: ${w}`; speak(w); setTimeout(nextScr, 1600); };
+  const tiles = $("#tiles"), slots = $("#slots");
+  function draw(){
+    slots.className = "slots";
+    slots.innerHTML = [...w].map((_,k) => placed[k] ? `<button type="button" class="slot filled" data-k="${k}">${esc(placed[k].c)}</button>` : `<span class="slot"></span>`).join("");
+    tiles.innerHTML = letters.map((x,k) => `<button type="button" class="tile" data-k="${k}" ${placed.includes(x)?"disabled":""}>${esc(x.c)}</button>`).join("");
+    tiles.querySelectorAll(".tile").forEach(b => b.onclick = () => { placed.push(letters[+b.dataset.k]); draw(); if(placed.length === w.length) checkScr(); });
+    slots.querySelectorAll(".slot.filled").forEach(b => b.onclick = () => { placed.splice(+b.dataset.k); draw(); });
+  }
+  function checkScr(){
+    const got = placed.map(x=>x.c).join("");
+    if(got === w.toLowerCase()){
+      slots.classList.add("ok"); $("#sfb").className="feedback ok"; $("#sfb").textContent = "נכון! +1 ⭐";
+      scr.good++; addStars(1); burst(30); speak(w); setTimeout(nextScr, 1200);
+    } else {
+      slots.classList.add("bad"); $("#sfb").className="feedback bad"; $("#sfb").textContent = "לא בדיוק… נסי שוב";
+      setTimeout(() => { placed.length = 0; draw(); $("#sfb").textContent = ""; }, 900);
+    }
+  }
+  draw();
+}
+function nextScr(){
+  scr.i++;
+  if(scr.i < scr.q.length) return renderScr();
+  $("#panel").innerHTML = `<div class="results"><div class="stars">🧩</div><div class="score">${scr.good}/${scr.q.length}</div><h2>${scr.good===scr.q.length?"סידרת הכל! מדהים 🏆":"כל הכבוד! 🎉"}</h2>
+    <button class="btn" id="scrAgain" type="button">עוד סיבוב 🔁</button></div>`;
+  $("#scrAgain").onclick = renderScrSetup;
+  if(scr.good === scr.q.length) burst(120);
+}
+
+/* ---------- confetti ---------- */
+const cv = $("#confetti"), cx = cv.getContext("2d"); let parts = [], raf = null;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function burst(n){
+  if(reduce) return;
+  cv.width = innerWidth; cv.height = innerHeight;
+  const cs = getComputedStyle(document.documentElement);
+  const cols = ["--pink","--green","--sun","--ok"].map(v => cs.getPropertyValue(v).trim());
+  for(let k=0;k<n;k++) parts.push({x:innerWidth/2, y:innerHeight*.45, vx:(Math.random()-.5)*14, vy:-Math.random()*12-4, r:Math.random()*6+4, c:cols[k%cols.length], a:Math.random()*6, life:70+Math.random()*30});
+  if(!raf) tick();
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=.45; p.vx*=.98; p.a+=.2; p.life--; cx.save(); cx.translate(p.x,p.y); cx.rotate(p.a); cx.fillStyle=p.c; cx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); cx.restore(); });
+  parts = parts.filter(p => p.life > 0 && p.y < cv.height + 20);
+  raf = parts.length ? requestAnimationFrame(tick) : (cx.clearRect(0,0,cv.width,cv.height), null);
+}
+
+renderGroups();
+render();
+</script>
+
+</body></html>
