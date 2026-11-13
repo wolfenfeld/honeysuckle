@@ -1,4 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>ההכתבה של יערה</title></head><body class="themed">
+<!doctype html><html lang="he" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>if(window.top===window){location.replace("index.html"+(location.search.indexOf("demo")>=0?"?demo":"")+"#english-dict")}else{document.documentElement.classList.add("embed")}</script><title>ההכתבה של יערה</title></head><body class="themed">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@400;500;600;700&display=swap">
@@ -160,6 +160,12 @@ canvas#confetti{position:fixed; inset:0; pointer-events:none; z-index:50}
 </style>
 <link rel="stylesheet" href="css/theme.css">
 <style id="restyle">
+/* Shown inside a room (iframe, ?embed=1): the room provides the header and the star bar. */
+html.embed body{background:transparent!important;margin:0!important}
+html.embed .t-top .t-back,html.embed .t-top h1,html.embed .sub,html.embed .lead{display:none}
+html.embed .t-top,html.embed .starbox{display:none}
+html.embed .wrap{padding:0 0 12px;max-width:none}
+
 /* Sticker look shared with the rest of the site: cream paper, thick brown outlines. */
 :root,:root[data-theme="dark"]{--paper:#fbf5e4;--card:#fff;--ink:#33231a;--muted:#6b5a4d;--line:#33231a;--margin:#fbf5e4;
   --green:#2e9e5b;--green-soft:#d9f3e1;--pink:#e0475b;--pink-soft:#fde4e7;--sun:#f7c428;--sun-soft:#fff0b8;--sky:#fff3d8;

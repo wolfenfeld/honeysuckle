@@ -48,6 +48,8 @@ export const Rewards = {
     } catch (e) { console.warn("rewards attach", e); mode = "local"; st = norm(rd(LKEY)); }
     notify();
   },
+  // Pick up changes made elsewhere (an embedded page writing to the same wallet).
+  async sync() { if (mode === "cloud") return Rewards.refresh(); st = norm(rd(LKEY)); notify(); },
   async refresh() { // re-read the cloud wallet (after a trade, for example)
     if (mode !== "cloud") return;
     try { st = norm(await be.getRewards(uid)); notify(); } catch {}

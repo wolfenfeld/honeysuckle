@@ -80,6 +80,11 @@ body[data-s="math"]{background:var(--cream)}
 .mbtn{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:3px solid var(--k);background:var(--yellow);color:var(--k);cursor:pointer;box-shadow:0 3px 0 var(--k-soft);min-height:44px}
 .mbtn.ghost{background:#fff}
 .mbtn:active{transform:translateY(2px)}
+.m-free{display:flex;flex-direction:column;gap:16px}
+.seg{display:flex;gap:4px;background:#e8dcc0;border:3px solid var(--k);border-radius:999px;padding:4px}
+.segb{flex:1;border:0;background:transparent;color:var(--k);border-radius:999px;padding:10px 12px;font:inherit;font-weight:800;font-size:1.02rem;cursor:pointer}
+.segb[aria-selected="true"]{background:#fff;box-shadow:0 0 0 3px var(--k) inset}
+.embed-frame{width:100%;border:0;display:block;min-height:420px;background:transparent}
 .m-secs{display:flex;flex-direction:column;gap:16px}
 .m-sec{--c:#2e9e5b;background:#fff;color:var(--k);border:3px solid var(--k);border-radius:20px;padding:0;box-shadow:0 4px 0 var(--k-soft);overflow:hidden}
 .m-sec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;min-height:56px}
@@ -318,8 +323,6 @@ body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-col
         <a class="achip album" href="cats.html">🐱 אלבום החתולים <span class="cnt" id="h-album">0/30</span></a>
         <a class="achip" href="friends.html" id="h-friends">👥 חברים</a>
         <a class="achip" href="hall.html" id="h-hall">🏆 היכל התהילה</a>
-        <a class="achip" href="dictation.html">✏️ ההכתבה</a>
-        <a class="achip" href="worksheet.html">📝 תרגילי המבחן</a>
       </div>
     </section>
     <p class="home-foot">טיפ: מילים חדשות באנגלית נשמרות במחסן המילים, אפשר להוסיף אותן בכל יום.</p>
@@ -335,6 +338,11 @@ body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-col
       <h1>חשבון 🌿<br>ביער הגשם</h1>
       <span class="m-pill" id="m-total">0 נפתרו</span>
     </div>
+    <div class="seg" role="tablist" aria-label="סוג תרגול">
+      <button class="segb" role="tab" id="mt-free" aria-selected="true">תרגול</button>
+      <button class="segb" role="tab" id="mt-test" aria-selected="false">📝 תרגילי המבחן</button>
+    </div>
+    <div id="m-free" class="m-free">
     <div class="m-score">
       <span class="msg" id="m-msg">עדיין לא בדקנו. בהצלחה!</span>
       <button class="mbtn" id="m-checkall">בדיקת הכול</button>
@@ -342,6 +350,10 @@ body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-col
       <button class="mbtn ghost" id="m-post" hidden>🏆</button>
     </div>
     <div class="m-secs" id="m-secs"></div>
+    </div>
+    <div id="m-test" hidden>
+      <iframe class="embed-frame" data-embed data-src="worksheet.html?embed=1" title="תרגילי המבחן"></iframe>
+    </div>
   </div>
 </section>
 
@@ -358,6 +370,11 @@ body[data-s="english"],body[data-s="sport"],body[data-s="hebrew"]{background-col
       <button class="tab" role="tab" id="et-read" aria-selected="true">הבנת הנקרא</button>
       <button class="tab" role="tab" id="et-words" aria-selected="false">המילים שלי</button>
       <button class="tab" role="tab" id="et-quiz" aria-selected="false">בוחן מילים</button>
+      <button class="tab" role="tab" id="et-dict" aria-selected="false">✏️ הכתבה</button>
+    </div>
+
+    <div id="ep-dict" hidden>
+      <iframe class="embed-frame" data-embed data-src="dictation.html?embed=1" title="הכתבה באנגלית"></iframe>
     </div>
 
     <div id="ep-read" class="e-card">
@@ -503,6 +520,8 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const VIEWS = ["home","math","english","sport","hebrew"];
 function route(){
   let v = (location.hash||"").replace("#","");
+  const sub = {"english-dict":["english","dict"],"math-test":["math","test"]}[v];
+  if(sub) v = sub[0];
   if(!VIEWS.includes(v)) v = "home";
   VIEWS.forEach(n => { $("#v-"+n).hidden = n!==v; });
   document.body.dataset.s = v;
@@ -510,6 +529,7 @@ function route(){
   let last="math"; try{ last=localStorage.getItem("honey-last-room")||"math"; }catch(e){}
   const go=$("#h-go"); if(go) go.href="#"+last;
   window.scrollTo(0,0);
+  if(sub){ if(sub[0]==="english") eTab(sub[1]); else mTab(sub[1]); }
 }
 window.addEventListener("hashchange", route);
 
@@ -684,6 +704,8 @@ async function syncPost(){
 }
 $("#m-post").onclick=async()=>{ try{ await Honey.submit("math",mTotal,0); }catch(e){} syncPost(); };
 $("#m-checkall").onclick=()=>solveRows(document.querySelectorAll(".m-item"));
+function mTab(t){ $("#mt-free").setAttribute("aria-selected",t==="free"); $("#mt-test").setAttribute("aria-selected",t==="test"); $("#m-free").hidden=t!=="free"; $("#m-test").hidden=t!=="test"; if(t==="test") loadFrame("#m-test"); }
+$("#mt-free").onclick=()=>mTab("free"); $("#mt-test").onclick=()=>mTab("test");
 $("#m-new").onclick=()=>{buildMath(); window.scrollTo({top:0,behavior:"smooth"});};
 document.addEventListener("input",e=>{
   if(e.target.matches(".m-item input")){
@@ -766,8 +788,9 @@ function renderStory(){
   };
 }
 /* tabs */
-const ETABS = ["read","words","quiz"];
-function eTab(t){ ETABS.forEach(n=>{$("#et-"+n).setAttribute("aria-selected",n===t);$("#ep-"+n).hidden=n!==t;}); if(t==="quiz") quizInfo(); }
+const ETABS = ["read","words","quiz","dict"];
+function loadFrame(panel){ const f=document.querySelector(panel+" iframe[data-embed]"); if(f && !f.getAttribute("src")) f.src=f.dataset.src+(location.search.includes("demo")||sessionStorage.getItem("honey-demo")==="1"?"&demo":""); }
+function eTab(t){ ETABS.forEach(n=>{$("#et-"+n).setAttribute("aria-selected",n===t);$("#ep-"+n).hidden=n!==t;}); if(t==="quiz") quizInfo(); if(t==="dict") loadFrame("#ep-dict"); }
 ETABS.forEach(n=>$("#et-"+n).onclick=()=>eTab(n));
 
 /* ---- word store: shared db when available, browser storage otherwise ---- */

@@ -15,6 +15,10 @@ export const GRADES = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ז׳","ח׳","
 export const AVATARS = ["🦊", "🐼", "🦄", "🐸", "🐱", "🐶", "🦋", "🐢", "🦁", "🐙", "🌸", "⭐"];
 
 const params = new URLSearchParams(location.search);
+// Embedded (dictation / test worksheet inside a room): no bar or dialogs of its own. It tells the parent page
+// what happened (stars earned, a result to post, its height) and the parent shows it.
+const EMBED = window.top !== window && params.has("embed");
+const tell = (m) => { try { parent.postMessage({ honey: true, ...m }, location.origin); } catch {} };
 const ss = {
   get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } },
   set: (k, v) => { try { sessionStorage.setItem(k, v); } catch {} },
@@ -101,12 +105,13 @@ export const Honey = {
   // Called by the games when a round ends: pays points (once per key) and shows a small "+N" toast.
   award(key, points, opts) {
     const d = Rewards.award(key, points, opts);
-    if (d > 0) pointsToast(d);
+    if (d > 0) { if (EMBED) tell({ kind: "award", d }); else pointsToast(d); }
     return d;
   },
   // Called by the games when a round ends. Shows a "post to hall of fame" card if it's a new personal best.
   offer(game, best, total) {
     if (!be || !GAMES[game] || !(best > 0)) return;
+    if (EMBED) return tell({ kind: "offer", game, best, total });
     const label = `${GAMES[game].icon} ${GAMES[game].title}: ${GAMES[game].unit(best, total)}`;
     if (!S.loaded) return;
     if (!S.user) return card(`<b>${esc(label)}</b><span>התחברי כדי לפרסם בהיכל התהילה</span>`, [["כניסה", () => Honey.signIn(), true]]);
@@ -190,7 +195,20 @@ const st = document.createElement("style"); st.textContent = CSS;
 const bar = document.createElement("div"); bar.className = "hc-bar";
 root.append(bar);
 function mount() { document.head.append(st); document.body.append(root); }
-if (document.body) mount(); else addEventListener("DOMContentLoaded", mount);
+if (!EMBED) { if (document.body) mount(); else addEventListener("DOMContentLoaded", mount); }
+else {
+  document.documentElement.classList.add("embed");
+  const report = () => tell({ kind: "resize", h: document.documentElement.scrollHeight });
+  addEventListener("load", report); new ResizeObserver(report).observe(document.documentElement);
+}
+// Parent side: show what an embedded page reports.
+addEventListener("message", async (e) => {
+  if (EMBED || e.origin !== location.origin || !e.data?.honey) return;
+  const m = e.data;
+  if (m.kind === "resize") { for (const f of document.querySelectorAll("iframe[data-embed]")) if (f.contentWindow === e.source) f.style.height = m.h + "px"; }
+  else if (m.kind === "award") { await Rewards.sync(); pointsToast(m.d); }
+  else if (m.kind === "offer") Honey.offer(m.game, m.best, m.total);
+});
 
 function el(tag, attrs = {}, html = "") { const e = document.createElement(tag); Object.assign(e, attrs); e.innerHTML = html; return e; }
 function toast(msg) {
@@ -229,6 +247,7 @@ function chip() {
 Rewards.onChange(() => renderBar());
 
 function renderBar() {
+  if (EMBED) return;
   bar.replaceChildren();
   const right = el("div", { className: "hc-grp" }), left = el("div", { className: "hc-grp" });
   bar.append(right, left);
@@ -332,7 +351,7 @@ if (be) {
     S.user = user; S.role = null; S.profile = null; S.best = {}; S.error = ""; S.pending = 0;
     if (user) {
       try {
-        const code = ss.get("honey-invite");
+        const code = EMBED ? null : ss.get("honey-invite");
         if (code) {
           if (!(await be.membership(user))) { // already pre-approved by email: nothing to redeem
             try { await be.redeemInvite(code, user); toast("ההזמנה התקבלה. ברוכה הבאה!"); }
@@ -350,7 +369,7 @@ if (be) {
             try { await be.saveProfile(user.uid, p); S.profile = p; } catch (e) { console.warn("photo sync", e); }
           }
           await Rewards.attach(be, user);
-          try {
+          if (!EMBED) try {
             const people = await be.listProfiles(); const names = Object.fromEntries(people.map((p) => [p.uid, p.name]));
             (await claimTrades(be, user.uid, (id) => names[id])).forEach((m, i) => setTimeout(() => toast(m), i * 3600));
             S.pending = await pendingCount(be, user.uid);
@@ -360,6 +379,7 @@ if (be) {
       } catch (e) { console.warn("Honey auth", e); S.error = "הייתה בעיה בטעינה. נסי לרענן."; }
     }
     S.loaded = true; renderBar(); resolveReady(); listeners.forEach((f) => f());
+    if (EMBED) return;
     if (!user) welcome();
     if (S.role && !S.profile) { await profileDialog(true); }
     else if (S.role && S.profile && !S.profile.school && !S.profile.grade && ss.get("honey-nudged") !== "1") { // ask once for school and grade
