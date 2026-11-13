@@ -4,7 +4,7 @@
 1. פותחים שיחה חדשה ב-Gemini (מומלץ מודל עם יצירת תמונות, למשל Nano Banana).
 2. מדביקים קודם את **הפרומפט הראשי** (בלוק ה-STYLE למטה) ומחכים ל"ready".
 3. אחרי זה מדביקים בקשה אחת בכל פעם מהרשימה, וכל בקשה מחזירה קלף אחד. אותה שיחה שומרת על סגנון אחיד.
-4. שומרים כל תמונה בשם המספר שלה: `01.png`, `02.png` ... `30.png` (יחס 3:4), ושמים בתיקייה `honeysuckle/cards/`.
+4. שומרים כל תמונה בשם המספר שלה: `01.png`, `02.png` ... `30.png` (יחס כמעט מרובע, 9:10), ושמים בתיקייה `honeysuckle/cards/`.
 5. לא חייבים את כל ה-30 מיד. קלף שאין לו תמונה מוצג כרגע עם איור זמני, ומתחלף אוטומטית כשהקובץ מופיע.
 6. אם תמונה יצאה עם טקסט או מסגרת, מבקשים: "Regenerate without any text or border, same style."
 
@@ -18,7 +18,7 @@ STYLE
 - The same art style, same line weight, same face style and same lighting on every card.
 
 FORMAT (very important)
-- Vertical portrait, aspect ratio 3:4 (for example 1024 x 1365 px).
+- Nearly square portrait, aspect ratio about 9:10 (for example 1024 x 1138 px).
 - Full-bleed illustration that fills the whole image. No border, no frame, no card outline, no rounded corners (my app adds the frame).
 - NO text of any kind: no letters, no numbers, no logos, no watermarks, no speech bubbles.
 - Composition: the cat is the clear hero, centered, filling about the upper 75% of the image. Keep the bottom 20% a calm, simple part of the background (no important details there) because a name plate will be placed over it.
